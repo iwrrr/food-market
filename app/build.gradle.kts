@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.hightech.versioncatalogtemplate"
+    namespace = "com.hwaryun.foodmarket"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.hightech.versioncatalogtemplate"
+        applicationId = "com.hwaryun.foodmarket"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
@@ -50,9 +50,9 @@ android {
 
 dependencies {
     implementation(project(":core:designsystem"))
-    implementation(project(":features:watch-list:frameworks:ui"))
-    implementation(project(":features:watch-list:details:frameworks:ui"))
-    implementation(project(":features:bookmarks"))
+    implementation(project(":features:home"))
+    implementation(project(":features:order"))
+    implementation(project(":features:profile"))
 
     implementation(libs.androidx.ktx)
     implementation(libs.lifecycle.runtime.ktx)

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.hightech.versioncatalogtemplate"
+    namespace = "com.hwaryun.common"
     compileSdk = 33
 
     defaultConfig {

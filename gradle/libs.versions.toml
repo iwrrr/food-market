@@ -14,6 +14,12 @@ androidxLifecycle = "2.5.1"
 runtimeTracing = "1.0.0-alpha01"
 navigation= "2.5.3"
 
+# Coil
+coil = "2.4.0"
+
+# Rating Bar
+ratingbar = "1.2.5"
+
 # Testing
 junit = "4.13.2"
 extJunit = "1.1.5"
@@ -52,6 +58,7 @@ ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics= { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
+material-icons = { module = "androidx.compose.material:material-icons-extended" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose" }
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose" }
@@ -59,6 +66,12 @@ runtime-tracing = { module = "androidx.compose.runtime:runtime-tracing" }
 material3WindowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 navigation-runtime-ktx = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "navigation" }
+
+# Coil
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+# Rating Bar
+ratingbar = { group = "com.github.a914-gowtham", name = "compose-ratingbar", version.ref = "ratingbar" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }

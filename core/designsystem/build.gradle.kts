@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.hightech.versioncatalogtemplate"
+    namespace = "com.hwaryun.designsystem"
     compileSdk = 33
 
     defaultConfig {
@@ -44,5 +44,9 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    api(libs.material.icons)
+
+    api(libs.coil)
 }

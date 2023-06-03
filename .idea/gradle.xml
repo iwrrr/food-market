@@ -19,16 +19,9 @@
             <option value="$PROJECT_DIR$/core/frameworks/database" />
             <option value="$PROJECT_DIR$/core/frameworks/http" />
             <option value="$PROJECT_DIR$/features" />
-            <option value="$PROJECT_DIR$/features/bookmarks" />
-            <option value="$PROJECT_DIR$/features/watch-list" />
-            <option value="$PROJECT_DIR$/features/watch-list/details" />
-            <option value="$PROJECT_DIR$/features/watch-list/details/frameworks" />
-            <option value="$PROJECT_DIR$/features/watch-list/details/frameworks/ui" />
-            <option value="$PROJECT_DIR$/features/watch-list/domain" />
-            <option value="$PROJECT_DIR$/features/watch-list/frameworks" />
-            <option value="$PROJECT_DIR$/features/watch-list/frameworks/ui" />
-            <option value="$PROJECT_DIR$/features/watch-list/http" />
-            <option value="$PROJECT_DIR$/features/watch-list/presentation" />
+            <option value="$PROJECT_DIR$/features/home" />
+            <option value="$PROJECT_DIR$/features/order" />
+            <option value="$PROJECT_DIR$/features/profile" />
           </set>
         </option>
       </GradleProjectSettings>

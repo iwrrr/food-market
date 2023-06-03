@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.hightech.database"
+    namespace = "com.hwaryun.database"
     compileSdk = 33
 
     defaultConfig {
