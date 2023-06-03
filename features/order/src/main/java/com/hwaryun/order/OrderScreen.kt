@@ -2,68 +2,105 @@ package com.hwaryun.order
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hwaryun.designsystem.component.FoodMarketButton
+import com.hwaryun.designsystem.component.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.R
 
 @Composable
 internal fun OrderRoute(onButtonClick: () -> Unit) {
     OrderScreen(onButtonClick = onButtonClick)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun OrderScreen(onButtonClick: () -> Unit) {
-    Button(onClick = {
-        onButtonClick()
-        Log.d("WatchListScreen", "Event click listener")
-    }) {
-        Text("Navigate to detail")
-    }
-}
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            if (true) {
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun OrderScreen(
-    items: List<String>, onSave: (name: String) -> Unit, modifier: Modifier = Modifier
-) {
-    Column(modifier) {
-        var nameMyModel by remember { mutableStateOf("Compose") }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            TextField(value = nameMyModel, onValueChange = { nameMyModel = it })
-
-            Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameMyModel) }) {
-                Text("Save")
+            } else {
+                FoodMarketTopAppBar(title = "Your Orders", subtitle = "Wait for the best meal")
+            }
+        },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                if (true) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_order_empty),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(220.dp)
+                    )
+                    Spacer(modifier = Modifier.height(28.dp))
+                    Text(
+                        text = "Ouch! Hungry",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Seems like you have not\n" +
+                                "ordered any food yet",
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(28.dp))
+                    FoodMarketButton(
+                        text = "Find Foods",
+                        modifier = Modifier.fillMaxWidth(1f / 2),
+                        onClick = { }
+                    )
+                } else {
+                    Text(
+                        text = "Orders",
+                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
-        items.forEach {
-            Text("Saved item: $it")
-        }
-    }
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
     FoodMarketTheme {
-        OrderScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        OrderScreen(onButtonClick = {})
     }
 }
 
@@ -71,6 +108,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     FoodMarketTheme {
-        OrderScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        OrderScreen(onButtonClick = {})
     }
 }

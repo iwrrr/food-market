@@ -10,8 +10,7 @@ android {
     compileSdk = 33
 
     defaultConfig {
-        minSdk = 21
-        targetSdk = 33
+        minSdk = 24
 
         testInstrumentationRunner = "android.template.core.testing.HiltTestRunner"
         consumerProguardFiles("consumer-rules.pro")
