@@ -23,7 +23,7 @@ fun NavGraphBuilder.profileGraph(
         startDestination = profileRoute
     ) {
         composable(route = profileRoute) {
-            ProfileRoute(onButtonClick)
+            ProfileRoute()
         }
         nestedGraphs()
     }

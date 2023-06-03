@@ -51,12 +51,8 @@ fun MainAppNavHost(
 //                navController.navigateToWatchListDetails()
             },
             nestedGraphs = {
-//                watchListDetailsScreen(
-//                    onBackClick = navController::popBackStack,
-//                    onButtonClick = {}
-//                )
+                //
             }
         )
-//        bookmarksScreen()
     }
 }

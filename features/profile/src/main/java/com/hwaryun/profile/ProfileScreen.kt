@@ -1,60 +1,56 @@
 package com.hwaryun.profile
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hwaryun.designsystem.component.FoodMarketTabSection
+import com.hwaryun.designsystem.component.TabItem
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.profile.components.HeaderProfile
 
 @Composable
-internal fun ProfileRoute(onButtonClick: () -> Unit) {
-    ProfileScreen(onButtonClick = onButtonClick)
+internal fun ProfileRoute() {
+    ProfileScreen()
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun ProfileScreen(onButtonClick: () -> Unit) {
-    Button(onClick = {
-        onButtonClick()
-        Log.d("WatchListScreen", "Event click listener")
-    }) {
-        Text("Navigate to detail")
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun ProfileScreen(
-    items: List<String>, onSave: (name: String) -> Unit, modifier: Modifier = Modifier
-) {
-    Column(modifier) {
-        var nameMyModel by remember { mutableStateOf("Compose") }
-        Row(
+fun ProfileScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        val scrollState = rememberScrollState()
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                .fillMaxSize()
+                .verticalScroll(scrollState)
         ) {
-            TextField(value = nameMyModel, onValueChange = { nameMyModel = it })
-
-            Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameMyModel) }) {
-                Text("Save")
-            }
-        }
-        items.forEach {
-            Text("Saved item: $it")
+            HeaderProfile(modifier = Modifier.fillMaxWidth())
+            Spacer(modifier = Modifier.height(24.dp))
+            FoodMarketTabSection(
+                tabItems = listOf(
+                    TabItem(
+                        title = "Account",
+                        screen = { AccountScreen() }
+                    ),
+                    TabItem(
+                        title = "FoodMarket",
+                        screen = { FoodMarketScreen() }
+                    )
+                )
+            )
         }
     }
 }
@@ -63,7 +59,7 @@ internal fun ProfileScreen(
 @Composable
 private fun DefaultPreview() {
     FoodMarketTheme {
-        ProfileScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        ProfileScreen()
     }
 }
 
@@ -71,6 +67,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     FoodMarketTheme {
-        ProfileScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        ProfileScreen()
     }
 }
