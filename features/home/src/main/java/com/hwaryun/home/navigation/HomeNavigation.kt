@@ -21,6 +21,7 @@ fun NavController.navigateToFoodDetails(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.homeGraph(
+    navigateToSignIn: () -> Unit,
     onFoodClick: () -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
@@ -29,7 +30,10 @@ fun NavGraphBuilder.homeGraph(
         startDestination = homeRoute
     ) {
         composable(route = homeRoute) {
-            HomeRoute(onFoodClick)
+            HomeRoute(
+                navigateToSignIn = navigateToSignIn,
+                onFoodClick = onFoodClick
+            )
         }
         nestedGraphs()
     }

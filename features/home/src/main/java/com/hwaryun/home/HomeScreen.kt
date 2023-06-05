@@ -28,8 +28,17 @@ const val FOOD_SECTION = "food_section"
 const val FOOD_TAB_SECTION = "food_tab_section"
 
 @Composable
-internal fun HomeRoute(onFoodClick: () -> Unit) {
-    HomeScreen(onFoodClick = onFoodClick)
+internal fun HomeRoute(
+    navigateToSignIn: () -> Unit,
+    onFoodClick: () -> Unit
+) {
+    if (true) {
+        LaunchedEffect(key1 = Unit) {
+            navigateToSignIn()
+        }
+    } else {
+        HomeScreen(onFoodClick = onFoodClick)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -8,6 +8,7 @@ import com.hwaryun.foodmarket.MainAppState
 import com.hwaryun.home.navigation.foodDetailsRoute
 import com.hwaryun.home.navigation.foodDetailsScreen
 import com.hwaryun.home.navigation.homeGraph
+import com.hwaryun.home.navigation.homeGraphRoute
 import com.hwaryun.home.navigation.navigateToFoodDetails
 import com.hwaryun.home.navigation.navigateToHomeGraph
 import com.hwaryun.order.navigation.orderGraph
@@ -16,6 +17,7 @@ import com.hwaryun.payment.navigation.navigateToSuccessOrder
 import com.hwaryun.payment.navigation.paymentGraph
 import com.hwaryun.payment.navigation.successOrderScreen
 import com.hwaryun.profile.navigation.profileGraph
+import com.hwaryun.signin.navigation.navigateToSignInGraph
 import com.hwaryun.signin.navigation.signInGraph
 import com.hwaryun.signin.navigation.signInGraphRoute
 import com.hwaryun.signup.navigation.addressScreen
@@ -27,7 +29,7 @@ import com.hwaryun.signup.navigation.signUpGraph
 fun MainAppNavHost(
     mainAppState: MainAppState,
     modifier: Modifier = Modifier,
-    startDestination: String = signInGraphRoute
+    startDestination: String = homeGraphRoute
 ) {
     val navController = mainAppState.navHostController
     NavHost(
@@ -64,6 +66,7 @@ fun MainAppNavHost(
             }
         )
         homeGraph(
+            navigateToSignIn = navController::navigateToSignInGraph,
             onFoodClick = navController::navigateToFoodDetails,
             nestedGraphs = {
                 foodDetailsScreen(
