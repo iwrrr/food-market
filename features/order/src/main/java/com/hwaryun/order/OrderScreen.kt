@@ -1,6 +1,7 @@
 package com.hwaryun.order
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,13 +19,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.component.FoodMarketButton
+import com.hwaryun.designsystem.component.FoodMarketTabSection
 import com.hwaryun.designsystem.component.FoodMarketTopAppBar
+import com.hwaryun.designsystem.component.TabItem
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 
 @Composable
@@ -39,7 +41,7 @@ fun OrderScreen(onOrderClick: () -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            if (true) {
+            if (false) {
 
             } else {
                 FoodMarketTopAppBar(title = "Your Orders", subtitle = "Wait for the best meal")
@@ -51,58 +53,76 @@ fun OrderScreen(onOrderClick: () -> Unit) {
                     .padding(innerPadding)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = if (false) Arrangement.Center else Arrangement.Top
             ) {
-                if (true) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_order_empty),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .width(200.dp)
-                            .height(220.dp)
-                    )
-                    Spacer(modifier = Modifier.height(28.dp))
-                    Text(
-                        text = "Ouch! Hungry",
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Seems like you have not\n" +
-                                "ordered any food yet",
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(28.dp))
-                    FoodMarketButton(
-                        text = "Find Foods",
-                        modifier = Modifier.fillMaxWidth(1f / 2),
-                        onClick = { }
-                    )
+                if (false) {
+                    EmptyContent()
                 } else {
-                    Text(
-                        text = "Orders",
-                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                        fontWeight = FontWeight.Bold
-                    )
+                    OrderContent()
                 }
             }
         }
     )
 }
 
-@Preview(showBackground = true)
 @Composable
-private fun DefaultPreview() {
-    FoodMarketTheme {
-        OrderScreen(onOrderClick = {})
-    }
+private fun OrderContent() {
+    Spacer(modifier = Modifier.height(24.dp))
+    FoodMarketTabSection(
+        tabItems = listOf(
+            TabItem(
+                title = "In Progress",
+                screen = {
+                    OrderItemScreen(
+                        onOrderItemClick = {}
+                    )
+                }
+            ),
+            TabItem(
+                title = "Past Orders",
+                screen = {
+                    OrderItemScreen(
+                        onOrderItemClick = {}
+                    )
+                }
+            ),
+        )
+    )
 }
 
-@Preview(showBackground = true, widthDp = 480)
 @Composable
-private fun PortraitPreview() {
+private fun EmptyContent() {
+    Image(
+        painter = painterResource(id = R.drawable.ic_order_empty),
+        contentDescription = null,
+        modifier = Modifier
+            .width(200.dp)
+            .height(220.dp)
+    )
+    Spacer(modifier = Modifier.height(28.dp))
+    Text(
+        text = "Ouch! Hungry",
+        style = MaterialTheme.typography.headlineMedium
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = "Seems like you have not\n" +
+                "ordered any food yet",
+        style = MaterialTheme.typography.bodyLarge,
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+    Spacer(modifier = Modifier.height(28.dp))
+    FoodMarketButton(
+        text = "Find Foods",
+        modifier = Modifier.fillMaxWidth(1f / 2),
+        onClick = { }
+    )
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun DefaultPreview() {
     FoodMarketTheme {
         OrderScreen(onOrderClick = {})
     }

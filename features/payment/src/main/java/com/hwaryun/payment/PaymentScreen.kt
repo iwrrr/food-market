@@ -1,8 +1,7 @@
 package com.hwaryun.payment
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.Image
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,12 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,17 +27,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.component.FoodMarketButton
 import com.hwaryun.designsystem.component.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.ui.LightGreen
 
 @Composable
@@ -125,14 +121,14 @@ fun PaymentScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 style = MaterialTheme.typography.bodySmall,
                                 overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = MaterialTheme.colorScheme.secondary,
                                 maxLines = 1
                             )
                         }
                         Text(
                             text = "14 items",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.secondary,
                         )
                     }
                 }
@@ -147,7 +143,7 @@ fun PaymentScreen(
                     Text(
                         text = "Cherry Healthy",
                         modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -168,7 +164,7 @@ fun PaymentScreen(
                     Text(
                         text = "Driver",
                         modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -189,7 +185,7 @@ fun PaymentScreen(
                     Text(
                         text = "Tax 10%",
                         modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -210,7 +206,7 @@ fun PaymentScreen(
                     Text(
                         text = "Total Price",
                         modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -240,7 +236,7 @@ fun PaymentScreen(
                     Text(
                         text = "Name",
                         modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -259,7 +255,7 @@ fun PaymentScreen(
                     Text(
                         text = "Phone No.",
                         modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -279,7 +275,7 @@ fun PaymentScreen(
                     Text(
                         text = "Address",
                         modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -298,7 +294,7 @@ fun PaymentScreen(
                     Text(
                         text = "House No.",
                         modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -307,8 +303,7 @@ fun PaymentScreen(
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.End,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = LightGreen
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 Spacer(modifier = Modifier.height(6.dp))
@@ -320,7 +315,7 @@ fun PaymentScreen(
                     Text(
                         text = "City",
                         modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -329,9 +324,37 @@ fun PaymentScreen(
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.End,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = LightGreen
+                        overflow = TextOverflow.Ellipsis
                     )
+                }
+            }
+            if (false) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(24.dp)
+                ) {
+                    Text(text = "Order Status:")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "#FM209391",
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(
+                            text = "Paid",
+                            modifier = Modifier.weight(1f),
+                            color = LightGreen,
+                            textAlign = TextAlign.End,
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -348,20 +371,9 @@ fun PaymentScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DefaultPreview() {
-    FoodMarketTheme {
-        PaymentScreen(
-            popBackStack = {},
-            navigateToSuccessOrder = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, widthDp = 480)
-@Composable
-private fun PortraitPreview() {
     FoodMarketTheme {
         PaymentScreen(
             popBackStack = {},

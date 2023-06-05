@@ -74,7 +74,6 @@ fun MainBottomBar(
                         }
                         Icon(icon, contentDescription = "")
                     },
-                    label = { Text(topLevelDestination.iconTextId) },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = Primary,
                         indicatorColor = MaterialTheme.colorScheme.surface

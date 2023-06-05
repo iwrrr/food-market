@@ -34,7 +34,7 @@ fun FoodMarketTabSection(
     Column(modifier = modifier.fillMaxWidth()) {
         ScrollableTabRow(
             selectedTabIndex = tabIndex,
-            edgePadding = 0.dp,
+            edgePadding = 8.dp,
             contentColor = Black,
             indicator = { tabPositions ->
                 Box(
