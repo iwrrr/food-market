@@ -8,20 +8,26 @@ import com.hwaryun.foodmarket.MainAppState
 import com.hwaryun.home.navigation.foodDetailsRoute
 import com.hwaryun.home.navigation.foodDetailsScreen
 import com.hwaryun.home.navigation.homeGraph
-import com.hwaryun.home.navigation.homeGraphRoute
 import com.hwaryun.home.navigation.navigateToFoodDetails
+import com.hwaryun.home.navigation.navigateToHomeGraph
 import com.hwaryun.order.navigation.orderGraph
 import com.hwaryun.payment.navigation.navigateToPaymentGraph
 import com.hwaryun.payment.navigation.navigateToSuccessOrder
 import com.hwaryun.payment.navigation.paymentGraph
 import com.hwaryun.payment.navigation.successOrderScreen
 import com.hwaryun.profile.navigation.profileGraph
+import com.hwaryun.signin.navigation.signInGraph
+import com.hwaryun.signin.navigation.signInGraphRoute
+import com.hwaryun.signup.navigation.addressScreen
+import com.hwaryun.signup.navigation.navigateToAddress
+import com.hwaryun.signup.navigation.navigateToSignUpGraph
+import com.hwaryun.signup.navigation.signUpGraph
 
 @Composable
 fun MainAppNavHost(
     mainAppState: MainAppState,
     modifier: Modifier = Modifier,
-    startDestination: String = homeGraphRoute
+    startDestination: String = signInGraphRoute
 ) {
     val navController = mainAppState.navHostController
     NavHost(
@@ -29,6 +35,34 @@ fun MainAppNavHost(
         modifier = modifier,
         startDestination = startDestination
     ) {
+        signInGraph(
+            navigateToSignUpScreen = navController::navigateToSignUpGraph,
+        ) {
+            navController.navigateToHomeGraph(
+                navOptions = navOptions {
+                    popUpTo(signInGraphRoute) {
+                        inclusive = true
+                    }
+                }
+            )
+        }
+        signUpGraph(
+            popBackStack = navController::popBackStack,
+            navigateToAddressScreen = navController::navigateToAddress,
+            nestedGraphs = {
+                addressScreen(
+                    popBackStack = navController::popBackStack
+                ) {
+                    navController.navigateToHomeGraph(
+                        navOptions = navOptions {
+                            popUpTo(signInGraphRoute) {
+                                inclusive = true
+                            }
+                        }
+                    )
+                }
+            }
+        )
         homeGraph(
             onFoodClick = navController::navigateToFoodDetails,
             nestedGraphs = {

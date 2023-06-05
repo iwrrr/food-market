@@ -1,25 +1,20 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     kotlin("kapt")
     alias(libs.plugins.hilt.android)
 }
 
 android {
-    namespace = "com.hwaryun.foodmarket"
+    namespace = "com.hwaryun.signup"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.hwaryun.foodmarket"
         minSdk = 24
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -50,12 +45,6 @@ android {
 
 dependencies {
     implementation(project(":core:designsystem"))
-    implementation(project(":features:signin"))
-    implementation(project(":features:signup"))
-    implementation(project(":features:home"))
-    implementation(project(":features:order"))
-    implementation(project(":features:profile"))
-    implementation(project(":features:payment"))
 
     implementation(libs.androidx.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -63,10 +52,10 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.navigation.animation)
+    implementation(libs.navigation.compose)
+    implementation(libs.navigation.runtime.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.ext.junit)
     testImplementation(libs.espresso.core)
@@ -77,5 +66,4 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-    implementation(libs.hilt.navigation.compose)
 }

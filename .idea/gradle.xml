@@ -23,6 +23,8 @@
             <option value="$PROJECT_DIR$/features/order" />
             <option value="$PROJECT_DIR$/features/payment" />
             <option value="$PROJECT_DIR$/features/profile" />
+            <option value="$PROJECT_DIR$/features/signin" />
+            <option value="$PROJECT_DIR$/features/signup" />
           </set>
         </option>
       </GradleProjectSettings>
