@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.home.component.VerticalFoodItem
+import com.hwaryun.home.components.VerticalFoodItem
 
 @Composable
 fun FoodsScreen(

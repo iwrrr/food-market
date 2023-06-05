@@ -3,10 +3,18 @@ package com.hwaryun.foodmarket.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 import com.hwaryun.foodmarket.MainAppState
+import com.hwaryun.home.navigation.foodDetailsRoute
+import com.hwaryun.home.navigation.foodDetailsScreen
 import com.hwaryun.home.navigation.homeGraph
 import com.hwaryun.home.navigation.homeGraphRoute
+import com.hwaryun.home.navigation.navigateToFoodDetails
 import com.hwaryun.order.navigation.orderGraph
+import com.hwaryun.payment.navigation.navigateToPaymentGraph
+import com.hwaryun.payment.navigation.navigateToSuccessOrder
+import com.hwaryun.payment.navigation.paymentGraph
+import com.hwaryun.payment.navigation.successOrderScreen
 import com.hwaryun.profile.navigation.profileGraph
 
 @Composable
@@ -22,37 +30,38 @@ fun MainAppNavHost(
         startDestination = startDestination
     ) {
         homeGraph(
-            onButtonClick = {
-                println("onButtonClick fro navhost")
-//                navController.navigateToWatchListDetails()
-            },
+            onFoodClick = navController::navigateToFoodDetails,
             nestedGraphs = {
-//                watchListDetailsScreen(
-//                    onBackClick = navController::popBackStack,
-//                    onButtonClick = {}
-//                )
+                foodDetailsScreen(
+                    onOrderClick = navController::navigateToPaymentGraph
+                )
+                paymentGraph(
+                    popBackStack = navController::popBackStack,
+                    navigateToSuccessOrder = {
+                        navController.navigateToSuccessOrder(
+                            navOptions = navOptions {
+                                popUpTo(foodDetailsRoute) {
+                                    inclusive = true
+                                }
+                            }
+                        )
+                    }
+                )
+                successOrderScreen(
+                    navigateToHome = navController::popBackStack,
+                    navigateToOrder = {
+                        mainAppState.navigateToTopLevelDestination(TopLevelDestination.ORDER)
+                    }
+                )
             }
         )
         orderGraph(
-            onButtonClick = {
-                println("onButtonClick fro navhost")
-//                navController.navigateToWatchListDetails()
-            },
-            nestedGraphs = {
-//                watchListDetailsScreen(
-//                    onBackClick = navController::popBackStack,
-//                    onButtonClick = {}
-//                )
-            }
+            onOrderClick = {},
+            nestedGraphs = {}
         )
         profileGraph(
-            onButtonClick = {
-                println("onButtonClick fro navhost")
-//                navController.navigateToWatchListDetails()
-            },
-            nestedGraphs = {
-                //
-            }
+            onButtonClick = {},
+            nestedGraphs = {}
         )
     }
 }

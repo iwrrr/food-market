@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import com.hwaryun.home.component.HorizontalFoodItem
+import com.hwaryun.home.components.HorizontalFoodItem
 
 @Composable
 fun FoodSection(

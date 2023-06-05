@@ -1,4 +1,4 @@
-package com.hwaryun.home.component
+package com.hwaryun.home.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background

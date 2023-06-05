@@ -1,22 +1,8 @@
 package com.hwaryun.foodmarket
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -24,12 +10,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.hwaryun.foodmarket.navigation.TopLevelDestination
-import com.hwaryun.home.navigation.homeGraphRoute
 import com.hwaryun.home.navigation.navigateToHomeGraph
 import com.hwaryun.order.navigation.navigateToOrderGraph
-import com.hwaryun.order.navigation.orderGraphRoute
 import com.hwaryun.profile.navigation.navigateToProfileGraph
-import com.hwaryun.profile.navigation.profileGraphRoute
 
 @Composable
 fun rememberMainAppState(
@@ -43,6 +26,11 @@ fun rememberMainAppState(
 @Stable
 class MainAppState(val navHostController: NavHostController) {
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.values().asList()
+    private val topLevelRoutes = topLevelDestinations.map { it.route }
+
+    val shouldShowBottomBar: Boolean
+        @Composable get() = navHostController
+            .currentBackStackEntryAsState().value?.destination?.route in topLevelRoutes
 
     val currentDestination: NavDestination?
         @Composable get() = navHostController

@@ -1,11 +1,9 @@
 package com.hwaryun.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -24,20 +22,20 @@ import com.hwaryun.designsystem.component.TabItem
 import com.hwaryun.designsystem.layout.ChildLayout
 import com.hwaryun.designsystem.layout.VerticalScrollLayout
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.home.component.HeaderHome
+import com.hwaryun.home.components.HeaderHome
 
 const val FOOD_SECTION = "food_section"
 const val FOOD_TAB_SECTION = "food_tab_section"
 
 @Composable
-internal fun HomeRoute(onButtonClick: () -> Unit) {
-    HomeScreen(onButtonClick = onButtonClick)
+internal fun HomeRoute(onFoodClick: () -> Unit) {
+    HomeScreen(onFoodClick = onFoodClick)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun HomeScreen(onButtonClick: () -> Unit) {
+fun HomeScreen(onFoodClick: () -> Unit) {
     Scaffold(
         topBar = {
             HeaderHome()
@@ -51,7 +49,7 @@ fun HomeScreen(onButtonClick: () -> Unit) {
                     content = {
                         FoodSection(
                             listState = rememberLazyListState(),
-                            onFoodClick = {  }
+                            onFoodClick = onFoodClick
                         )
                     }
                 ),
@@ -63,15 +61,15 @@ fun HomeScreen(onButtonClick: () -> Unit) {
                             tabItems = listOf(
                                 TabItem(
                                     title = "New Taste",
-                                    screen = { FoodsScreen(onFoodClick = {  }) }
+                                    screen = { FoodsScreen(onFoodClick = onFoodClick) }
                                 ),
                                 TabItem(
                                     title = "Popular",
-                                    screen = { FoodsScreen(onFoodClick = {  }) }
+                                    screen = { FoodsScreen(onFoodClick = onFoodClick) }
                                 ),
                                 TabItem(
                                     title = "Recommended",
-                                    screen = { FoodsScreen(onFoodClick = {  }) }
+                                    screen = { FoodsScreen(onFoodClick = onFoodClick) }
                                 ),
                             )
                         )
@@ -80,12 +78,6 @@ fun HomeScreen(onButtonClick: () -> Unit) {
             )
         }
     )
-    //    Button(onClick = {
-    //        onButtonClick()
-    //        Log.d("WatchListScreen", "Event click listener")
-    //    }) {
-    //        Text("Navigate to detail")
-    //    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

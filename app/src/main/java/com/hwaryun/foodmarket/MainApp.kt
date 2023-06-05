@@ -1,16 +1,13 @@
 package com.hwaryun.foodmarket
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
@@ -21,17 +18,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.hwaryun.designsystem.ui.Primary
 import com.hwaryun.foodmarket.navigation.MainAppNavHost
 import com.hwaryun.foodmarket.navigation.TopLevelDestination
-import com.hwaryun.home.navigation.homeRoute
-import com.hwaryun.order.navigation.orderRoute
-import com.hwaryun.profile.navigation.profileRoute
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainApp(
@@ -43,13 +36,12 @@ fun MainApp(
                 destinations = mainAppState.topLevelDestinations,
                 onNavigateToDestination = mainAppState::navigateToTopLevelDestination,
                 currentDestination = mainAppState.currentDestination,
-                state = bottomBarVisibility(navController = mainAppState.navHostController)
+                isVisible = mainAppState.shouldShowBottomBar
             )
         }
-    ) { paddingValues ->
+    ) {
         MainAppNavHost(
             mainAppState = mainAppState,
-            modifier = Modifier.padding(paddingValues)
         )
     }
 }
@@ -59,10 +51,10 @@ fun MainBottomBar(
     destinations: List<TopLevelDestination>,
     onNavigateToDestination: (TopLevelDestination) -> Unit,
     currentDestination: NavDestination?,
-    state: MutableState<Boolean>
+    isVisible: Boolean
 ) {
     AnimatedVisibility(
-        visible = state.value,
+        visible = isVisible,
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it }),
     ) {
@@ -91,22 +83,6 @@ fun MainBottomBar(
             }
         }
     }
-}
-
-@Composable
-fun bottomBarVisibility(
-    navController: NavController,
-): MutableState<Boolean> {
-    val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    when (navBackStackEntry?.destination?.route) {
-        homeRoute -> bottomBarState.value = true
-        orderRoute -> bottomBarState.value = true
-        profileRoute -> bottomBarState.value = true
-        else -> bottomBarState.value = false
-    }
-
-    return bottomBarState
 }
 
 /**

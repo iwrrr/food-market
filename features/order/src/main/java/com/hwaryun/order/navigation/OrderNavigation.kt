@@ -15,7 +15,7 @@ fun NavController.navigateToOrderGraph(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.orderGraph(
-    onButtonClick: () -> Unit,
+    onOrderClick: () -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
     navigation(
@@ -23,7 +23,7 @@ fun NavGraphBuilder.orderGraph(
         startDestination = orderRoute
     ) {
         composable(route = orderRoute) {
-            OrderRoute(onButtonClick)
+            OrderRoute(onOrderClick)
         }
         nestedGraphs()
     }

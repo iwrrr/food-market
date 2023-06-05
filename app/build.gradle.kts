@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":features:home"))
     implementation(project(":features:order"))
     implementation(project(":features:profile"))
+    implementation(project(":features:payment"))
 
     implementation(libs.androidx.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -63,6 +64,7 @@ dependencies {
     implementation(libs.ui.tooling)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.navigation.animation)
     testImplementation(libs.junit)
     testImplementation(libs.ext.junit)
     testImplementation(libs.espresso.core)
