@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hwaryun.designsystem.component.FoodMarketTabSection
-import com.hwaryun.designsystem.component.TabItem
+import com.hwaryun.designsystem.components.FoodMarketTabSection
+import com.hwaryun.designsystem.components.TabItem
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.profile.components.HeaderProfile
 

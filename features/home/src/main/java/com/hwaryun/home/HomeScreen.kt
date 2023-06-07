@@ -17,8 +17,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hwaryun.designsystem.component.FoodMarketTabSection
-import com.hwaryun.designsystem.component.TabItem
+import com.hwaryun.designsystem.components.FoodMarketTabSection
+import com.hwaryun.designsystem.components.TabItem
 import com.hwaryun.designsystem.layout.ChildLayout
 import com.hwaryun.designsystem.layout.VerticalScrollLayout
 import com.hwaryun.designsystem.ui.FoodMarketTheme
@@ -32,13 +32,13 @@ internal fun HomeRoute(
     navigateToSignIn: () -> Unit,
     onFoodClick: () -> Unit
 ) {
-    if (true) {
-        LaunchedEffect(key1 = Unit) {
-            navigateToSignIn()
-        }
-    } else {
+//    if (true) {
+//        LaunchedEffect(key1 = Unit) {
+//            navigateToSignIn()
+//        }
+//    } else {
         HomeScreen(onFoodClick = onFoodClick)
-    }
+//    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

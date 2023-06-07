@@ -22,11 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hwaryun.designsystem.component.ButtonType
-import com.hwaryun.designsystem.component.FoodMarketButton
-import com.hwaryun.designsystem.component.FoodMarketCircleImage
-import com.hwaryun.designsystem.component.FoodMarketTextField
-import com.hwaryun.designsystem.component.FoodMarketTopAppBar
+import com.hwaryun.designsystem.components.ButtonType
+import com.hwaryun.designsystem.components.FoodMarketButton
+import com.hwaryun.designsystem.components.FoodMarketCircleImage
+import com.hwaryun.designsystem.components.FoodMarketTextField
+import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 
 @Composable

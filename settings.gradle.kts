@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -16,7 +17,7 @@ dependencyResolutionManagement {
 rootProject.name = "FoodMarket"
 include(":app")
 include(":core:common")
-include(":core:designsystem")
+include(":core:design-system")
 include(":core:frameworks:database")
 include(":core:frameworks:http")
 
@@ -26,3 +27,5 @@ include(":features:profile")
 include(":features:payment")
 include(":features:signin")
 include(":features:signup")
+include(":core:datasource")
+include(":core:domain")

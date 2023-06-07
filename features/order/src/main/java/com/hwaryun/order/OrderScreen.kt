@@ -23,10 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.R
-import com.hwaryun.designsystem.component.FoodMarketButton
-import com.hwaryun.designsystem.component.FoodMarketTabSection
-import com.hwaryun.designsystem.component.FoodMarketTopAppBar
-import com.hwaryun.designsystem.component.TabItem
+import com.hwaryun.designsystem.components.FoodMarketButton
+import com.hwaryun.designsystem.components.FoodMarketTabSection
+import com.hwaryun.designsystem.components.FoodMarketTopAppBar
+import com.hwaryun.designsystem.components.TabItem
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 
 @Composable

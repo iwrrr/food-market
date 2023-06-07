@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.R
-import com.hwaryun.designsystem.component.FoodMarketButton
+import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.order.components.OrderItem
 

@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hwaryun.designsystem.R
-import com.hwaryun.designsystem.component.FoodMarketButton
-import com.hwaryun.designsystem.component.FoodMarketTopAppBar
+import com.hwaryun.designsystem.components.FoodMarketButton
+import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.LightGreen
 

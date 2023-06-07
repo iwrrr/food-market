@@ -36,8 +36,8 @@ import coil.request.ImageRequest
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.hwaryun.designsystem.R
-import com.hwaryun.designsystem.component.FoodMarketButton
-import com.hwaryun.designsystem.component.FoodMarketCounterButton
+import com.hwaryun.designsystem.components.FoodMarketButton
+import com.hwaryun.designsystem.components.FoodMarketCounterButton
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 
 @Composable

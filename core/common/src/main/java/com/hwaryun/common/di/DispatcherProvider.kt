@@ -2,6 +2,7 @@ package com.hwaryun.common.di
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
 interface DispatcherProvider {
     val default: CoroutineDispatcher
@@ -9,7 +10,7 @@ interface DispatcherProvider {
     val main: CoroutineDispatcher
 }
 
-class DispatcherProviderImpl: DispatcherProvider {
+class DispatcherProviderImpl @Inject constructor() : DispatcherProvider {
     override val default: CoroutineDispatcher
         get() = Dispatchers.Default
     override val io: CoroutineDispatcher

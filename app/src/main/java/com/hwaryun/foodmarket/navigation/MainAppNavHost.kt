@@ -4,11 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
-import com.hwaryun.foodmarket.MainAppState
+import com.hwaryun.foodmarket.ui.MainAppState
 import com.hwaryun.home.navigation.foodDetailsRoute
 import com.hwaryun.home.navigation.foodDetailsScreen
 import com.hwaryun.home.navigation.homeGraph
-import com.hwaryun.home.navigation.homeGraphRoute
 import com.hwaryun.home.navigation.navigateToFoodDetails
 import com.hwaryun.home.navigation.navigateToHomeGraph
 import com.hwaryun.order.navigation.orderGraph
@@ -29,7 +28,7 @@ import com.hwaryun.signup.navigation.signUpGraph
 fun MainAppNavHost(
     mainAppState: MainAppState,
     modifier: Modifier = Modifier,
-    startDestination: String = homeGraphRoute
+    startDestination: String = signInGraphRoute
 ) {
     val navController = mainAppState.navHostController
     NavHost(
@@ -87,6 +86,7 @@ fun MainAppNavHost(
                 successOrderScreen(
                     navigateToHome = navController::popBackStack,
                     navigateToOrder = {
+                        navController.popBackStack()
                         mainAppState.navigateToTopLevelDestination(TopLevelDestination.ORDER)
                     }
                 )

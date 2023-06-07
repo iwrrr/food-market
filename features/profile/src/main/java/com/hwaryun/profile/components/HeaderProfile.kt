@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hwaryun.designsystem.component.FoodMarketCircleImage
+import com.hwaryun.designsystem.components.FoodMarketCircleImage
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 
 @Composable
