@@ -46,7 +46,7 @@ fun FoodMarketTextField(
     textLabel: String = "",
     text: String,
     placeholder: String,
-    isPasswordTextField: Boolean,
+    isPasswordTextField: Boolean = false,
     isExpandedDropdown: Boolean = false,
     expanded: Boolean = false,
     onExpandedChange: (Boolean) -> Unit = {},
@@ -198,10 +198,6 @@ fun CustomTextFieldWithError(
                 shape = shape,
                 colors = colors,
                 innerTextField = it,
-                // change the padding
-                contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
-                    top = 12.dp, bottom = 12.dp
-                ),
                 container = {
                     TextFieldDefaults.OutlinedBorderContainerBox(
                         enabled,
@@ -227,7 +223,7 @@ fun CustomTextFieldWithError(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun PowerHumanTextFieldPreview() {
+fun FoodMarketTextFieldPreview() {
     FoodMarketTheme {
         var email = ""
         FoodMarketTextField(

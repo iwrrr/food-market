@@ -1,26 +1,29 @@
-package com.hwaryun.domain.usecase
+package com.hwaryun.domain.usecase.sign_up
 
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.common.domain.oop.FlowUseCase
 import com.hwaryun.common.ext.isValid
+import com.hwaryun.common.result.CheckFieldResult
 import com.hwaryun.common.result.UiResult
 import com.hwaryun.designsystem.R
 import com.hwaryun.domain.utils.EMAIL_FIELD
+import com.hwaryun.domain.utils.NAME_FIELD
 import com.hwaryun.domain.utils.PASSWORD_FIELD
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-typealias CheckFieldLoginResult = List<Pair<Int, Int>>
-
-class CheckLoginFieldUseCase @Inject constructor(
+class CheckSignUpFieldUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
-) : FlowUseCase<LoginUseCase.Param, UiResult<CheckFieldLoginResult>>(dispatcherProvider.io) {
+) : FlowUseCase<CheckSignUpFieldUseCase.Param, UiResult<CheckFieldResult>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: LoginUseCase.Param): Flow<UiResult<CheckFieldLoginResult>> =
+    override suspend fun buildFlowUseCase(param: Param): Flow<UiResult<CheckFieldResult>> =
         flow {
             val result = mutableListOf<Pair<Int, Int>>()
+            checkIsNameValid(param.name)?.let {
+                result.add(it)
+            }
             checkIsEmailValid(param.email)?.let {
                 result.add(it)
             }
@@ -34,9 +37,21 @@ class CheckLoginFieldUseCase @Inject constructor(
             }
         }
 
+    private fun checkIsNameValid(username: String): Pair<Int, Int>? {
+        return if (username.isEmpty()) {
+            Pair(NAME_FIELD, R.string.error_field_empty)
+        } else if (username.length < 2) {
+            Pair(NAME_FIELD, R.string.error_field_name_length_below_min)
+        } else {
+            null
+        }
+    }
+
     private fun checkIsPasswordValid(password: String): Pair<Int, Int>? {
         return if (password.isEmpty()) {
             Pair(PASSWORD_FIELD, R.string.error_field_password)
+        } else if (password.length < 8) {
+            Pair(PASSWORD_FIELD, R.string.error_field_password_length_below_min)
         } else {
             null
         }
@@ -51,4 +66,10 @@ class CheckLoginFieldUseCase @Inject constructor(
             null
         }
     }
+
+    data class Param(
+        val name: String,
+        val email: String,
+        val password: String
+    )
 }

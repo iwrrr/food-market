@@ -14,7 +14,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val foodMarketApi: FoodMarketApi
 ) : AuthRepository {
 
-    override suspend fun login(
+    override suspend fun signIn(
         email: String,
         password: String
     ): Flow<NetworkClientResult<AuthDto?>> = flow {
@@ -26,11 +26,10 @@ class AuthRepositoryImpl @Inject constructor(
         emit(execute { foodMarketApi.login(loginRequest).data })
     }
 
-    override suspend fun register(
+    override suspend fun signUp(
         name: String,
         email: String,
         password: String,
-        passwordConfirmation: String,
         address: String,
         city: String,
         houseNumber: String,
@@ -40,7 +39,7 @@ class AuthRepositoryImpl @Inject constructor(
             name = name,
             email = email,
             password = password,
-            passwordConfirmation = passwordConfirmation,
+            passwordConfirmation = password,
             address = address,
             city = city,
             houseNumber = houseNumber,

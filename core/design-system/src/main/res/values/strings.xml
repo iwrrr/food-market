@@ -5,7 +5,7 @@
     <string name="error_field_email">Email harus diisi.</string>
     <string name="error_field_email_not_valid">Email tidak valid.</string>
     <string name="error_field_password">Password harus diisi.</string>
-    <string name="error_field_password_length_below_min">Kata sandi minimal 6 karakter.</string>
+    <string name="error_field_password_length_below_min">Kata sandi minimal 8 karakter.</string>
     <string name="error_field_password_not_match">Konfirmasi kata sandi tidak sesuai.</string>
     <string name="error_field_empty">Isian tidak boleh kosong.</string>
 

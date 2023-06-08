@@ -5,16 +5,15 @@ import com.hwaryun.network.model.response.AuthDto
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
-    suspend fun login(
+    suspend fun signIn(
         email: String,
         password: String
     ): Flow<NetworkClientResult<AuthDto?>>
 
-    suspend fun register(
+    suspend fun signUp(
         name: String,
         email: String,
         password: String,
-        passwordConfirmation: String,
         address: String,
         city: String,
         houseNumber: String,

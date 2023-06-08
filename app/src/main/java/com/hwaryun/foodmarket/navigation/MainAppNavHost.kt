@@ -38,30 +38,34 @@ fun MainAppNavHost(
     ) {
         signInGraph(
             navigateToSignUpScreen = navController::navigateToSignUpGraph,
-        ) {
-            navController.navigateToHomeGraph(
-                navOptions = navOptions {
-                    popUpTo(signInGraphRoute) {
-                        inclusive = true
+            navigateToHomeScreen = {
+                navController.navigateToHomeGraph(
+                    navOptions = navOptions {
+                        popUpTo(signInGraphRoute) {
+                            inclusive = true
+                        }
                     }
-                }
-            )
-        }
+                )
+            },
+        )
         signUpGraph(
+            navController = navController,
             popBackStack = navController::popBackStack,
             navigateToAddressScreen = navController::navigateToAddress,
             nestedGraphs = {
                 addressScreen(
-                    popBackStack = navController::popBackStack
-                ) {
-                    navController.navigateToHomeGraph(
-                        navOptions = navOptions {
-                            popUpTo(signInGraphRoute) {
-                                inclusive = true
+                    navController = navController,
+                    popBackStack = navController::popBackStack,
+                    navigateToHomeScreen = {
+                        navController.navigateToHomeGraph(
+                            navOptions = navOptions {
+                                popUpTo(signInGraphRoute) {
+                                    inclusive = true
+                                }
                             }
-                        }
-                    )
-                }
+                        )
+                    },
+                )
             }
         )
         homeGraph(

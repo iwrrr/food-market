@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.ext.suspendSubscribe
-import com.hwaryun.domain.usecase.LoginUseCase
+import com.hwaryun.domain.usecase.sign_in.SignInUseCase
 import com.hwaryun.domain.utils.EMAIL_FIELD
 import com.hwaryun.domain.utils.PASSWORD_FIELD
 import com.hwaryun.signin.state.SignInScreenState
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+    private val signInUseCase: SignInUseCase
 ) : ViewModel() {
 
     private val _signInState = MutableStateFlow(SignInState())
@@ -29,7 +29,7 @@ class SignInViewModel @Inject constructor(
 
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
-            loginUseCase.execute(LoginUseCase.Param(email, password)).collect { result ->
+            signInUseCase.execute(SignInUseCase.Param(email, password)).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
                         _signInState.emit(
@@ -98,7 +98,7 @@ class SignInViewModel @Inject constructor(
             if (errorField.first == EMAIL_FIELD) {
                 _screenState.update {
                     it.copy(
-                        errorEmail = errorField.second,
+                        errorEmailMsg = errorField.second,
                         isEmailError = true
                     )
                 }
@@ -106,7 +106,7 @@ class SignInViewModel @Inject constructor(
             if (errorField.first == PASSWORD_FIELD) {
                 _screenState.update {
                     it.copy(
-                        errorPassword = errorField.second,
+                        errorPasswordMsg = errorField.second,
                         isPasswordError = true
                     )
                 }

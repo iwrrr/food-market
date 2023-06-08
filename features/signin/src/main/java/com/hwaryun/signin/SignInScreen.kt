@@ -80,10 +80,14 @@ fun SignInScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            FoodMarketTopAppBar(title = "Sign In", subtitle = "Find your best ever meal")
+            FoodMarketTopAppBar(
+                title = "Sign In",
+                subtitle = "Find your best ever meal"
+            )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { innerPadding ->
+
             LaunchedEffect(Unit) {
                 if (signInState.signIn != null) {
                     navigateToHomeScreen()
@@ -112,9 +116,8 @@ fun SignInScreen(
                         showLabel = true,
                         textLabel = "Email Address",
                         placeholder = "Type your email address",
-                        isPasswordTextField = false,
                         isError = screenState.isEmailError,
-                        errorMsg = if (screenState.isEmailError) stringResource(id = screenState.errorEmail) else "",
+                        errorMsg = if (screenState.isEmailError) stringResource(id = screenState.errorEmailMsg) else "",
                         onValueChange = { updateEmailState(it) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email
@@ -128,7 +131,7 @@ fun SignInScreen(
                         placeholder = "Type your password",
                         isPasswordTextField = !screenState.isPasswordVisible,
                         isError = screenState.isPasswordError,
-                        errorMsg = if (screenState.isPasswordError) stringResource(id = screenState.errorPassword) else "",
+                        errorMsg = if (screenState.isPasswordError) stringResource(id = screenState.errorPasswordMsg) else "",
                         trailingIcon = {
                             IconButton(
                                 onClick = { updateIsPasswordVisible(!screenState.isPasswordVisible) }
