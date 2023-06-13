@@ -1,8 +1,13 @@
 package com.hwaryun.network.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.google.gson.Gson
 import com.hwaryun.http.BuildConfig
+import com.hwaryun.network.AuthInterceptor
 import com.hwaryun.network.FoodMarketApi
+import com.hwaryun.network.TokenManager
+import com.hwaryun.network.TokenManagerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +30,7 @@ object HttpModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): FoodMarketApi {
         return Retrofit.Builder()
-            .baseUrl("http://foodmarket-api.aryaaditiya.com/api/")
+            .baseUrl("https://food-market.hwaryun.my.id/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -33,8 +38,13 @@ object HttpModule {
     }
 
     @Provides
-    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor)
+    fun provideOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(authInterceptor)
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
@@ -50,5 +60,18 @@ object HttpModule {
             HttpLoggingInterceptor.Level.NONE
         }
         return loggingInterceptor
+    }
+
+    @Singleton
+    @Provides
+    fun provideAuthInterceptor(tokenManager: TokenManager): AuthInterceptor {
+        return AuthInterceptor(tokenManager)
+    }
+
+    @Provides
+    fun provideTokenManager(
+        dataStore: DataStore<Preferences>
+    ): TokenManager {
+        return TokenManagerImpl(dataStore)
     }
 }

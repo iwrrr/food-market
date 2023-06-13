@@ -32,29 +32,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.components.ButtonType
 import com.hwaryun.designsystem.components.DialogBoxLoading
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTextField
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.signin.state.SignInScreenState
 import com.hwaryun.signin.state.SignInState
 
 @Composable
 internal fun SignInRoute(
     navigateToSignUpScreen: () -> Unit,
-    navigateToHomeScreen: () -> Unit,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
-    val signInState = viewModel.signInState.collectAsState()
-    val screenState = viewModel.screenState.collectAsState()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     SignInScreen(
         navigateToSignUpScreen = navigateToSignUpScreen,
-        navigateToHomeScreen = navigateToHomeScreen,
-        signInState = signInState.value,
-        screenState = screenState.value,
+        uiState = uiState.value,
         updateEmailState = viewModel::updateEmailState,
         updatePasswordState = viewModel::updatePasswordState,
         updateIsPasswordVisible = viewModel::updateIsPasswordVisible,
@@ -67,9 +63,7 @@ internal fun SignInRoute(
 @Composable
 fun SignInScreen(
     navigateToSignUpScreen: () -> Unit,
-    navigateToHomeScreen: () -> Unit,
-    signInState: SignInState,
-    screenState: SignInScreenState,
+    uiState: SignInState,
     updateEmailState: (String) -> Unit,
     updatePasswordState: (String) -> Unit,
     updateIsPasswordVisible: (Boolean) -> Unit,
@@ -88,13 +82,9 @@ fun SignInScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { innerPadding ->
 
-            LaunchedEffect(Unit) {
-                if (signInState.signIn != null) {
-                    navigateToHomeScreen()
-                }
-
-                if (signInState.error.isNotBlank()) {
-                    snackbarHostState.showSnackbar(signInState.error)
+            LaunchedEffect(key1 = uiState) {
+                if (uiState.error.isNotBlank()) {
+                    snackbarHostState.showSnackbar(uiState.error)
                 }
             }
 
@@ -112,12 +102,12 @@ fun SignInScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     FoodMarketTextField(
-                        text = screenState.email,
+                        text = uiState.email,
                         showLabel = true,
                         textLabel = "Email Address",
                         placeholder = "Type your email address",
-                        isError = screenState.isEmailError,
-                        errorMsg = if (screenState.isEmailError) stringResource(id = screenState.errorEmailMsg) else "",
+                        isError = uiState.isEmailError,
+                        errorMsg = if (uiState.isEmailError) stringResource(id = uiState.errorEmailMsg) else "",
                         onValueChange = { updateEmailState(it) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email
@@ -125,19 +115,19 @@ fun SignInScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketTextField(
-                        text = screenState.password,
+                        text = uiState.password,
                         showLabel = true,
                         textLabel = "Password",
                         placeholder = "Type your password",
-                        isPasswordTextField = !screenState.isPasswordVisible,
-                        isError = screenState.isPasswordError,
-                        errorMsg = if (screenState.isPasswordError) stringResource(id = screenState.errorPasswordMsg) else "",
+                        isPasswordTextField = !uiState.isPasswordVisible,
+                        isError = uiState.isPasswordError,
+                        errorMsg = if (uiState.isPasswordError) stringResource(id = uiState.errorPasswordMsg) else "",
                         trailingIcon = {
                             IconButton(
-                                onClick = { updateIsPasswordVisible(!screenState.isPasswordVisible) }
+                                onClick = { updateIsPasswordVisible(!uiState.isPasswordVisible) }
                             ) {
                                 Icon(
-                                    imageVector = if (screenState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    imageVector = if (uiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                     tint = Color.Gray,
                                     contentDescription = "Password Toggle"
                                 )
@@ -150,7 +140,7 @@ fun SignInScreen(
                         text = "Sign In",
                         modifier = Modifier.fillMaxWidth(),
                         type = ButtonType.Primary,
-                        onClick = { doSignIn(screenState.email, screenState.password) }
+                        onClick = { doSignIn(uiState.email, uiState.password) }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketButton(
@@ -161,7 +151,7 @@ fun SignInScreen(
                     )
                 }
 
-                if (signInState.isLoading) {
+                if (uiState.isLoading) {
                     DialogBoxLoading()
                 }
             }
@@ -175,9 +165,7 @@ private fun DefaultPreview() {
     FoodMarketTheme {
         SignInScreen(
             navigateToSignUpScreen = {},
-            navigateToHomeScreen = {},
-            signInState = SignInState(),
-            screenState = SignInScreenState(),
+            uiState = SignInState(),
             updateEmailState = {},
             updatePasswordState = {},
             updateIsPasswordVisible = {},

@@ -29,14 +29,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketCircleImage
 import com.hwaryun.designsystem.components.FoodMarketTextField
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.signup.state.SignUpScreenState
 import com.hwaryun.signup.state.SignUpState
-import timber.log.Timber
 
 @Composable
 internal fun SignUpRoute(
@@ -44,14 +43,12 @@ internal fun SignUpRoute(
     navigateToAddressScreen: () -> Unit,
     viewModel: SignUpViewModel
 ) {
-    val signUpState = viewModel.signUpState.collectAsState()
-    val screenState = viewModel.screenState.collectAsState()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     SignUpScreen(
         popBackStack = popBackStack,
         navigateToAddressScreen = navigateToAddressScreen,
-        signUpState = signUpState.value,
-        screenState = screenState.value,
+        uiState = uiState.value,
         updateNameState = viewModel::updateNameState,
         updateEmailState = viewModel::updateEmailState,
         updatePasswordState = viewModel::updatePasswordState,
@@ -65,8 +62,7 @@ internal fun SignUpRoute(
 fun SignUpScreen(
     popBackStack: () -> Unit,
     navigateToAddressScreen: () -> Unit,
-    signUpState: SignUpState,
-    screenState: SignUpScreenState,
+    uiState: SignUpState,
     updateNameState: (String) -> Unit,
     updateEmailState: (String) -> Unit,
     updatePasswordState: (String) -> Unit,
@@ -75,9 +71,8 @@ fun SignUpScreen(
 ) {
     var isFirstStepCompleted by rememberSaveable { mutableStateOf(true) }
 
-    if (signUpState.firstStep != null && isFirstStepCompleted) {
+    if (uiState.firstStep != null && isFirstStepCompleted) {
         LaunchedEffect(Unit) {
-            Timber.d("DEBUG ====> ${signUpState.firstStep}")
             navigateToAddressScreen()
             isFirstStepCompleted = false
         }
@@ -90,9 +85,7 @@ fun SignUpScreen(
                 title = "Sign Up",
                 subtitle = "Register and eat",
                 showNavigateBack = true,
-                onNavigateBack = {
-                    popBackStack()
-                }
+                onNavigateBack = { popBackStack() }
             )
         },
         content = { innerPadding ->
@@ -112,22 +105,22 @@ fun SignUpScreen(
                     FoodMarketCircleImage(width = 110.dp, height = 110.dp, borderEnabled = true)
                     Spacer(modifier = Modifier.height(16.dp))
                     FoodMarketTextField(
-                        text = screenState.name,
+                        text = uiState.name,
                         showLabel = true,
                         textLabel = "Full Name",
                         placeholder = "Type your full name",
-                        isError = screenState.isNameError,
-                        errorMsg = if (screenState.isNameError) stringResource(id = screenState.errorNameMsg) else "",
+                        isError = uiState.isNameError,
+                        errorMsg = if (uiState.isNameError) stringResource(id = uiState.errorNameMsg) else "",
                         onValueChange = { updateNameState(it) },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketTextField(
-                        text = screenState.email,
+                        text = uiState.email,
                         showLabel = true,
                         textLabel = "Email Address",
                         placeholder = "Type your email address",
-                        isError = screenState.isEmailError,
-                        errorMsg = if (screenState.isEmailError) stringResource(id = screenState.errorEmailMsg) else "",
+                        isError = uiState.isEmailError,
+                        errorMsg = if (uiState.isEmailError) stringResource(id = uiState.errorEmailMsg) else "",
                         onValueChange = { updateEmailState(it) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email
@@ -135,19 +128,19 @@ fun SignUpScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketTextField(
-                        text = screenState.password,
+                        text = uiState.password,
                         showLabel = true,
                         textLabel = "Password",
                         placeholder = "Type your password",
-                        isPasswordTextField = !screenState.isPasswordVisible,
-                        isError = screenState.isPasswordError,
-                        errorMsg = if (screenState.isPasswordError) stringResource(id = screenState.errorPasswordMsg) else "",
+                        isPasswordTextField = !uiState.isPasswordVisible,
+                        isError = uiState.isPasswordError,
+                        errorMsg = if (uiState.isPasswordError) stringResource(id = uiState.errorPasswordMsg) else "",
                         trailingIcon = {
                             IconButton(
-                                onClick = { updateIsPasswordVisible(!screenState.isPasswordVisible) }
+                                onClick = { updateIsPasswordVisible(!uiState.isPasswordVisible) }
                             ) {
                                 Icon(
-                                    imageVector = if (screenState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    imageVector = if (uiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                     tint = Color.Gray,
                                     contentDescription = "Password Toggle"
                                 )
@@ -161,9 +154,9 @@ fun SignUpScreen(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             validateFirstStep(
-                                screenState.name,
-                                screenState.email,
-                                screenState.password
+                                uiState.name,
+                                uiState.email,
+                                uiState.password
                             )
                             isFirstStepCompleted = true
                         }
@@ -181,8 +174,7 @@ private fun DefaultPreview() {
         SignUpScreen(
             popBackStack = {},
             navigateToAddressScreen = {},
-            signUpState = SignUpState(),
-            screenState = SignUpScreenState(),
+            uiState = SignUpState(),
             updateNameState = {},
             updateEmailState = {},
             updatePasswordState = {},

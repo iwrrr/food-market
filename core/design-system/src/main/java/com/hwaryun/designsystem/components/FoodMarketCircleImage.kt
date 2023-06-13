@@ -3,8 +3,10 @@ package com.hwaryun.designsystem.components
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,14 +27,20 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.placeholder.PlaceholderDefaults
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.color
+import com.google.accompanist.placeholder.material.shimmer
+import com.google.accompanist.placeholder.placeholder
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 
 @Composable
 fun FoodMarketCircleImage(
+    image: String? = null,
+    isLoading: Boolean = false,
     width: Dp,
     height: Dp,
-    image: Any? = null,
     borderEnabled: Boolean = false,
     onClick: () -> Unit = {}
 ) {
@@ -60,6 +68,14 @@ fun FoodMarketCircleImage(
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
+                .width(width)
+                .height(height)
+                .placeholder(
+                    visible = isLoading,
+                    highlight = PlaceholderHighlight.shimmer(),
+                    color = PlaceholderDefaults.color(),
+                    shape = CircleShape
+                )
                 .clip(CircleShape)
                 .clickable { onClick() }
         )

@@ -1,4 +1,4 @@
-package com.hwaryun.home
+package com.hwaryun.food_detail
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -19,10 +19,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -31,8 +27,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.placeholder.PlaceholderDefaults
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.color
+import com.google.accompanist.placeholder.material.shimmer
+import com.google.accompanist.placeholder.placeholder
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.hwaryun.designsystem.R
@@ -41,20 +44,35 @@ import com.hwaryun.designsystem.components.FoodMarketCounterButton
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 
 @Composable
-internal fun FoodDetailRoute(onOrderClick: () -> Unit) {
-    FoodDetailScreen(onOrderClick = onOrderClick)
+internal fun FoodDetailRoute(
+    onOrderClick: () -> Unit,
+    viewModel: FoodDetailViewModel = hiltViewModel()
+) {
+    val state = viewModel.uiState.collectAsStateWithLifecycle()
+
+    FoodDetailScreen(
+        state = state.value,
+        addQuantity = viewModel::addQuantity,
+        reduceQuantity = viewModel::reduceQuantity,
+        onOrderClick = onOrderClick
+    )
 }
 
 @Composable
 fun FoodDetailScreen(
+    state: FoodDetailState,
+    addQuantity: (Int) -> Unit,
+    reduceQuantity: (Int) -> Unit,
     onOrderClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(null)
+            model = ImageRequest.Builder(context)
+                .data(state.food?.picturePath)
                 .crossfade(true)
                 .build(),
             placeholder = painterResource(R.drawable.ic_placeholder),
@@ -63,6 +81,12 @@ fun FoodDetailScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
+                .placeholder(
+                    visible = state.isLoading,
+                    highlight = PlaceholderHighlight.shimmer(),
+                    color = PlaceholderDefaults.color(),
+                    shape = RoundedCornerShape(8.dp)
+                )
                 .heightIn(min = 330.dp, max = 500.dp)
         )
         Column(
@@ -93,8 +117,15 @@ fun FoodDetailScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Cherry Healthy",
-                                modifier = Modifier.fillMaxWidth(),
+                                text = state.food?.name.toString(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .placeholder(
+                                        visible = state.isLoading,
+                                        highlight = PlaceholderHighlight.shimmer(),
+                                        color = PlaceholderDefaults.color(),
+                                        shape = RoundedCornerShape(8.dp)
+                                    ),
                                 style = MaterialTheme.typography.titleLarge,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
@@ -105,7 +136,7 @@ fun FoodDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 RatingBar(
-                                    value = 4.5f,
+                                    value = state.food?.rate?.toFloat() ?: 0f,
                                     config = RatingBarConfig()
                                         .isIndicator(true)
                                         .size(16.dp),
@@ -114,7 +145,14 @@ fun FoodDetailScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "4.5",
+                                    text = state.food?.rate.toString(),
+                                    modifier = Modifier
+                                        .placeholder(
+                                            visible = state.isLoading,
+                                            highlight = PlaceholderHighlight.shimmer(),
+                                            color = PlaceholderDefaults.color(),
+                                            shape = RoundedCornerShape(8.dp)
+                                        ),
                                     style = MaterialTheme.typography.bodySmall,
                                     overflow = TextOverflow.Ellipsis,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -123,35 +161,30 @@ fun FoodDetailScreen(
                             }
                         }
 
-                        var counter by remember { mutableStateOf(1) }
                         FoodMarketCounterButton(
                             modifier = Modifier
                                 .wrapContentSize(Alignment.CenterEnd)
                                 .weight(1f),
-                            value = counter,
+                            value = state.qty,
                             onDecrementClick = {
-                                if (counter <= 1) {
-                                    counter = 1
-                                } else {
-                                    counter--
-                                }
+                                reduceQuantity(it)
                             },
                             onIncrementClick = {
-                                if (counter >= 5) {
-                                    counter = 5
-                                } else {
-                                    counter++
-                                }
+                                addQuantity(it)
                             },
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Makanan khas Bandung yang cukup sering\n" +
-                                "dipesan oleh anak muda dengan pola makan\n" +
-                                "yang cukup tinggi dengan mengutamakan\n" +
-                                "diet yang sehat dan teratur.",
-                        modifier = Modifier.fillMaxWidth(),
+                        text = state.food?.description.toString(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .placeholder(
+                                visible = state.isLoading,
+                                highlight = PlaceholderHighlight.shimmer(),
+                                color = PlaceholderDefaults.color(),
+                                shape = RoundedCornerShape(8.dp)
+                            ),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 4
@@ -164,8 +197,15 @@ fun FoodDetailScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Seledri, telur, blueberry, madu.",
-                        modifier = Modifier.fillMaxWidth(),
+                        text = state.food?.ingredients.toString(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .placeholder(
+                                visible = state.isLoading,
+                                highlight = PlaceholderHighlight.shimmer(),
+                                color = PlaceholderDefaults.color(),
+                                shape = RoundedCornerShape(8.dp)
+                            ),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2
@@ -188,8 +228,21 @@ fun FoodDetailScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
-                                text = "IDR 200.000",
-                                modifier = Modifier.fillMaxWidth(),
+                                text = "IDR ${state.totalPrice}",
+                                modifier = Modifier
+                                    .then(
+                                        if (state.isLoading) {
+                                            Modifier.fillMaxWidth(1f / 2)
+                                        } else {
+                                            Modifier
+                                        }
+                                    )
+                                    .placeholder(
+                                        visible = state.isLoading,
+                                        highlight = PlaceholderHighlight.shimmer(),
+                                        color = PlaceholderDefaults.color(),
+                                        shape = RoundedCornerShape(8.dp)
+                                    ),
                                 style = MaterialTheme.typography.titleLarge,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
@@ -199,8 +252,20 @@ fun FoodDetailScreen(
                             text = "Order Now",
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .placeholder(
+                                    visible = state.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
                                 .weight(1f),
-                            onClick = { onOrderClick() },
+                            onClick = {
+                                if (state.isLoading) {
+                                    return@FoodMarketButton
+                                } else {
+                                    onOrderClick()
+                                }
+                            },
                         )
                     }
                 }
@@ -214,6 +279,9 @@ fun FoodDetailScreen(
 fun FoodDetailScreenPreview() {
     FoodMarketTheme {
         FoodDetailScreen(
+            state = FoodDetailState(),
+            addQuantity = {},
+            reduceQuantity = {},
             onOrderClick = {}
         )
     }

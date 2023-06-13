@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.sp
 fun FoodMarketCounterButton(
     modifier: Modifier = Modifier,
     value: Int,
-    onDecrementClick: () -> Unit,
-    onIncrementClick: () -> Unit
+    onDecrementClick: (Int) -> Unit,
+    onIncrementClick: (Int) -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -34,7 +34,7 @@ fun FoodMarketCounterButton(
             modifier = Modifier
                 .size(26.dp),
             shape = RoundedCornerShape(8.dp),
-            onClick = { onDecrementClick() }
+            onClick = { onDecrementClick(value) }
         ) {
             Icon(imageVector = Icons.Rounded.Remove, contentDescription = null)
         }
@@ -51,7 +51,7 @@ fun FoodMarketCounterButton(
             modifier = Modifier
                 .size(26.dp),
             shape = RoundedCornerShape(8.dp),
-            onClick = { onIncrementClick() }
+            onClick = { onIncrementClick(value) }
         ) {
             Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
         }

@@ -1,6 +1,7 @@
 package com.hwaryun.designsystem.components
 
 import android.content.res.Configuration
+import android.os.SystemClock
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,9 +35,12 @@ fun FoodMarketTopAppBar(
     title: String,
     subtitle: String,
     modifier: Modifier = Modifier,
+    clickDisablePeriod: Long = 1000L,
     showNavigateBack: Boolean = false,
     onNavigateBack: () -> Unit = {},
 ) {
+    var lastClickTime by remember { mutableLongStateOf(0L) }
+
     Column(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surface)
@@ -67,7 +75,16 @@ fun FoodMarketTopAppBar(
             },
             navigationIcon = {
                 if (showNavigateBack) {
-                    IconButton(onClick = { onNavigateBack() }) {
+                    IconButton(
+                        onClick = {
+                            if (SystemClock.elapsedRealtime() - lastClickTime < clickDisablePeriod) {
+                                return@IconButton
+                            } else {
+                                lastClickTime = SystemClock.elapsedRealtime()
+                                onNavigateBack()
+                            }
+                        }
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_back),
                             contentDescription = "Localized description"

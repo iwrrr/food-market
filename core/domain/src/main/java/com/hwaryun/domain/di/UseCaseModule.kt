@@ -3,6 +3,9 @@ package com.hwaryun.domain.di
 import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.datasource.repository.AuthRepository
+import com.hwaryun.datasource.repository.FoodRepository
+import com.hwaryun.domain.usecase.GetFoodDetailUseCase
+import com.hwaryun.domain.usecase.LogoutUseCase
 import com.hwaryun.domain.usecase.sign_in.CheckSignInFieldUseCase
 import com.hwaryun.domain.usecase.sign_in.SignInUseCase
 import com.hwaryun.domain.usecase.sign_up.CheckAddressFieldUseCase
@@ -72,5 +75,28 @@ object UseCaseModule {
         dispatcherProvider: DispatcherProvider
     ): CheckAddressFieldUseCase {
         return CheckAddressFieldUseCase(dispatcherProvider)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLogoutUseCase(
+        repository: AuthRepository,
+        userPreferenceManager: UserPreferenceManager,
+        dispatcherProvider: DispatcherProvider
+    ): LogoutUseCase {
+        return LogoutUseCase(
+            repository,
+            userPreferenceManager,
+            dispatcherProvider
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetFoodDetailUseCase(
+        foodRepository: FoodRepository,
+        dispatcherProvider: DispatcherProvider
+    ): GetFoodDetailUseCase {
+        return GetFoodDetailUseCase(foodRepository, dispatcherProvider)
     }
 }

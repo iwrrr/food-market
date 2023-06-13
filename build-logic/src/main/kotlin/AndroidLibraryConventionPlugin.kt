@@ -28,8 +28,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 add("testImplementation", libs.findLibrary("espresso.core").get())
                 add("androidTestImplementation", libs.findLibrary("ui.test.junit4").get())
                 add("androidTestImplementation", platform(libs.findLibrary("compose.bom").get()))
-//                add("debugImplementation", libs.findLibrary("ui.tooling").get())
-//                add("debugImplementation", libs.findLibrary("ui.test.manifest").get())
             }
         }
     }

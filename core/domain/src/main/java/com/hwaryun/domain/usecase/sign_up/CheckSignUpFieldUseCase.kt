@@ -2,7 +2,7 @@ package com.hwaryun.domain.usecase.sign_up
 
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.di.DispatcherProvider
-import com.hwaryun.common.domain.oop.FlowUseCase
+import com.hwaryun.common.domain.FlowUseCase
 import com.hwaryun.common.ext.isValid
 import com.hwaryun.common.result.CheckFieldResult
 import com.hwaryun.common.result.UiResult
@@ -18,22 +18,24 @@ class CheckSignUpFieldUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<CheckSignUpFieldUseCase.Param, UiResult<CheckFieldResult>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: Param): Flow<UiResult<CheckFieldResult>> =
+    override suspend fun buildFlowUseCase(param: Param?): Flow<UiResult<CheckFieldResult>> =
         flow {
-            val result = mutableListOf<Pair<Int, Int>>()
-            checkIsNameValid(param.name)?.let {
-                result.add(it)
-            }
-            checkIsEmailValid(param.email)?.let {
-                result.add(it)
-            }
-            checkIsPasswordValid(param.password)?.let {
-                result.add(it)
-            }
-            if (result.isEmpty()) {
-                emit(UiResult.Success(result))
-            } else {
-                emit(UiResult.Failure(FieldErrorException(result)))
+            param?.let {
+                val result = mutableListOf<Pair<Int, Int>>()
+                checkIsNameValid(param.name)?.let {
+                    result.add(it)
+                }
+                checkIsEmailValid(param.email)?.let {
+                    result.add(it)
+                }
+                checkIsPasswordValid(param.password)?.let {
+                    result.add(it)
+                }
+                if (result.isEmpty()) {
+                    emit(UiResult.Success(result))
+                } else {
+                    emit(UiResult.Failure(FieldErrorException(result)))
+                }
             }
         }
 

@@ -29,6 +29,10 @@ fun Int?.orZero(): Int {
     return this ?: 0
 }
 
+fun String?.orZero(): Int {
+    return this?.toInt() ?: 0
+}
+
 fun Double?.orZero(): Double {
     return this ?: 0.0
 }

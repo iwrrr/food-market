@@ -1,27 +1,31 @@
 package com.hwaryun.home
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.hwaryun.designsystem.components.FoodMarketTabSection
 import com.hwaryun.designsystem.components.TabItem
 import com.hwaryun.designsystem.layout.ChildLayout
 import com.hwaryun.designsystem.layout.VerticalScrollLayout
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.domain.model.Food
 import com.hwaryun.home.components.HeaderHome
 
 const val FOOD_SECTION = "food_section"
@@ -29,103 +33,127 @@ const val FOOD_TAB_SECTION = "food_tab_section"
 
 @Composable
 internal fun HomeRoute(
-    navigateToSignIn: () -> Unit,
-    onFoodClick: () -> Unit
+    onFoodClick: (Int) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-//    if (true) {
-//        LaunchedEffect(key1 = Unit) {
-//            navigateToSignIn()
-//        }
-//    } else {
-        HomeScreen(onFoodClick = onFoodClick)
-//    }
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val foods = viewModel.foods.collectAsLazyPagingItems()
+    val newFoods = viewModel.newFoods.collectAsLazyPagingItems()
+    val popularFoods = viewModel.popularFoods.collectAsLazyPagingItems()
+    val recommendedFoods = viewModel.recommendedFoods.collectAsLazyPagingItems()
+
+    HomeScreen(
+        uiState = uiState.value,
+        foods = foods,
+        newFoods = newFoods,
+        popularFoods = popularFoods,
+        recommendedFoods = recommendedFoods,
+        onFoodClick = onFoodClick
+    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("CoroutineCreationDuringComposition")
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen(onFoodClick: () -> Unit) {
+fun HomeScreen(
+    uiState: HomeState,
+    foods: LazyPagingItems<Food>,
+    newFoods: LazyPagingItems<Food>,
+    popularFoods: LazyPagingItems<Food>,
+    recommendedFoods: LazyPagingItems<Food>,
+    onFoodClick: (Int) -> Unit,
+) {
     Scaffold(
         topBar = {
-            HeaderHome()
+            HeaderHome(uiState = uiState)
         },
         content = { innerPadding ->
-            VerticalScrollLayout(
-                modifier = Modifier.padding(innerPadding),
-                state = rememberLazyListState(),
-                ChildLayout(
-                    contentType = FOOD_SECTION,
-                    content = {
-                        FoodSection(
-                            listState = rememberLazyListState(),
-                            onFoodClick = onFoodClick
-                        )
-                    }
-                ),
-                ChildLayout(
-                    contentType = FOOD_TAB_SECTION,
-                    isSticky = true,
-                    content = {
-                        FoodMarketTabSection(
-                            tabItems = listOf(
-                                TabItem(
-                                    title = "New Taste",
-                                    screen = { FoodsScreen(onFoodClick = onFoodClick) }
-                                ),
-                                TabItem(
-                                    title = "Popular",
-                                    screen = { FoodsScreen(onFoodClick = onFoodClick) }
-                                ),
-                                TabItem(
-                                    title = "Recommended",
-                                    screen = { FoodsScreen(onFoodClick = onFoodClick) }
-                                ),
+
+            val pullRefreshState = rememberPullRefreshState(false, {
+                foods.refresh()
+                newFoods.refresh()
+                popularFoods.refresh()
+                recommendedFoods.refresh()
+            })
+
+            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                VerticalScrollLayout(
+                    modifier = Modifier
+                        .padding(
+                            PaddingValues(
+                                top = innerPadding.calculateTopPadding(),
+                                bottom = 58.dp
+                            )
+                        ),
+                    state = rememberLazyListState(),
+                    ChildLayout(
+                        contentType = FOOD_SECTION,
+                        content = {
+                            FoodSection(
+                                listState = rememberLazyListState(),
+                                foods = foods,
+                                onFoodClick = onFoodClick,
+                            )
+                        }
+                    ),
+                    ChildLayout(
+                        contentType = FOOD_TAB_SECTION,
+                        isSticky = true,
+                        content = {
+                            FoodMarketTabSection(
+                                tabItems = listOf(
+                                    TabItem(
+                                        title = "New Taste",
+                                        screen = {
+                                            FoodsScreen(
+                                                foods = newFoods,
+                                                onFoodClick = onFoodClick
+                                            )
+                                        }
+                                    ),
+                                    TabItem(
+                                        title = "Popular",
+                                        screen = {
+                                            FoodsScreen(
+                                                foods = popularFoods,
+                                                onFoodClick = onFoodClick
+                                            )
+                                        }
+                                    ),
+                                    TabItem(
+                                        title = "Recommended",
+                                        screen = {
+                                            FoodsScreen(
+                                                foods = recommendedFoods,
+                                                onFoodClick = onFoodClick
+                                            )
+                                        }
+                                    ),
+                                )
+                            )
+                        }
+                    ),
+                )
+
+                PullRefreshIndicator(
+                    refreshing = false,
+                    state = pullRefreshState,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(
+                            PaddingValues(
+                                top = innerPadding.calculateTopPadding()
                             )
                         )
-                    }
-                ),
-            )
+                )
+            }
         }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun HomeScreen(
-    items: List<String>, onSave: (name: String) -> Unit, modifier: Modifier = Modifier
-) {
-    Column(modifier) {
-        var nameMyModel by remember { mutableStateOf("Compose") }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            TextField(value = nameMyModel, onValueChange = { nameMyModel = it })
-
-            Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameMyModel) }) {
-                Text("Save")
-            }
-        }
-        items.forEach {
-            Text("Saved item: $it")
-        }
-    }
-}
-
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DefaultPreview() {
     FoodMarketTheme {
-        HomeScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
-    }
-}
-
-@Preview(showBackground = true, widthDp = 480)
-@Composable
-private fun PortraitPreview() {
-    FoodMarketTheme {
-        HomeScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        //        HomeScreen(onFoodClick = {})
     }
 }

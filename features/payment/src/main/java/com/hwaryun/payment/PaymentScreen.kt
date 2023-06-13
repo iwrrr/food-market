@@ -51,7 +51,7 @@ internal fun PaymentRoute(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("CoroutineCreationDuringComposition")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PaymentScreen(
     popBackStack: () -> Unit,
@@ -67,12 +67,12 @@ fun PaymentScreen(
                 onNavigateBack = { popBackStack() }
             )
         }
-    ) { innerPadding ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(top = innerPadding.calculateTopPadding() + 24.dp)
+                .padding(top = 24.dp)
         ) {
             Column(
                 modifier = Modifier

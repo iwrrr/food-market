@@ -7,7 +7,6 @@ import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.domain.usecase.sign_in.SignInUseCase
 import com.hwaryun.domain.utils.EMAIL_FIELD
 import com.hwaryun.domain.utils.PASSWORD_FIELD
-import com.hwaryun.signin.state.SignInScreenState
 import com.hwaryun.signin.state.SignInState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,42 +20,39 @@ class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase
 ) : ViewModel() {
 
-    private val _signInState = MutableStateFlow(SignInState())
-    val signInState = _signInState.asStateFlow()
-
-    private val _screenState = MutableStateFlow(SignInScreenState())
-    val screenState = _screenState.asStateFlow()
+    private val _uiState = MutableStateFlow(SignInState())
+    val uiState = _uiState.asStateFlow()
 
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
             signInUseCase.execute(SignInUseCase.Param(email, password)).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
-                        _signInState.emit(
-                            SignInState(
+                        _uiState.update {
+                            it.copy(
                                 isLoading = true
                             )
-                        )
+                        }
                     },
                     doOnSuccess = {
-                        _signInState.emit(
-                            SignInState(
-                                signIn = result.value
+                        _uiState.update {
+                            it.copy(
+                                signIn = result.value,
+                                isLoading = false
                             )
-                        )
-                        updateIsLoadingState(isLoading = false)
+                        }
                     },
                     doOnError = {
                         if (it.throwable is FieldErrorException) {
                             handleFieldError(it.throwable as FieldErrorException)
                         } else {
-                            _signInState.emit(
-                                SignInState(
+                            _uiState.update { state ->
+                                state.copy(
+                                    isLoading = false,
                                     error = result.throwable?.message ?: "Unexpected error accrued"
                                 )
-                            )
+                            }
                         }
-                        updateIsLoadingState(isLoading = false)
                     }
                 )
             }
@@ -64,7 +60,7 @@ class SignInViewModel @Inject constructor(
     }
 
     fun updateEmailState(value: String) {
-        _screenState.update {
+        _uiState.update {
             it.copy(
                 email = value.trim(),
                 isEmailError = false
@@ -73,7 +69,7 @@ class SignInViewModel @Inject constructor(
     }
 
     fun updatePasswordState(value: String) {
-        _screenState.update {
+        _uiState.update {
             it.copy(
                 password = value.trim(),
                 isPasswordError = false
@@ -82,32 +78,26 @@ class SignInViewModel @Inject constructor(
     }
 
     fun updateIsPasswordVisible(value: Boolean) {
-        _screenState.update { it.copy(isPasswordVisible = value) }
-    }
-
-    private fun updateIsLoadingState(isLoading: Boolean) {
-        _signInState.update {
-            it.copy(
-                isLoading = isLoading
-            )
-        }
+        _uiState.update { it.copy(isPasswordVisible = value) }
     }
 
     private fun handleFieldError(exception: FieldErrorException) {
         exception.errorFields.forEach { errorField ->
             if (errorField.first == EMAIL_FIELD) {
-                _screenState.update {
+                _uiState.update {
                     it.copy(
                         errorEmailMsg = errorField.second,
-                        isEmailError = true
+                        isEmailError = true,
+                        isLoading = false,
                     )
                 }
             }
             if (errorField.first == PASSWORD_FIELD) {
-                _screenState.update {
+                _uiState.update {
                     it.copy(
                         errorPasswordMsg = errorField.second,
-                        isPasswordError = true
+                        isPasswordError = true,
+                        isLoading = false,
                     )
                 }
             }

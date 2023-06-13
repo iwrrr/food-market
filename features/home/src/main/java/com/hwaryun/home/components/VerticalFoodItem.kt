@@ -2,7 +2,6 @@ package com.hwaryun.home.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,15 +29,20 @@ import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.utils.singleClick
+import com.hwaryun.domain.model.Food
 
 @Composable
 fun VerticalFoodItem(
-    onFoodClick: () -> Unit
+    food: Food,
+    onFoodClick: (Int) -> Unit
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.surface)
-            .clickable { onFoodClick() }
+            .singleClick { onFoodClick(food.id) }
             .padding(horizontal = 24.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.Center
     ) {
@@ -47,8 +51,8 @@ fun VerticalFoodItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(null)
+                model = ImageRequest.Builder(context)
+                    .data(food.picturePath)
                     .crossfade(true)
                     .build(),
                 placeholder = painterResource(R.drawable.ic_placeholder),
@@ -67,14 +71,14 @@ fun VerticalFoodItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Cherry Healthy",
+                    text = food.name,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodyLarge,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
                 Text(
-                    text = "IDR 200.000",
+                    text = "IDR ${food.price}",
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis,
@@ -90,7 +94,7 @@ fun VerticalFoodItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RatingBar(
-                    value = 4.5f,
+                    value = food.rate.toFloat(),
                     config = RatingBarConfig()
                         .isIndicator(true)
                         .size(16.dp),
@@ -99,7 +103,7 @@ fun VerticalFoodItem(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "4.5",
+                    text = "${food.rate.toFloat()}",
                     style = MaterialTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -115,6 +119,16 @@ fun VerticalFoodItem(
 fun VerticalFoodItemPreview() {
     FoodMarketTheme {
         VerticalFoodItem(
+            food = Food(
+                description = "",
+                id = 0,
+                ingredients = "",
+                name = "",
+                picturePath = "",
+                price = 0,
+                rate = "",
+                types = "",
+            ),
             onFoodClick = {}
         )
     }

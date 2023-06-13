@@ -8,7 +8,12 @@ android {
 }
 
 dependencies {
+    api(project(":core:frameworks:database"))
     api(project(":core:frameworks:http"))
+
     implementation(libs.bundles.datastore)
     implementation(libs.converter.gson)
+
+    implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
 }

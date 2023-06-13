@@ -26,12 +26,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.google.accompanist.placeholder.PlaceholderDefaults
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.color
+import com.google.accompanist.placeholder.material.shimmer
+import com.google.accompanist.placeholder.placeholder
 import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.home.HomeState
 
 @Composable
 fun HeaderHome(
     modifier: Modifier = Modifier,
+    uiState: HomeState
 ) {
     Column(
         modifier = modifier
@@ -72,7 +79,7 @@ fun HeaderHome(
             }
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(null)
+                    .data(uiState.user?.profilePhotoUrl)
                     .crossfade(true)
                     .build(),
                 placeholder = painterResource(R.drawable.ic_placeholder),
@@ -81,6 +88,12 @@ fun HeaderHome(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(50.dp)
+                    .placeholder(
+                        visible = uiState.isLoading,
+                        highlight = PlaceholderHighlight.shimmer(),
+                        color = PlaceholderDefaults.color(),
+                        shape = RoundedCornerShape(8.dp)
+                    )
                     .clip(RoundedCornerShape(8.dp))
                     .clickable { }
             )
@@ -92,6 +105,8 @@ fun HeaderHome(
 @Composable
 fun HeaderHomePreview() {
     FoodMarketTheme {
-        HeaderHome()
+        HeaderHome(
+            uiState = HomeState()
+        )
     }
 }

@@ -18,10 +18,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.components.FoodMarketCircleImage
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.profile.ProfileState
 
 @Composable
 fun HeaderProfile(
     modifier: Modifier = Modifier,
+    uiState: ProfileState,
 ) {
     Column(
         modifier = modifier
@@ -30,10 +32,16 @@ fun HeaderProfile(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        FoodMarketCircleImage(width = 110.dp, height = 110.dp, borderEnabled = true)
+        FoodMarketCircleImage(
+            image = uiState.user?.profilePhotoUrl,
+            isLoading = uiState.isLoading,
+            width = 110.dp,
+            height = 110.dp,
+            borderEnabled = true
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Profile",
+            text = uiState.user?.name.toString(),
             modifier = Modifier.fillMaxWidth(),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
@@ -43,7 +51,7 @@ fun HeaderProfile(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "profile@mail.com",
+            text = uiState.user?.email.toString(),
             modifier = Modifier.fillMaxWidth(),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -58,6 +66,8 @@ fun HeaderProfile(
 @Composable
 fun HeaderProfilePreview() {
     FoodMarketTheme {
-        HeaderProfile()
+        HeaderProfile(
+            uiState = ProfileState(),
+        )
     }
 }

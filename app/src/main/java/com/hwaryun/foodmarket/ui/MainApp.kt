@@ -28,7 +28,8 @@ import com.hwaryun.foodmarket.navigation.TopLevelDestination
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainApp(
-    mainAppState: MainAppState = rememberMainAppState()
+    mainAppState: MainAppState = rememberMainAppState(),
+    startDestination: String
 ) {
     Scaffold(
         bottomBar = {
@@ -42,6 +43,7 @@ fun MainApp(
     ) {
         MainAppNavHost(
             mainAppState = mainAppState,
+            startDestination = startDestination
         )
     }
 }

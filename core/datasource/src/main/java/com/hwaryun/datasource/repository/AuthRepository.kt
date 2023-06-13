@@ -19,4 +19,6 @@ interface AuthRepository {
         houseNumber: String,
         phoneNumber: String,
     ): Flow<NetworkClientResult<AuthDto?>>
+
+    suspend fun logout(): Flow<NetworkClientResult<Boolean?>>
 }

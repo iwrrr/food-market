@@ -1,4 +1,4 @@
-package com.hwaryun.common
+package com.hwaryun.common.http.infrastructure
 
 import com.google.gson.annotations.SerializedName
 

@@ -5,46 +5,33 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.hwaryun.home.FoodDetailRoute
 import com.hwaryun.home.HomeRoute
 
 const val homeGraphRoute = "home_graph_route"
 const val homeRoute = "home_route"
-const val foodDetailsRoute = "food_details_route"
+
+const val FOOD_ID = "foodId"
+const val foodDetailsRoute = "food_details_route/{$FOOD_ID}"
 
 fun NavController.navigateToHomeGraph(navOptions: NavOptions? = null) {
     this.navigate(homeGraphRoute, navOptions)
 }
 
-fun NavController.navigateToFoodDetails(navOptions: NavOptions? = null) {
-    this.navigate(foodDetailsRoute, navOptions)
-}
-
 fun NavGraphBuilder.homeGraph(
-    navigateToSignIn: () -> Unit,
-    onFoodClick: () -> Unit,
+    onFoodClick: (Int) -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
     navigation(
         route = homeGraphRoute,
         startDestination = homeRoute
     ) {
-        composable(route = homeRoute) {
+        composable(
+            route = homeRoute
+        ) {
             HomeRoute(
-                navigateToSignIn = navigateToSignIn,
                 onFoodClick = onFoodClick
             )
         }
         nestedGraphs()
-    }
-}
-
-fun NavGraphBuilder.foodDetailsScreen(
-    onOrderClick: () -> Unit,
-) {
-    composable(route = foodDetailsRoute) {
-        FoodDetailRoute(
-            onOrderClick = onOrderClick
-        )
     }
 }

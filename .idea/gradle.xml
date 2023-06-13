@@ -33,6 +33,7 @@
             <option value="$PROJECT_DIR$/core/frameworks/database" />
             <option value="$PROJECT_DIR$/core/frameworks/http" />
             <option value="$PROJECT_DIR$/features" />
+            <option value="$PROJECT_DIR$/features/food_detail" />
             <option value="$PROJECT_DIR$/features/home" />
             <option value="$PROJECT_DIR$/features/order" />
             <option value="$PROJECT_DIR$/features/payment" />

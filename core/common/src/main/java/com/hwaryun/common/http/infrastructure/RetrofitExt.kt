@@ -2,7 +2,6 @@ package com.hwaryun.common.http.infrastructure
 
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
-import com.hwaryun.common.BaseResponse
 import com.hwaryun.common.NetworkClientException
 import com.hwaryun.common.UnexpectedValuesRepresentation
 import com.hwaryun.common.result.NetworkClientResult

@@ -48,4 +48,8 @@ class AuthRepositoryImpl @Inject constructor(
 
         emit(execute { foodMarketApi.register(registerRequest).data })
     }
+
+    override suspend fun logout(): Flow<NetworkClientResult<Boolean?>> = flow {
+        emit(execute { foodMarketApi.logout().data })
+    }
 }

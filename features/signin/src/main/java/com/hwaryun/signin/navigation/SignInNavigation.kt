@@ -24,8 +24,7 @@ fun NavGraphBuilder.signInGraph(
     ) {
         composable(route = signInRoute) {
             SignInRoute(
-                navigateToSignUpScreen = navigateToSignUpScreen,
-                navigateToHomeScreen = navigateToHomeScreen
+                navigateToSignUpScreen = navigateToSignUpScreen
             )
         }
     }

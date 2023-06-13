@@ -9,10 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,25 +23,28 @@ import coil.request.ImageRequest
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.FoodMarketCard
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.domain.model.Food
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HorizontalFoodItem(
+    food: Food,
     modifier: Modifier = Modifier,
-    onFoodClick: () -> Unit
+    onFoodClick: (Int) -> Unit
 ) {
-    Card(
+    val context = LocalContext.current
+
+    FoodMarketCard(
         modifier = modifier
             .width(200.dp)
             .height(210.dp),
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
-        onClick = { onFoodClick() }
+        onClick = { onFoodClick(food.id) }
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(null)
+            model = ImageRequest.Builder(context)
+                .data(food.picturePath)
                 .crossfade(true)
                 .build(),
             placeholder = painterResource(R.drawable.ic_placeholder),
@@ -63,14 +62,14 @@ fun HorizontalFoodItem(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Cherry Healthy",
+                text = food.name,
                 modifier = Modifier.fillMaxWidth(),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
             Spacer(modifier = Modifier.height(4.dp))
             RatingBar(
-                value = 4.5f,
+                value = food.rate.toFloat(),
                 config = RatingBarConfig()
                     .isIndicator(true)
                     .size(16.dp),
@@ -85,6 +84,18 @@ fun HorizontalFoodItem(
 @Composable
 fun HorizontalFoodItemPreview() {
     FoodMarketTheme {
-        HorizontalFoodItem(onFoodClick = {})
+        HorizontalFoodItem(
+            food = Food(
+                description = "",
+                id = 0,
+                ingredients = "",
+                name = "",
+                picturePath = "",
+                price = 0,
+                rate = "",
+                types = "",
+            ),
+            onFoodClick = {},
+        )
     }
 }

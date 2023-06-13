@@ -13,13 +13,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FoodMarket"
+        android:theme="@style/Theme.FoodMarket.Starting"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.FoodMarket">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.FoodMarket.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

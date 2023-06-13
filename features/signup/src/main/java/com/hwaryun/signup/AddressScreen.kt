@@ -1,5 +1,6 @@
 package com.hwaryun.signup
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,7 +19,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,12 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.components.DialogBoxLoading
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTextField
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.signup.state.SignUpScreenState
 import com.hwaryun.signup.state.SignUpState
 
 @Composable
@@ -42,14 +42,12 @@ internal fun AddressRoute(
     navigateToHomeScreen: () -> Unit,
     viewModel: SignUpViewModel
 ) {
-    val signUpState = viewModel.signUpState.collectAsState()
-    val screenState = viewModel.screenState.collectAsState()
+    val signUpState = viewModel.uiState.collectAsStateWithLifecycle()
 
     AddressScreen(
         popBackStack = popBackStack,
         navigateToHomeScreen = navigateToHomeScreen,
-        signUpState = signUpState.value,
-        screenState = screenState.value,
+        uiState = signUpState.value,
         updatePhoneNumberState = viewModel::updatePhoneNumberState,
         updateAddressState = viewModel::updateAddressState,
         updateHouseNumberState = viewModel::updateHouseNumberState,
@@ -59,12 +57,12 @@ internal fun AddressRoute(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddressScreen(
     navigateToHomeScreen: () -> Unit,
     popBackStack: () -> Unit,
-    signUpState: SignUpState,
-    screenState: SignUpScreenState,
+    uiState: SignUpState,
     updatePhoneNumberState: (String) -> Unit,
     updateAddressState: (String) -> Unit,
     updateHouseNumberState: (String) -> Unit,
@@ -86,21 +84,21 @@ fun AddressScreen(
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        content = { innerPadding ->
+        content = {
 
-            LaunchedEffect(signUpState) {
-                if (signUpState.signUp != null) {
+            LaunchedEffect(key1 = uiState) {
+                if (uiState.signUp != null) {
                     navigateToHomeScreen()
                 }
 
-                if (signUpState.error.isNotBlank()) {
-                    snackbarHostState.showSnackbar(signUpState.error)
+                if (uiState.error.isNotBlank()) {
+                    snackbarHostState.showSnackbar(uiState.error)
                 }
             }
 
             Box(
                 modifier = Modifier
-                    .padding(top = innerPadding.calculateTopPadding() + 24.dp)
+                    .padding(top = 24.dp)
                     .fillMaxSize(),
             ) {
                 Column(
@@ -112,48 +110,46 @@ fun AddressScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     FoodMarketTextField(
-                        text = screenState.phoneNumber,
+                        text = uiState.phoneNumber,
                         showLabel = true,
                         textLabel = "Phone No.",
                         placeholder = "Type your phone number",
-                        isError = screenState.isPhoneNumberError,
-                        errorMsg = if (screenState.isPhoneNumberError) stringResource(id = screenState.errorPhoneNumberMsg) else "",
+                        isError = uiState.isPhoneNumberError,
+                        errorMsg = if (uiState.isPhoneNumberError) stringResource(id = uiState.errorPhoneNumberMsg) else "",
                         onValueChange = { updatePhoneNumberState(it) },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketTextField(
-                        text = screenState.address,
+                        text = uiState.address,
                         showLabel = true,
                         textLabel = "Address",
                         placeholder = "Type your address",
-                        isError = screenState.isAddressError,
-                        errorMsg = if (screenState.isAddressError) stringResource(id = screenState.errorAddressMsg) else "",
+                        isError = uiState.isAddressError,
+                        errorMsg = if (uiState.isAddressError) stringResource(id = uiState.errorAddressMsg) else "",
                         onValueChange = { updateAddressState(it) },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketTextField(
-                        text = screenState.houseNumber,
+                        text = uiState.houseNumber,
                         showLabel = true,
                         textLabel = "House No.",
                         placeholder = "Type your house number",
-                        isError = screenState.isHouseNumberError,
-                        errorMsg = if (screenState.isHouseNumberError) stringResource(id = screenState.errorHouseNumberMsg) else "",
+                        isError = uiState.isHouseNumberError,
+                        errorMsg = if (uiState.isHouseNumberError) stringResource(id = uiState.errorHouseNumberMsg) else "",
                         onValueChange = { updateHouseNumberState(it) },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    val options =
-                        listOf("Jakarta", "Bogor", "Depok", "Tangerang", "Bekasi", "Bandung")
+                    val options = listOf("Jakarta", "Bogor", "Depok", "Tangerang", "Bekasi", "Bandung")
                     var expanded by remember { mutableStateOf(false) }
-                    var selectedOptionText by remember { mutableStateOf(options[0]) }
                     FoodMarketTextField(
-                        text = screenState.city,
+                        text = uiState.city,
                         showLabel = true,
                         textLabel = "City",
                         placeholder = "Select your city",
                         isExpandedDropdown = true,
-                        isError = screenState.isCityError,
-                        errorMsg = if (screenState.isCityError) stringResource(id = screenState.errorCityMsg) else "",
+                        isError = uiState.isCityError,
+                        errorMsg = if (uiState.isCityError) stringResource(id = uiState.errorCityMsg) else "",
                         expanded = expanded,
                         onExpandedChange = {
                             expanded = !expanded
@@ -176,7 +172,7 @@ fun AddressScreen(
                         onClick = { doSignUp() }
                     )
 
-                    if (signUpState.isLoading) {
+                    if (uiState.isLoading) {
                         DialogBoxLoading()
                     }
                 }
@@ -192,8 +188,7 @@ private fun DefaultPreview() {
         AddressScreen(
             navigateToHomeScreen = {},
             popBackStack = {},
-            signUpState = SignUpState(),
-            screenState = SignUpScreenState(),
+            uiState = SignUpState(),
             updatePhoneNumberState = {},
             updateAddressState = {},
             updateHouseNumberState = {},

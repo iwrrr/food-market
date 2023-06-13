@@ -6,6 +6,8 @@ kotlinKapt= "1.7.20"
 
 coreKtx = "1.8.0"
 lifecycleRuntimeKtx = "2.3.1"
+splashScreen = "1.0.0-beta01"
+accompanist = "0.31.3-beta"
 
 # Compose
 activityCompose = "1.5.1"
@@ -36,6 +38,10 @@ loggingInterceptor = "4.10.0"
 # Database
 room = "2.4.3"
 
+# Paging
+pagingRuntime = "3.1.1"
+pagingCompose = "1.0.0-alpha18"
+
 # Datastore
 dataStore = "1.0.0"
 
@@ -56,6 +62,8 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlinAndroid" 
 [libraries]
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
+placeholder-material = { group = "com.google.accompanist", name = "accompanist-placeholder-material", version.ref = "accompanist" }
 
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlinAndroid" }
@@ -66,6 +74,7 @@ activity-compose = { group = "androidx.activity", name = "activity-compose" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics= { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+material = { group = "androidx.compose.material", name = "material" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 material-icons = { module = "androidx.compose.material:material-icons-extended" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
@@ -105,6 +114,10 @@ logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", ver
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
+# Paging
+paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
+paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
 
 # Datastore
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore", version.ref = "dataStore" }

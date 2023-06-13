@@ -1,12 +1,12 @@
 package com.hwaryun.domain.usecase.sign_up
 
 import com.hwaryun.common.di.DispatcherProvider
-import com.hwaryun.common.domain.oop.FlowUseCase
+import com.hwaryun.common.domain.FlowUseCase
 import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.common.result.UiResult
 import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.datasource.repository.AuthRepository
-import com.hwaryun.domain.mapper.toViewParam
+import com.hwaryun.domain.mapper.toUser
 import com.hwaryun.domain.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -20,39 +20,41 @@ class SignUpUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<SignUpUseCase.Param, UiResult<User>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: Param): Flow<UiResult<User>> = flow {
+    override suspend fun buildFlowUseCase(param: Param?): Flow<UiResult<User>> = flow {
         emit(UiResult.Loading())
-        checkAddressFieldUseCase.execute(param).first().suspendSubscribe(
-            doOnSuccess = {
-                repository.signUp(
-                    param.name,
-                    param.email,
-                    param.password,
-                    param.address,
-                    param.city,
-                    param.houseNumber,
-                    param.phoneNumber
-                ).collect { result ->
-                    result.suspendSubscribe(
-                        doOnSuccess = {
-                            result.value?.user?.let {
-                                userPreferenceManager.saveUserToken(result.value?.accessToken)
-                                userPreferenceManager.saveUser(it)
-                                userPreferenceManager.user.collect { user ->
-                                    emit(UiResult.Success(user.toViewParam()))
+        param?.let {
+            checkAddressFieldUseCase.execute(param).first().suspendSubscribe(
+                doOnSuccess = {
+                    repository.signUp(
+                        param.name,
+                        param.email,
+                        param.password,
+                        param.address,
+                        param.city,
+                        param.houseNumber,
+                        param.phoneNumber
+                    ).collect { result ->
+                        result.suspendSubscribe(
+                            doOnSuccess = {
+                                result.value?.user?.let {
+                                    userPreferenceManager.saveUserToken(result.value?.accessToken)
+                                    userPreferenceManager.saveUser(it)
+                                    userPreferenceManager.user.collect { user ->
+                                        emit(UiResult.Success(user.toUser()))
+                                    }
                                 }
+                            },
+                            doOnError = {
+                                emit(UiResult.Failure(it.throwable))
                             }
-                        },
-                        doOnError = {
-                            emit(UiResult.Failure(it.throwable))
-                        }
-                    )
+                        )
+                    }
+                },
+                doOnError = {
+                    emit(UiResult.Failure(it.throwable))
                 }
-            },
-            doOnError = {
-                emit(UiResult.Failure(it.throwable))
-            }
-        )
+            )
+        }
     }
 
     data class Param(

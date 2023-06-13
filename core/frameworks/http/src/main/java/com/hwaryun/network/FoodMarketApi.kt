@@ -1,11 +1,14 @@
 package com.hwaryun.network
 
-import com.hwaryun.common.BaseResponse
+import com.hwaryun.common.http.infrastructure.BaseResponse
 import com.hwaryun.network.model.request.LoginRequest
 import com.hwaryun.network.model.request.RegisterRequest
 import com.hwaryun.network.model.response.AuthDto
+import com.hwaryun.network.model.response.FoodDto
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface FoodMarketApi {
 
@@ -18,4 +21,19 @@ interface FoodMarketApi {
     suspend fun register(
         @Body registerRequest: RegisterRequest
     ): BaseResponse<AuthDto>
+
+    @POST("logout")
+    suspend fun logout(): BaseResponse<Boolean>
+
+    @GET("food")
+    suspend fun fetchFoods(
+        @Query("page") page: Int? = null,
+        @Query("limit") limit: Int? = null,
+        @Query("types") types: String? = null
+    ): BaseResponse<FoodDto>
+
+    @GET("food")
+    suspend fun fetchFoodById(
+        @Query("id") id: Int
+    ): BaseResponse<FoodDto.FoodItemDto>
 }

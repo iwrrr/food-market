@@ -2,7 +2,7 @@ package com.hwaryun.domain.usecase.sign_up
 
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.di.DispatcherProvider
-import com.hwaryun.common.domain.oop.FlowUseCase
+import com.hwaryun.common.domain.FlowUseCase
 import com.hwaryun.common.result.CheckFieldResult
 import com.hwaryun.common.result.UiResult
 import com.hwaryun.designsystem.R
@@ -18,25 +18,27 @@ class CheckAddressFieldUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<SignUpUseCase.Param, UiResult<CheckFieldResult>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: SignUpUseCase.Param): Flow<UiResult<CheckFieldResult>> =
+    override suspend fun buildFlowUseCase(param: SignUpUseCase.Param?): Flow<UiResult<CheckFieldResult>> =
         flow {
-            val result = mutableListOf<Pair<Int, Int>>()
-            checkPhoneNumberValid(param.phoneNumber)?.let {
-                result.add(it)
-            }
-            checkAddressValid(param.address)?.let {
-                result.add(it)
-            }
-            checkHouseNumberValid(param.houseNumber)?.let {
-                result.add(it)
-            }
-            checkCityValid(param.city)?.let {
-                result.add(it)
-            }
-            if (result.isEmpty()) {
-                emit(UiResult.Success(result))
-            } else {
-                emit(UiResult.Failure(FieldErrorException(result)))
+            param?.let {
+                val result = mutableListOf<Pair<Int, Int>>()
+                checkPhoneNumberValid(param.phoneNumber)?.let {
+                    result.add(it)
+                }
+                checkAddressValid(param.address)?.let {
+                    result.add(it)
+                }
+                checkHouseNumberValid(param.houseNumber)?.let {
+                    result.add(it)
+                }
+                checkCityValid(param.city)?.let {
+                    result.add(it)
+                }
+                if (result.isEmpty()) {
+                    emit(UiResult.Success(result))
+                } else {
+                    emit(UiResult.Failure(FieldErrorException(result)))
+                }
             }
         }
 
