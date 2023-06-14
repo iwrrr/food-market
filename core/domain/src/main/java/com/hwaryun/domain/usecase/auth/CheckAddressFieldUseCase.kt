@@ -1,4 +1,4 @@
-package com.hwaryun.domain.usecase.sign_up
+package com.hwaryun.domain.usecase.auth
 
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.di.DispatcherProvider

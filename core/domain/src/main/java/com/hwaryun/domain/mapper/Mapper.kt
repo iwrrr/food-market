@@ -3,9 +3,11 @@ package com.hwaryun.domain.mapper
 import com.hwaryun.common.ext.orDash
 import com.hwaryun.common.ext.orZero
 import com.hwaryun.domain.model.Food
+import com.hwaryun.domain.model.Transaction
 import com.hwaryun.domain.model.User
 import com.hwaryun.network.model.response.AuthDto
 import com.hwaryun.network.model.response.FoodDto
+import com.hwaryun.network.model.response.TransactionDto
 
 fun AuthDto.UserDto?.toUser(): User {
     return User(
@@ -31,5 +33,20 @@ fun FoodDto.FoodItemDto?.toFood(): Food {
         price = this?.price.orZero(),
         rate = this?.rate.orDash(),
         types = this?.types.orDash(),
+    )
+}
+
+fun TransactionDto?.toTransaction(): Transaction {
+    return Transaction(
+        createdAt = this?.createdAt.orZero(),
+        deletedAt = this?.deletedAt.orZero(),
+        foodId = this?.foodId.orZero(),
+        id = this?.id.orZero(),
+        paymentUrl = this?.paymentUrl.orDash(),
+        quantity = this?.quantity.orDash(),
+        status = this?.status.orDash(),
+        total = this?.total.orDash(),
+        updatedAt = this?.updatedAt.orZero(),
+        userId = this?.userId.orZero()
     )
 }

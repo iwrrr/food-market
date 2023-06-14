@@ -31,7 +31,9 @@ fun MainApp(
     mainAppState: MainAppState = rememberMainAppState(),
     startDestination: String
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             MainBottomBar(
                 destinations = mainAppState.topLevelDestinations,
@@ -43,7 +45,14 @@ fun MainApp(
     ) {
         MainAppNavHost(
             mainAppState = mainAppState,
-            startDestination = startDestination
+            startDestination = startDestination,
+            onShowSnackbar = { message, actionLabel ->
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = actionLabel,
+                    duration = SnackbarDuration.Short,
+                ) == SnackbarResult.ActionPerformed
+            }
         )
     }
 }
@@ -64,7 +73,8 @@ fun MainBottomBar(
             tonalElevation = 0.dp
         ) {
             destinations.forEach { topLevelDestination ->
-                val selected = currentDestination.isTopLevelDestinationInHierarchy(topLevelDestination)
+                val selected =
+                    currentDestination.isTopLevelDestinationInHierarchy(topLevelDestination)
                 NavigationBarItem(
                     selected = selected,
                     onClick = { onNavigateToDestination(topLevelDestination) },

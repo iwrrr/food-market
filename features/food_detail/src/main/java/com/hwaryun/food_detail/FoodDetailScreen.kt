@@ -19,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -45,25 +46,25 @@ import com.hwaryun.designsystem.ui.FoodMarketTheme
 
 @Composable
 internal fun FoodDetailRoute(
-    onOrderClick: () -> Unit,
+    onOrderClick: (foodId: Int?, qty: Int, total: Int) -> Unit,
     viewModel: FoodDetailViewModel = hiltViewModel()
 ) {
-    val state = viewModel.uiState.collectAsStateWithLifecycle()
+    val foodDetailUiState by viewModel.foodDetailUiState.collectAsStateWithLifecycle()
 
     FoodDetailScreen(
-        state = state.value,
+        foodDetailUiState = foodDetailUiState,
+        onOrderClick = onOrderClick,
         addQuantity = viewModel::addQuantity,
-        reduceQuantity = viewModel::reduceQuantity,
-        onOrderClick = onOrderClick
+        reduceQuantity = viewModel::reduceQuantity
     )
 }
 
 @Composable
 fun FoodDetailScreen(
-    state: FoodDetailState,
+    foodDetailUiState: FoodDetailUiState,
     addQuantity: (Int) -> Unit,
     reduceQuantity: (Int) -> Unit,
-    onOrderClick: () -> Unit
+    onOrderClick: (foodId: Int?, qty: Int, total: Int) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -72,7 +73,7 @@ fun FoodDetailScreen(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(context)
-                .data(state.food?.picturePath)
+                .data(foodDetailUiState.food?.picturePath)
                 .crossfade(true)
                 .build(),
             placeholder = painterResource(R.drawable.ic_placeholder),
@@ -82,7 +83,7 @@ fun FoodDetailScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .placeholder(
-                    visible = state.isLoading,
+                    visible = foodDetailUiState.isLoading,
                     highlight = PlaceholderHighlight.shimmer(),
                     color = PlaceholderDefaults.color(),
                     shape = RoundedCornerShape(8.dp)
@@ -117,11 +118,11 @@ fun FoodDetailScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = state.food?.name.toString(),
+                                text = foodDetailUiState.food?.name.toString(),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .placeholder(
-                                        visible = state.isLoading,
+                                        visible = foodDetailUiState.isLoading,
                                         highlight = PlaceholderHighlight.shimmer(),
                                         color = PlaceholderDefaults.color(),
                                         shape = RoundedCornerShape(8.dp)
@@ -136,7 +137,7 @@ fun FoodDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 RatingBar(
-                                    value = state.food?.rate?.toFloat() ?: 0f,
+                                    value = foodDetailUiState.food?.rate?.toFloat() ?: 0f,
                                     config = RatingBarConfig()
                                         .isIndicator(true)
                                         .size(16.dp),
@@ -145,10 +146,10 @@ fun FoodDetailScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = state.food?.rate.toString(),
+                                    text = foodDetailUiState.food?.rate.toString(),
                                     modifier = Modifier
                                         .placeholder(
-                                            visible = state.isLoading,
+                                            visible = foodDetailUiState.isLoading,
                                             highlight = PlaceholderHighlight.shimmer(),
                                             color = PlaceholderDefaults.color(),
                                             shape = RoundedCornerShape(8.dp)
@@ -165,7 +166,7 @@ fun FoodDetailScreen(
                             modifier = Modifier
                                 .wrapContentSize(Alignment.CenterEnd)
                                 .weight(1f),
-                            value = state.qty,
+                            value = foodDetailUiState.qty,
                             onDecrementClick = {
                                 reduceQuantity(it)
                             },
@@ -176,11 +177,11 @@ fun FoodDetailScreen(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = state.food?.description.toString(),
+                        text = foodDetailUiState.food?.description.toString(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .placeholder(
-                                visible = state.isLoading,
+                                visible = foodDetailUiState.isLoading,
                                 highlight = PlaceholderHighlight.shimmer(),
                                 color = PlaceholderDefaults.color(),
                                 shape = RoundedCornerShape(8.dp)
@@ -197,11 +198,11 @@ fun FoodDetailScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = state.food?.ingredients.toString(),
+                        text = foodDetailUiState.food?.ingredients.toString(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .placeholder(
-                                visible = state.isLoading,
+                                visible = foodDetailUiState.isLoading,
                                 highlight = PlaceholderHighlight.shimmer(),
                                 color = PlaceholderDefaults.color(),
                                 shape = RoundedCornerShape(8.dp)
@@ -228,17 +229,17 @@ fun FoodDetailScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
-                                text = "IDR ${state.totalPrice}",
+                                text = "IDR ${foodDetailUiState.totalPrice}",
                                 modifier = Modifier
                                     .then(
-                                        if (state.isLoading) {
+                                        if (foodDetailUiState.isLoading) {
                                             Modifier.fillMaxWidth(1f / 2)
                                         } else {
                                             Modifier
                                         }
                                     )
                                     .placeholder(
-                                        visible = state.isLoading,
+                                        visible = foodDetailUiState.isLoading,
                                         highlight = PlaceholderHighlight.shimmer(),
                                         color = PlaceholderDefaults.color(),
                                         shape = RoundedCornerShape(8.dp)
@@ -253,17 +254,17 @@ fun FoodDetailScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .placeholder(
-                                    visible = state.isLoading,
+                                    visible = foodDetailUiState.isLoading,
                                     highlight = PlaceholderHighlight.shimmer(),
                                     color = PlaceholderDefaults.color(),
                                     shape = RoundedCornerShape(8.dp)
                                 )
                                 .weight(1f),
                             onClick = {
-                                if (state.isLoading) {
+                                if (foodDetailUiState.isLoading) {
                                     return@FoodMarketButton
                                 } else {
-                                    onOrderClick()
+                                    onOrderClick(foodDetailUiState.food?.id, foodDetailUiState.qty, foodDetailUiState.totalPrice)
                                 }
                             },
                         )
@@ -279,10 +280,10 @@ fun FoodDetailScreen(
 fun FoodDetailScreenPreview() {
     FoodMarketTheme {
         FoodDetailScreen(
-            state = FoodDetailState(),
+            foodDetailUiState = FoodDetailUiState(),
             addQuantity = {},
             reduceQuantity = {},
-            onOrderClick = {}
+            onOrderClick = { _, _, _ -> }
         )
     }
 }

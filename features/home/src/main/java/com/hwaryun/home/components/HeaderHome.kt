@@ -33,12 +33,12 @@ import com.google.accompanist.placeholder.material.shimmer
 import com.google.accompanist.placeholder.placeholder
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.home.HomeState
+import com.hwaryun.home.HomeUiState
 
 @Composable
 fun HeaderHome(
     modifier: Modifier = Modifier,
-    uiState: HomeState
+    uiState: HomeUiState
 ) {
     Column(
         modifier = modifier
@@ -106,7 +106,7 @@ fun HeaderHome(
 fun HeaderHomePreview() {
     FoodMarketTheme {
         HeaderHome(
-            uiState = HomeState()
+            uiState = HomeUiState()
         )
     }
 }

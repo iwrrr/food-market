@@ -1,4 +1,4 @@
-package com.hwaryun.domain.usecase
+package com.hwaryun.domain.usecase.auth
 
 import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.common.domain.FlowUseCase

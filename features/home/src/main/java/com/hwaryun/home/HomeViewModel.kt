@@ -23,14 +23,14 @@ class HomeViewModel @Inject constructor(
     foodRepository: FoodRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeState())
-    val uiState = _uiState.asStateFlow()
+    private val _homeUiState = MutableStateFlow(HomeUiState())
+    val homeUiState = _homeUiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             val data = userPreferenceManager.user.first()
             if (data != null) {
-                _uiState.update {
+                _homeUiState.update {
                     it.copy(user = data.toUser())
                 }
             }

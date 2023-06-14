@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.ext.suspendSubscribe
-import com.hwaryun.domain.usecase.sign_up.CheckSignUpFieldUseCase
-import com.hwaryun.domain.usecase.sign_up.SignUpUseCase
+import com.hwaryun.domain.usecase.auth.CheckSignUpFieldUseCase
+import com.hwaryun.domain.usecase.auth.SignUpUseCase
 import com.hwaryun.domain.utils.ADDRESS_FIELD
 import com.hwaryun.domain.utils.CITY_FIELD
 import com.hwaryun.domain.utils.EMAIL_FIELD
@@ -27,8 +27,8 @@ class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SignUpState())
-    val uiState = _uiState.asStateFlow()
+    private val _signUpState = MutableStateFlow(SignUpState())
+    val signUpState = _signUpState.asStateFlow()
 
     fun validateFirstStep(
         name: String,
@@ -45,7 +45,7 @@ class SignUpViewModel @Inject constructor(
             ).collect { result ->
                 result.suspendSubscribe(
                     doOnSuccess = {
-                        _uiState.update {
+                        _signUpState.update {
                             it.copy(
                                 firstStep = result.value
                             )
@@ -65,25 +65,25 @@ class SignUpViewModel @Inject constructor(
         viewModelScope.launch {
             signUpUseCase.execute(
                 SignUpUseCase.Param(
-                    name = _uiState.value.name,
-                    email = _uiState.value.email,
-                    password = _uiState.value.password,
-                    address = _uiState.value.address,
-                    city = _uiState.value.city,
-                    houseNumber = _uiState.value.houseNumber,
-                    phoneNumber = _uiState.value.phoneNumber,
+                    name = _signUpState.value.name,
+                    email = _signUpState.value.email,
+                    password = _signUpState.value.password,
+                    address = _signUpState.value.address,
+                    city = _signUpState.value.city,
+                    houseNumber = _signUpState.value.houseNumber,
+                    phoneNumber = _signUpState.value.phoneNumber,
                 )
             ).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
-                        _uiState.update {
+                        _signUpState.update {
                             it.copy(
                                 isLoading = true
                             )
                         }
                     },
                     doOnSuccess = {
-                        _uiState.update {
+                        _signUpState.update {
                             it.copy(
                                 isLoading = false,
                                 signUp = result.value
@@ -94,7 +94,7 @@ class SignUpViewModel @Inject constructor(
                         if (it.throwable is FieldErrorException) {
                             handleFieldError(it.throwable as FieldErrorException)
                         } else {
-                            _uiState.update { state ->
+                            _signUpState.update { state ->
                                 state.copy(
                                     isLoading = false,
                                     error = result.throwable?.message ?: "Unexpected error accrued"
@@ -108,7 +108,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateNameState(value: String) {
-        _uiState.update {
+        _signUpState.update {
             it.copy(
                 name = value,
                 isNameError = false,
@@ -117,7 +117,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateEmailState(value: String) {
-        _uiState.update {
+        _signUpState.update {
             it.copy(
                 email = value.trim(),
                 isEmailError = false,
@@ -126,7 +126,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updatePasswordState(value: String) {
-        _uiState.update {
+        _signUpState.update {
             it.copy(
                 password = value.trim(),
                 isPasswordError = false,
@@ -135,7 +135,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updatePhoneNumberState(value: String) {
-        _uiState.update {
+        _signUpState.update {
             it.copy(
                 phoneNumber = value.trim(),
                 isPhoneNumberError = false,
@@ -144,7 +144,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateAddressState(value: String) {
-        _uiState.update {
+        _signUpState.update {
             it.copy(
                 address = value,
                 isAddressError = false,
@@ -153,7 +153,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateHouseNumberState(value: String) {
-        _uiState.update {
+        _signUpState.update {
             it.copy(
                 houseNumber = value,
                 isHouseNumberError = false,
@@ -162,7 +162,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateCityState(value: String) {
-        _uiState.update {
+        _signUpState.update {
             it.copy(
                 city = value,
                 isCityError = false,
@@ -171,7 +171,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateIsPasswordVisible(value: Boolean) {
-        _uiState.update {
+        _signUpState.update {
             it.copy(
                 isPasswordVisible = value
             )
@@ -181,7 +181,7 @@ class SignUpViewModel @Inject constructor(
     private fun handleFieldError(exception: FieldErrorException) {
         exception.errorFields.forEach { errorField ->
             if (errorField.first == NAME_FIELD) {
-                _uiState.update {
+                _signUpState.update {
                     it.copy(
                         errorNameMsg = errorField.second,
                         isNameError = true,
@@ -190,7 +190,7 @@ class SignUpViewModel @Inject constructor(
                 }
             }
             if (errorField.first == EMAIL_FIELD) {
-                _uiState.update {
+                _signUpState.update {
                     it.copy(
                         errorEmailMsg = errorField.second,
                         isEmailError = true,
@@ -199,7 +199,7 @@ class SignUpViewModel @Inject constructor(
                 }
             }
             if (errorField.first == PASSWORD_FIELD) {
-                _uiState.update {
+                _signUpState.update {
                     it.copy(
                         errorPasswordMsg = errorField.second,
                         isPasswordError = true,
@@ -208,7 +208,7 @@ class SignUpViewModel @Inject constructor(
                 }
             }
             if (errorField.first == PHONE_NUMBER_FIELD) {
-                _uiState.update {
+                _signUpState.update {
                     it.copy(
                         errorPhoneNumberMsg = errorField.second,
                         isPhoneNumberError = true,
@@ -217,7 +217,7 @@ class SignUpViewModel @Inject constructor(
                 }
             }
             if (errorField.first == ADDRESS_FIELD) {
-                _uiState.update {
+                _signUpState.update {
                     it.copy(
                         errorAddressMsg = errorField.second,
                         isAddressError = true,
@@ -226,7 +226,7 @@ class SignUpViewModel @Inject constructor(
                 }
             }
             if (errorField.first == HOUSE_NUMBER_FIELD) {
-                _uiState.update {
+                _signUpState.update {
                     it.copy(
                         errorHouseNumberMsg = errorField.second,
                         isHouseNumberError = true,
@@ -235,7 +235,7 @@ class SignUpViewModel @Inject constructor(
                 }
             }
             if (errorField.first == CITY_FIELD) {
-                _uiState.update {
+                _signUpState.update {
                     it.copy(
                         errorCityMsg = errorField.second,
                         isCityError = true,

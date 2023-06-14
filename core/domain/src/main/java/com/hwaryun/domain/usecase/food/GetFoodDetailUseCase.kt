@@ -1,4 +1,4 @@
-package com.hwaryun.domain.usecase
+package com.hwaryun.domain.usecase.food
 
 import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.common.domain.FlowUseCase
@@ -22,8 +22,10 @@ class GetFoodDetailUseCase @Inject constructor(
             foodRepository.getFoodById(foodId).collect { result ->
                 result.suspendSubscribe(
                     doOnSuccess = {
-                        val food = it.value.toFood()
-                        emit(UiResult.Success(food))
+                        result.value?.data?.let {
+                            val food = it.toFood()
+                            emit(UiResult.Success(food))
+                        }
                     },
                     doOnError = {
                         emit(UiResult.Failure(it.throwable))

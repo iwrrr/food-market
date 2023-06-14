@@ -1,4 +1,4 @@
-package com.hwaryun.domain.usecase.sign_in
+package com.hwaryun.domain.usecase.auth
 
 import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.common.domain.FlowUseCase
@@ -13,24 +13,32 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class SignInUseCase @Inject constructor(
+class SignUpUseCase @Inject constructor(
     private val repository: AuthRepository,
     private val userPreferenceManager: UserPreferenceManager,
-    private val checkSignInFieldUseCase: CheckSignInFieldUseCase,
+    private val checkAddressFieldUseCase: CheckAddressFieldUseCase,
     dispatcherProvider: DispatcherProvider
-) : FlowUseCase<SignInUseCase.Param, UiResult<User>>(dispatcherProvider.io) {
+) : FlowUseCase<SignUpUseCase.Param, UiResult<User>>(dispatcherProvider.io) {
 
     override suspend fun buildFlowUseCase(param: Param?): Flow<UiResult<User>> = flow {
         emit(UiResult.Loading())
         param?.let {
-            checkSignInFieldUseCase.execute(param).first().suspendSubscribe(
+            checkAddressFieldUseCase.execute(param).first().suspendSubscribe(
                 doOnSuccess = {
-                    repository.signIn(param.email, param.password).collect { result ->
+                    repository.signUp(
+                        param.name,
+                        param.email,
+                        param.password,
+                        param.address,
+                        param.city,
+                        param.houseNumber,
+                        param.phoneNumber
+                    ).collect { result ->
                         result.suspendSubscribe(
                             doOnSuccess = {
-                                result.value?.user?.let {
-                                    userPreferenceManager.saveUserToken(result.value?.accessToken)
-                                    userPreferenceManager.saveUser(it)
+                                result.value?.data?.let {
+                                    userPreferenceManager.saveUserToken(it.accessToken)
+                                    userPreferenceManager.saveUser(it.user)
                                     userPreferenceManager.user.collect { user ->
                                         emit(UiResult.Success(user.toUser()))
                                     }
@@ -50,7 +58,12 @@ class SignInUseCase @Inject constructor(
     }
 
     data class Param(
+        val name: String,
         val email: String,
-        val password: String
+        val password: String,
+        val address: String,
+        val city: String,
+        val houseNumber: String,
+        val phoneNumber: String,
     )
 }

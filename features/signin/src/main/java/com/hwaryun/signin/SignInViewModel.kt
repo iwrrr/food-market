@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.ext.suspendSubscribe
-import com.hwaryun.domain.usecase.sign_in.SignInUseCase
+import com.hwaryun.domain.usecase.auth.SignInUseCase
 import com.hwaryun.domain.utils.EMAIL_FIELD
 import com.hwaryun.domain.utils.PASSWORD_FIELD
-import com.hwaryun.signin.state.SignInState
+import com.hwaryun.signin.state.SignInUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,22 +20,22 @@ class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SignInState())
-    val uiState = _uiState.asStateFlow()
+    private val _signInUiState = MutableStateFlow(SignInUiState())
+    val signInUiState = _signInUiState.asStateFlow()
 
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
             signInUseCase.execute(SignInUseCase.Param(email, password)).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
-                        _uiState.update {
+                        _signInUiState.update {
                             it.copy(
                                 isLoading = true
                             )
                         }
                     },
                     doOnSuccess = {
-                        _uiState.update {
+                        _signInUiState.update {
                             it.copy(
                                 signIn = result.value,
                                 isLoading = false
@@ -46,7 +46,7 @@ class SignInViewModel @Inject constructor(
                         if (it.throwable is FieldErrorException) {
                             handleFieldError(it.throwable as FieldErrorException)
                         } else {
-                            _uiState.update { state ->
+                            _signInUiState.update { state ->
                                 state.copy(
                                     isLoading = false,
                                     error = result.throwable?.message ?: "Unexpected error accrued"
@@ -60,7 +60,7 @@ class SignInViewModel @Inject constructor(
     }
 
     fun updateEmailState(value: String) {
-        _uiState.update {
+        _signInUiState.update {
             it.copy(
                 email = value.trim(),
                 isEmailError = false
@@ -69,7 +69,7 @@ class SignInViewModel @Inject constructor(
     }
 
     fun updatePasswordState(value: String) {
-        _uiState.update {
+        _signInUiState.update {
             it.copy(
                 password = value.trim(),
                 isPasswordError = false
@@ -78,13 +78,13 @@ class SignInViewModel @Inject constructor(
     }
 
     fun updateIsPasswordVisible(value: Boolean) {
-        _uiState.update { it.copy(isPasswordVisible = value) }
+        _signInUiState.update { it.copy(isPasswordVisible = value) }
     }
 
     private fun handleFieldError(exception: FieldErrorException) {
         exception.errorFields.forEach { errorField ->
             if (errorField.first == EMAIL_FIELD) {
-                _uiState.update {
+                _signInUiState.update {
                     it.copy(
                         errorEmailMsg = errorField.second,
                         isEmailError = true,
@@ -93,7 +93,7 @@ class SignInViewModel @Inject constructor(
                 }
             }
             if (errorField.first == PASSWORD_FIELD) {
-                _uiState.update {
+                _signInUiState.update {
                     it.copy(
                         errorPasswordMsg = errorField.second,
                         isPasswordError = true,

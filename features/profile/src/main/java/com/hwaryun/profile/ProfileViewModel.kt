@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.ext.subscribe
 import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.domain.mapper.toUser
-import com.hwaryun.domain.usecase.LogoutUseCase
+import com.hwaryun.domain.usecase.auth.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,14 +19,14 @@ class ProfileViewModel @Inject constructor(
     private val userPreferenceManager: UserPreferenceManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ProfileState())
-    val uiState = _uiState.asStateFlow()
+    private val _profileUiState = MutableStateFlow(ProfileUiState())
+    val profileUiState = _profileUiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             userPreferenceManager.user.collect { result ->
                 if (result != null) {
-                    _uiState.update { state ->
+                    _profileUiState.update { state ->
                         state.copy(user = result.toUser())
                     }
                 }
@@ -39,12 +39,12 @@ class ProfileViewModel @Inject constructor(
             logoutUseCase.execute().collect { result ->
                 result.subscribe(
                     doOnLoading = {
-                        _uiState.update { state ->
+                        _profileUiState.update { state ->
                             state.copy(isLoading = true)
                         }
                     },
                     doOnSuccess = {
-                        _uiState.update { state ->
+                        _profileUiState.update { state ->
                             state.copy(
                                 logout = it.value,
                                 isLoading = false
@@ -52,7 +52,7 @@ class ProfileViewModel @Inject constructor(
                         }
                     },
                     doOnError = {
-                        _uiState.update { state ->
+                        _profileUiState.update { state ->
                             state.copy(
                                 isLoading = false,
                                 error = result.throwable?.message ?: "Unexpected error accrued"

@@ -2,7 +2,7 @@ package com.hwaryun.food_detail
 
 import com.hwaryun.domain.model.Food
 
-data class FoodDetailState(
+data class FoodDetailUiState(
     val food: Food? = null,
     val qty: Int = 1,
     val totalPrice: Int = 0,

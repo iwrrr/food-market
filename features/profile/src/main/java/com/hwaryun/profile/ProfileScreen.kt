@@ -30,13 +30,12 @@ import com.hwaryun.profile.components.HeaderProfile
 
 @Composable
 internal fun ProfileRoute(
-    onLogoutClick: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val profileUiState by viewModel.profileUiState.collectAsStateWithLifecycle()
 
     ProfileScreen(
-        uiState = uiState.value,
+        profileUiState = profileUiState,
         onLogoutClick = viewModel::logout
     )
 }
@@ -45,7 +44,7 @@ internal fun ProfileRoute(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(
-    uiState: ProfileState,
+    profileUiState: ProfileUiState,
     onLogoutClick: () -> Unit
 ) {
     Scaffold(
@@ -65,7 +64,7 @@ fun ProfileScreen(
             ) {
                 HeaderProfile(
                     modifier = Modifier.fillMaxWidth(),
-                    uiState = uiState,
+                    uiState = profileUiState,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 FoodMarketTabSection(
@@ -95,7 +94,7 @@ fun ProfileScreen(
                 }
             }
 
-            if (uiState.isLoading) {
+            if (profileUiState.isLoading) {
                 DialogBoxLoading()
             }
         }
@@ -107,7 +106,7 @@ fun ProfileScreen(
 private fun DefaultPreview() {
     FoodMarketTheme {
         ProfileScreen(
-            uiState = ProfileState(),
+            profileUiState = ProfileUiState(),
             onLogoutClick = {}
         )
     }

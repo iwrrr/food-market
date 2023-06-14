@@ -9,7 +9,7 @@ interface UserPreferenceManager {
 
     suspend fun saveUserToken(token: String?)
 
-    suspend fun saveUser(user: AuthDto.UserDto)
+    suspend fun saveUser(user: AuthDto.UserDto?)
 
     suspend fun clearUser()
 }

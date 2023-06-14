@@ -18,12 +18,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.components.FoodMarketCircleImage
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.profile.ProfileState
+import com.hwaryun.profile.ProfileUiState
 
 @Composable
 fun HeaderProfile(
     modifier: Modifier = Modifier,
-    uiState: ProfileState,
+    uiState: ProfileUiState,
 ) {
     Column(
         modifier = modifier
@@ -67,7 +67,7 @@ fun HeaderProfile(
 fun HeaderProfilePreview() {
     FoodMarketTheme {
         HeaderProfile(
-            uiState = ProfileState(),
+            uiState = ProfileUiState(),
         )
     }
 }

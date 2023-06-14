@@ -40,9 +40,9 @@ fun NavGraphBuilder.signUpGraph(
         composable(route = signUpRoute) {entry ->
             val viewModel = entry.sharedViewModel<SignUpViewModel>(navController = navController)
             SignUpRoute(
-                viewModel = viewModel,
                 popBackStack = popBackStack,
-                navigateToAddressScreen = navigateToAddressScreen
+                navigateToAddressScreen = navigateToAddressScreen,
+                viewModel = viewModel
             )
         }
         nestedGraphs()
@@ -53,13 +53,15 @@ fun NavGraphBuilder.addressScreen(
     navController: NavHostController,
     popBackStack: () -> Unit,
     navigateToHomeScreen: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     composable(route = addressRoute) { entry ->
         val viewModel = entry.sharedViewModel<SignUpViewModel>(navController = navController)
         AddressRoute(
-            viewModel = viewModel,
             popBackStack = popBackStack,
-            navigateToHomeScreen = navigateToHomeScreen
+            navigateToHomeScreen = navigateToHomeScreen,
+            onShowSnackbar = onShowSnackbar,
+            viewModel = viewModel
         )
     }
 }

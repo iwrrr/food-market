@@ -16,8 +16,6 @@ import com.hwaryun.payment.navigation.navigateToSuccessOrder
 import com.hwaryun.payment.navigation.paymentGraph
 import com.hwaryun.payment.navigation.successOrderScreen
 import com.hwaryun.profile.navigation.profileGraph
-import com.hwaryun.profile.navigation.profileGraphRoute
-import com.hwaryun.signin.navigation.navigateToSignInGraph
 import com.hwaryun.signin.navigation.signInGraph
 import com.hwaryun.signin.navigation.signInGraphRoute
 import com.hwaryun.signup.navigation.addressScreen
@@ -28,6 +26,7 @@ import com.hwaryun.signup.navigation.signUpGraph
 @Composable
 fun MainAppNavHost(
     mainAppState: MainAppState,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
     startDestination: String
 ) {
@@ -39,41 +38,39 @@ fun MainAppNavHost(
     ) {
         signInGraph(
             navigateToSignUpScreen = navController::navigateToSignUpGraph,
-            navigateToHomeScreen = {
-                navController.navigateToHomeGraph(
-                    navOptions = navOptions {
-                        popUpTo(signInGraphRoute) {
-                            inclusive = true
-                        }
-                    }
-                )
-            },
+            onShowSnackbar = onShowSnackbar,
         )
         signUpGraph(
             navController = navController,
             popBackStack = navController::popBackStack,
-            navigateToAddressScreen = navController::navigateToAddress,
-            nestedGraphs = {
-                addressScreen(
-                    navController = navController,
-                    popBackStack = navController::popBackStack,
-                    navigateToHomeScreen = {
-                        navController.navigateToHomeGraph(
-                            navOptions = navOptions {
-                                popUpTo(signInGraphRoute) {
-                                    inclusive = true
-                                }
+            navigateToAddressScreen = navController::navigateToAddress
+        ) {
+            addressScreen(
+                navController = navController,
+                popBackStack = navController::popBackStack,
+                onShowSnackbar = onShowSnackbar,
+                navigateToHomeScreen = {
+                    navController.navigateToHomeGraph(
+                        navOptions = navOptions {
+                            popUpTo(signInGraphRoute) {
+                                inclusive = true
                             }
-                        )
-                    },
-                )
-            }
-        )
+                        }
+                    )
+                },
+            )
+        }
         homeGraph(
-            onFoodClick = navController::navigateToFoodDetails
+            onFoodClick = navController::navigateToFoodDetails,
         ) {
             foodDetailsScreen(
-                onOrderClick = navController::navigateToPaymentGraph
+                onOrderClick = { foodId, qty, total ->
+                    navController.navigateToPaymentGraph(
+                        foodId = foodId,
+                        qty = qty,
+                        total = total
+                    )
+                }
             )
             paymentGraph(
                 popBackStack = navController::popBackStack,
@@ -85,14 +82,16 @@ fun MainAppNavHost(
                             }
                         }
                     )
-                }
+                },
+                onShowSnackbar = onShowSnackbar,
             )
             successOrderScreen(
                 navigateToHome = navController::popBackStack,
                 navigateToOrder = {
                     navController.popBackStack()
                     mainAppState.navigateToTopLevelDestination(TopLevelDestination.ORDER)
-                }
+                },
+                onShowSnackbar = onShowSnackbar,
             )
         }
         orderGraph(
@@ -100,16 +99,8 @@ fun MainAppNavHost(
             nestedGraphs = {}
         )
         profileGraph(
-            onLogoutClick = {
-                navController.navigateToSignInGraph(
-                    navOptions = navOptions {
-                        popUpTo(profileGraphRoute) {
-                            inclusive = true
-                        }
-                    }
-                )
-            },
-            nestedGraphs = {}
+            nestedGraphs = {},
+            onShowSnackbar = onShowSnackbar
         )
     }
 }

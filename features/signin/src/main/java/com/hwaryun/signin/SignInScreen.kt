@@ -21,8 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,18 +37,20 @@ import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTextField
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.signin.state.SignInState
+import com.hwaryun.signin.state.SignInUiState
 
 @Composable
 internal fun SignInRoute(
     navigateToSignUpScreen: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val signInUiState by viewModel.signInUiState.collectAsStateWithLifecycle()
 
     SignInScreen(
+        signInUiState = signInUiState,
         navigateToSignUpScreen = navigateToSignUpScreen,
-        uiState = uiState.value,
+        onShowSnackbar = onShowSnackbar,
         updateEmailState = viewModel::updateEmailState,
         updatePasswordState = viewModel::updatePasswordState,
         updateIsPasswordVisible = viewModel::updateIsPasswordVisible,
@@ -62,14 +62,19 @@ internal fun SignInRoute(
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun SignInScreen(
+    signInUiState: SignInUiState,
     navigateToSignUpScreen: () -> Unit,
-    uiState: SignInState,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     updateEmailState: (String) -> Unit,
     updatePasswordState: (String) -> Unit,
     updateIsPasswordVisible: (Boolean) -> Unit,
     doSignIn: (String, String) -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(signInUiState) {
+        if (signInUiState.error.isNotEmpty()) {
+            onShowSnackbar(signInUiState.error, null)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -79,15 +84,7 @@ fun SignInScreen(
                 subtitle = "Find your best ever meal"
             )
         },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { innerPadding ->
-
-            LaunchedEffect(key1 = uiState) {
-                if (uiState.error.isNotBlank()) {
-                    snackbarHostState.showSnackbar(uiState.error)
-                }
-            }
-
             Box(
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding() + 24.dp)
@@ -102,12 +99,12 @@ fun SignInScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     FoodMarketTextField(
-                        text = uiState.email,
+                        text = signInUiState.email,
                         showLabel = true,
                         textLabel = "Email Address",
                         placeholder = "Type your email address",
-                        isError = uiState.isEmailError,
-                        errorMsg = if (uiState.isEmailError) stringResource(id = uiState.errorEmailMsg) else "",
+                        isError = signInUiState.isEmailError,
+                        errorMsg = if (signInUiState.isEmailError) stringResource(id = signInUiState.errorEmailMsg) else "",
                         onValueChange = { updateEmailState(it) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email
@@ -115,19 +112,19 @@ fun SignInScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketTextField(
-                        text = uiState.password,
+                        text = signInUiState.password,
                         showLabel = true,
                         textLabel = "Password",
                         placeholder = "Type your password",
-                        isPasswordTextField = !uiState.isPasswordVisible,
-                        isError = uiState.isPasswordError,
-                        errorMsg = if (uiState.isPasswordError) stringResource(id = uiState.errorPasswordMsg) else "",
+                        isPasswordTextField = !signInUiState.isPasswordVisible,
+                        isError = signInUiState.isPasswordError,
+                        errorMsg = if (signInUiState.isPasswordError) stringResource(id = signInUiState.errorPasswordMsg) else "",
                         trailingIcon = {
                             IconButton(
-                                onClick = { updateIsPasswordVisible(!uiState.isPasswordVisible) }
+                                onClick = { updateIsPasswordVisible(!signInUiState.isPasswordVisible) }
                             ) {
                                 Icon(
-                                    imageVector = if (uiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    imageVector = if (signInUiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                     tint = Color.Gray,
                                     contentDescription = "Password Toggle"
                                 )
@@ -140,7 +137,7 @@ fun SignInScreen(
                         text = "Sign In",
                         modifier = Modifier.fillMaxWidth(),
                         type = ButtonType.Primary,
-                        onClick = { doSignIn(uiState.email, uiState.password) }
+                        onClick = { doSignIn(signInUiState.email, signInUiState.password) }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketButton(
@@ -151,7 +148,7 @@ fun SignInScreen(
                     )
                 }
 
-                if (uiState.isLoading) {
+                if (signInUiState.isLoading) {
                     DialogBoxLoading()
                 }
             }
@@ -164,12 +161,13 @@ fun SignInScreen(
 private fun DefaultPreview() {
     FoodMarketTheme {
         SignInScreen(
+            signInUiState = SignInUiState(),
             navigateToSignUpScreen = {},
-            uiState = SignInState(),
             updateEmailState = {},
             updatePasswordState = {},
             updateIsPasswordVisible = {},
-            doSignIn = { _, _ -> }
+            doSignIn = { _, _ -> },
+            onShowSnackbar = { _, _ -> true }
         )
     }
 }

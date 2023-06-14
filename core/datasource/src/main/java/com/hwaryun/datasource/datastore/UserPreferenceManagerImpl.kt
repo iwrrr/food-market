@@ -40,7 +40,7 @@ class UserPreferenceManagerImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveUser(user: AuthDto.UserDto) {
+    override suspend fun saveUser(user: AuthDto.UserDto?) {
         dataStore.edit {
             it[USER_OBJECT] = gson.toJson(user)
         }

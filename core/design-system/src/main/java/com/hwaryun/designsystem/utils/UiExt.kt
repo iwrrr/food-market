@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
+import timber.log.Timber
+import java.text.NumberFormat
 
 fun Modifier.singleClick(
     enabled: Boolean = true,
@@ -32,4 +34,18 @@ fun Modifier.singleClick(
         indication = LocalIndication.current,
         interactionSource = remember { MutableInteractionSource() }
     )
+}
+
+fun Int?.toNumberFormat(): String {
+    return try {
+        this?.let {
+            val format = NumberFormat.getInstance().apply {
+                maximumFractionDigits = 0
+            }
+            format.format(this)
+        } ?: "0"
+    } catch (e: Exception) {
+        Timber.e(e, "ERROR ====> ${e.localizedMessage}")
+        "0"
+    }
 }

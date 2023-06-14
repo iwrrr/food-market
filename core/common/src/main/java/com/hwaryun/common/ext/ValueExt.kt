@@ -25,12 +25,16 @@ fun Boolean?.orFalse(): Boolean {
     return this ?: false
 }
 
+fun String?.orZero(): Int {
+    return this?.toInt() ?: 0
+}
+
 fun Int?.orZero(): Int {
     return this ?: 0
 }
 
-fun String?.orZero(): Int {
-    return this?.toInt() ?: 0
+fun Long?.orZero(): Long {
+    return this ?: 0
 }
 
 fun Double?.orZero(): Double {

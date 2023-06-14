@@ -16,7 +16,7 @@ fun NavController.navigateToSignInGraph(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.signInGraph(
     navigateToSignUpScreen: () -> Unit,
-    navigateToHomeScreen: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     navigation(
         route = signInGraphRoute,
@@ -24,7 +24,8 @@ fun NavGraphBuilder.signInGraph(
     ) {
         composable(route = signInRoute) {
             SignInRoute(
-                navigateToSignUpScreen = navigateToSignUpScreen
+                navigateToSignUpScreen = navigateToSignUpScreen,
+                onShowSnackbar = onShowSnackbar,
             )
         }
     }

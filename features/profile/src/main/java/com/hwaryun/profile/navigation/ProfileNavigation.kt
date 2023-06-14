@@ -15,17 +15,15 @@ fun NavController.navigateToProfileGraph(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.profileGraph(
-    onLogoutClick: () -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     navigation(
         route = profileGraphRoute,
         startDestination = profileRoute
     ) {
         composable(route = profileRoute) {
-            ProfileRoute(
-                onLogoutClick = onLogoutClick
-            )
+            ProfileRoute()
         }
         nestedGraphs()
     }

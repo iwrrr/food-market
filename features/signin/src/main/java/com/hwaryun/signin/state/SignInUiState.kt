@@ -1,6 +1,6 @@
 package com.hwaryun.signin.state
 
-data class SignInState(
+data class SignInUiState(
     val email: String = "",
     val password: String = "",
     val errorEmailMsg: Int = 0,

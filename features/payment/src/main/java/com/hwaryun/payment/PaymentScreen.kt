@@ -1,9 +1,11 @@
 package com.hwaryun.payment
 
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,33 +33,71 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.placeholder.PlaceholderDefaults
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.color
+import com.google.accompanist.placeholder.material.shimmer
+import com.google.accompanist.placeholder.placeholder
 import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.DialogBoxLoading
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.LightGreen
+import com.hwaryun.designsystem.utils.toNumberFormat
 
 @Composable
 internal fun PaymentRoute(
     popBackStack: () -> Unit,
-    navigateToSuccessOrder: () -> Unit
+    navigateToSuccessOrder: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
+    viewModel: PaymentViewModel = hiltViewModel()
 ) {
+    val paymentUiState by viewModel.paymentUiState.collectAsStateWithLifecycle()
+    val transactionUiState by viewModel.transactionUiState.collectAsStateWithLifecycle()
+
     PaymentScreen(
+        paymentUiState = paymentUiState,
+        transactionUiState = transactionUiState,
         popBackStack = popBackStack,
-        navigateToSuccessOrder = navigateToSuccessOrder
+        navigateToSuccessOrder = navigateToSuccessOrder,
+        onShowSnackbar = onShowSnackbar,
+        onCheckoutClick = viewModel::checkout
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PaymentScreen(
+    paymentUiState: PaymentUiState,
+    transactionUiState: TransactionUiState,
     popBackStack: () -> Unit,
-    navigateToSuccessOrder: () -> Unit
+    navigateToSuccessOrder: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onCheckoutClick: () -> Unit,
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(transactionUiState) {
+        if (transactionUiState.transaction != null) {
+            val intent = Intent()
+                .setAction(Intent.ACTION_VIEW)
+                .setData(Uri.parse(transactionUiState.transaction.paymentUrl))
+
+            context.startActivity(intent)
+            navigateToSuccessOrder()
+        }
+
+        if (transactionUiState.error.isNotEmpty()) {
+            onShowSnackbar(transactionUiState.error, null)
+        }
+    }
+
     Scaffold(
         topBar = {
             FoodMarketTopAppBar(
@@ -67,305 +107,411 @@ fun PaymentScreen(
                 onNavigateBack = { popBackStack() }
             )
         }
-    ) {
-        Column(
+    ) { innerPadding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(top = 24.dp)
+                .padding(top = innerPadding.calculateTopPadding() + 24.dp)
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(24.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
             ) {
-                Text(text = "Item Ordered")
-                Spacer(modifier = Modifier.height(12.dp))
-                Column(
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(null)
-                                .crossfade(true)
-                                .build(),
-                            placeholder = painterResource(R.drawable.ic_placeholder),
-                            error = painterResource(R.drawable.ic_placeholder),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(60.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Cherry Healthy",
-                                modifier = Modifier.fillMaxWidth(),
-                                style = MaterialTheme.typography.bodyLarge,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                            Text(
-                                text = "IDR 200.000",
-                                modifier = Modifier.fillMaxWidth(),
-                                style = MaterialTheme.typography.bodySmall,
-                                overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.colorScheme.secondary,
-                                maxLines = 1
-                            )
-                        }
-                        Text(
-                            text = "14 items",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "Details Transaction")
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Cherry Healthy",
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "IDR 200.000",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Driver",
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "IDR 10.000",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Tax 10%",
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "IDR 20.000",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Total Price",
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "IDR 230.000",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = LightGreen
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(24.dp)
-            ) {
-                Text(text = "Deliver to:")
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Name",
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        text = "Angga Risky",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Phone No.",
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "0822 0819 9688",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Address",
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "Setra Duta Palima",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "House No.",
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "A5 Hook",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "City",
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "Bandung",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-            if (false) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(24.dp)
                 ) {
-                    Text(text = "Order Status:")
+                    Text(text = "Item Ordered")
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Column(
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(paymentUiState.food?.picturePath)
+                                    .crossfade(true)
+                                    .build(),
+                                placeholder = painterResource(R.drawable.ic_placeholder),
+                                error = painterResource(R.drawable.ic_placeholder),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .placeholder(
+                                        visible = paymentUiState.isLoading,
+                                        highlight = PlaceholderHighlight.shimmer(),
+                                        color = PlaceholderDefaults.color(),
+                                        shape = RoundedCornerShape(8.dp)
+                                    )
+                                    .clip(RoundedCornerShape(8.dp))
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "${paymentUiState.food?.name}",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .placeholder(
+                                            visible = paymentUiState.isLoading,
+                                            highlight = PlaceholderHighlight.shimmer(),
+                                            color = PlaceholderDefaults.color(),
+                                            shape = RoundedCornerShape(8.dp)
+                                        ),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                                Text(
+                                    text = "IDR ${paymentUiState.food?.price.toNumberFormat()}",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .placeholder(
+                                            visible = paymentUiState.isLoading,
+                                            highlight = PlaceholderHighlight.shimmer(),
+                                            color = PlaceholderDefaults.color(),
+                                            shape = RoundedCornerShape(8.dp)
+                                        ),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    maxLines = 1
+                                )
+                            }
+                            Text(
+                                text = "${paymentUiState.qty} items",
+                                modifier = Modifier
+                                    .placeholder(
+                                        visible = paymentUiState.isLoading,
+                                        highlight = PlaceholderHighlight.shimmer(),
+                                        color = PlaceholderDefaults.color(),
+                                        shape = RoundedCornerShape(8.dp)
+                                    ),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.secondary,
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(text = "Details Transaction")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${paymentUiState.food?.name}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "IDR ${paymentUiState.totalFoodPrice}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            textAlign = TextAlign.End,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Driver",
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "IDR ${paymentUiState.shippingCost.toNumberFormat()}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            textAlign = TextAlign.End,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Tax 10%",
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "IDR ${paymentUiState.tax.toNumberFormat()}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            textAlign = TextAlign.End,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Total Price",
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "IDR ${paymentUiState.totalPrice.toNumberFormat()}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            textAlign = TextAlign.End,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = LightGreen
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(24.dp)
+                ) {
+                    Text(text = "Deliver to:")
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "#FM209391",
+                            text = "Name",
                             modifier = Modifier.weight(1f),
                             color = MaterialTheme.colorScheme.secondary,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
                         Text(
-                            text = "Paid",
-                            modifier = Modifier.weight(1f),
-                            color = LightGreen,
+                            text = "${paymentUiState.user?.name}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
                             textAlign = TextAlign.End,
                         )
                     }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Phone No.",
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "${paymentUiState.user?.phoneNumber}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            textAlign = TextAlign.End,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Address",
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "${paymentUiState.user?.address}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            textAlign = TextAlign.End,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "House No.",
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "${paymentUiState.user?.houseNumber}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            textAlign = TextAlign.End,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "City",
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "${paymentUiState.user?.city}",
+                            modifier = Modifier
+                                .weight(1f)
+                                .placeholder(
+                                    visible = paymentUiState.isLoading,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = PlaceholderDefaults.color(),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            textAlign = TextAlign.End,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+                if (false) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(24.dp)
+                    ) {
+                        Text(text = "Order Status:")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "#FM209391",
+                                modifier = Modifier.weight(1f),
+                                color = MaterialTheme.colorScheme.secondary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            Text(
+                                text = "Paid",
+                                modifier = Modifier.weight(1f),
+                                color = LightGreen,
+                                textAlign = TextAlign.End,
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Column(
+                    modifier = Modifier.padding(24.dp)
+                ) {
+                    FoodMarketButton(
+                        text = "Checkout Now",
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onCheckoutClick() },
+                    )
                 }
             }
-            Spacer(modifier = Modifier.weight(1f))
-            Column(
-                modifier = Modifier.padding(24.dp)
-            ) {
-                FoodMarketButton(
-                    text = "Checkout Now",
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { navigateToSuccessOrder() },
-                )
+
+            if (transactionUiState.isLoading) {
+                DialogBoxLoading()
             }
         }
     }
@@ -376,8 +522,12 @@ fun PaymentScreen(
 private fun DefaultPreview() {
     FoodMarketTheme {
         PaymentScreen(
+            paymentUiState = PaymentUiState(),
+            transactionUiState = TransactionUiState(),
             popBackStack = {},
-            navigateToSuccessOrder = {}
+            navigateToSuccessOrder = {},
+            onShowSnackbar = { _, _ -> true },
+            onCheckoutClick = {}
         )
     }
 }

@@ -15,8 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,14 +38,16 @@ import com.hwaryun.signup.state.SignUpState
 internal fun AddressRoute(
     popBackStack: () -> Unit,
     navigateToHomeScreen: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: SignUpViewModel
 ) {
-    val signUpState = viewModel.uiState.collectAsStateWithLifecycle()
+    val signUpState by viewModel.signUpState.collectAsStateWithLifecycle()
 
     AddressScreen(
+        signUpState = signUpState,
         popBackStack = popBackStack,
         navigateToHomeScreen = navigateToHomeScreen,
-        uiState = signUpState.value,
+        onShowSnackbar = onShowSnackbar,
         updatePhoneNumberState = viewModel::updatePhoneNumberState,
         updateAddressState = viewModel::updateAddressState,
         updateHouseNumberState = viewModel::updateHouseNumberState,
@@ -62,14 +62,23 @@ internal fun AddressRoute(
 fun AddressScreen(
     navigateToHomeScreen: () -> Unit,
     popBackStack: () -> Unit,
-    uiState: SignUpState,
+    signUpState: SignUpState,
     updatePhoneNumberState: (String) -> Unit,
     updateAddressState: (String) -> Unit,
     updateHouseNumberState: (String) -> Unit,
     updateCityState: (String) -> Unit,
-    doSignUp: () -> Unit
+    doSignUp: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(signUpState) {
+        if (signUpState.signUp != null) {
+            navigateToHomeScreen()
+        }
+
+        if (signUpState.error.isNotEmpty()) {
+            onShowSnackbar(signUpState.error, null)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -83,18 +92,7 @@ fun AddressScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = {
-
-            LaunchedEffect(key1 = uiState) {
-                if (uiState.signUp != null) {
-                    navigateToHomeScreen()
-                }
-
-                if (uiState.error.isNotBlank()) {
-                    snackbarHostState.showSnackbar(uiState.error)
-                }
-            }
 
             Box(
                 modifier = Modifier
@@ -110,32 +108,32 @@ fun AddressScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     FoodMarketTextField(
-                        text = uiState.phoneNumber,
+                        text = signUpState.phoneNumber,
                         showLabel = true,
                         textLabel = "Phone No.",
                         placeholder = "Type your phone number",
-                        isError = uiState.isPhoneNumberError,
-                        errorMsg = if (uiState.isPhoneNumberError) stringResource(id = uiState.errorPhoneNumberMsg) else "",
+                        isError = signUpState.isPhoneNumberError,
+                        errorMsg = if (signUpState.isPhoneNumberError) stringResource(id = signUpState.errorPhoneNumberMsg) else "",
                         onValueChange = { updatePhoneNumberState(it) },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketTextField(
-                        text = uiState.address,
+                        text = signUpState.address,
                         showLabel = true,
                         textLabel = "Address",
                         placeholder = "Type your address",
-                        isError = uiState.isAddressError,
-                        errorMsg = if (uiState.isAddressError) stringResource(id = uiState.errorAddressMsg) else "",
+                        isError = signUpState.isAddressError,
+                        errorMsg = if (signUpState.isAddressError) stringResource(id = signUpState.errorAddressMsg) else "",
                         onValueChange = { updateAddressState(it) },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     FoodMarketTextField(
-                        text = uiState.houseNumber,
+                        text = signUpState.houseNumber,
                         showLabel = true,
                         textLabel = "House No.",
                         placeholder = "Type your house number",
-                        isError = uiState.isHouseNumberError,
-                        errorMsg = if (uiState.isHouseNumberError) stringResource(id = uiState.errorHouseNumberMsg) else "",
+                        isError = signUpState.isHouseNumberError,
+                        errorMsg = if (signUpState.isHouseNumberError) stringResource(id = signUpState.errorHouseNumberMsg) else "",
                         onValueChange = { updateHouseNumberState(it) },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -143,13 +141,13 @@ fun AddressScreen(
                     val options = listOf("Jakarta", "Bogor", "Depok", "Tangerang", "Bekasi", "Bandung")
                     var expanded by remember { mutableStateOf(false) }
                     FoodMarketTextField(
-                        text = uiState.city,
+                        text = signUpState.city,
                         showLabel = true,
                         textLabel = "City",
                         placeholder = "Select your city",
                         isExpandedDropdown = true,
-                        isError = uiState.isCityError,
-                        errorMsg = if (uiState.isCityError) stringResource(id = uiState.errorCityMsg) else "",
+                        isError = signUpState.isCityError,
+                        errorMsg = if (signUpState.isCityError) stringResource(id = signUpState.errorCityMsg) else "",
                         expanded = expanded,
                         onExpandedChange = {
                             expanded = !expanded
@@ -172,7 +170,7 @@ fun AddressScreen(
                         onClick = { doSignUp() }
                     )
 
-                    if (uiState.isLoading) {
+                    if (signUpState.isLoading) {
                         DialogBoxLoading()
                     }
                 }
@@ -188,12 +186,13 @@ private fun DefaultPreview() {
         AddressScreen(
             navigateToHomeScreen = {},
             popBackStack = {},
-            uiState = SignUpState(),
+            signUpState = SignUpState(),
             updatePhoneNumberState = {},
             updateAddressState = {},
             updateHouseNumberState = {},
             updateCityState = {},
             doSignUp = {},
+            onShowSnackbar = { _, _ -> true },
         )
     }
 }

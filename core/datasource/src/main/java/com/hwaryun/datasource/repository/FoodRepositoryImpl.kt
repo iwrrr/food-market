@@ -1,6 +1,7 @@
 package com.hwaryun.datasource.repository
 
 import androidx.paging.PagingData
+import com.hwaryun.common.http.infrastructure.BaseResponse
 import com.hwaryun.common.http.infrastructure.execute
 import com.hwaryun.common.result.NetworkClientResult
 import com.hwaryun.datasource.paging.createPager
@@ -22,7 +23,7 @@ class FoodRepositoryImpl @Inject constructor(
 
     override fun getFoodById(
         id: Int
-    ): Flow<NetworkClientResult<FoodDto.FoodItemDto?>> = flow {
-        emit(execute { foodMarketApi.fetchFoodById(id).data })
+    ): Flow<NetworkClientResult<BaseResponse<FoodDto.FoodItemDto>>> = flow {
+        emit(execute { foodMarketApi.fetchFoodById(id) })
     }
 }

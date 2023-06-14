@@ -1,4 +1,4 @@
-package com.hwaryun.domain.usecase.sign_up
+package com.hwaryun.domain.usecase.auth
 
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.di.DispatcherProvider
@@ -8,23 +8,19 @@ import com.hwaryun.common.result.CheckFieldResult
 import com.hwaryun.common.result.UiResult
 import com.hwaryun.designsystem.R
 import com.hwaryun.domain.utils.EMAIL_FIELD
-import com.hwaryun.domain.utils.NAME_FIELD
 import com.hwaryun.domain.utils.PASSWORD_FIELD
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class CheckSignUpFieldUseCase @Inject constructor(
+class CheckSignInFieldUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
-) : FlowUseCase<CheckSignUpFieldUseCase.Param, UiResult<CheckFieldResult>>(dispatcherProvider.io) {
+) : FlowUseCase<SignInUseCase.Param, UiResult<CheckFieldResult>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: Param?): Flow<UiResult<CheckFieldResult>> =
+    override suspend fun buildFlowUseCase(param: SignInUseCase.Param?): Flow<UiResult<CheckFieldResult>> =
         flow {
             param?.let {
                 val result = mutableListOf<Pair<Int, Int>>()
-                checkIsNameValid(param.name)?.let {
-                    result.add(it)
-                }
                 checkIsEmailValid(param.email)?.let {
                     result.add(it)
                 }
@@ -38,16 +34,6 @@ class CheckSignUpFieldUseCase @Inject constructor(
                 }
             }
         }
-
-    private fun checkIsNameValid(username: String): Pair<Int, Int>? {
-        return if (username.isEmpty()) {
-            Pair(NAME_FIELD, R.string.error_field_empty)
-        } else if (username.length < 2) {
-            Pair(NAME_FIELD, R.string.error_field_name_length_below_min)
-        } else {
-            null
-        }
-    }
 
     private fun checkIsPasswordValid(password: String): Pair<Int, Int>? {
         return if (password.isEmpty()) {
@@ -68,10 +54,4 @@ class CheckSignUpFieldUseCase @Inject constructor(
             null
         }
     }
-
-    data class Param(
-        val name: String,
-        val email: String,
-        val password: String
-    )
 }

@@ -12,12 +12,11 @@ const val FOOD_ID = "foodId"
 const val foodDetailsRoute = "food_details_route/{$FOOD_ID}"
 
 fun NavController.navigateToFoodDetails(foodId: Int, navOptions: NavOptions? = null) {
-    val route = foodDetailsRoute.replace(oldValue = "{}", newValue = foodId.toString())
     this.navigate("food_details_route/$foodId", navOptions)
 }
 
 fun NavGraphBuilder.foodDetailsScreen(
-    onOrderClick: () -> Unit,
+    onOrderClick: (foodId: Int?, qty: Int, total: Int) -> Unit
 ) {
     composable(
         route = foodDetailsRoute,
