@@ -1,6 +1,5 @@
 package com.hwaryun.signup
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -57,7 +56,6 @@ internal fun AddressRoute(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddressScreen(
     navigateToHomeScreen: () -> Unit,
@@ -92,11 +90,11 @@ fun AddressScreen(
                 }
             )
         },
-        content = {
+        content = { innerPadding ->
 
             Box(
                 modifier = Modifier
-                    .padding(top = 24.dp)
+                    .padding(top = innerPadding.calculateTopPadding() + 24.dp)
                     .fillMaxSize(),
             ) {
                 Column(
@@ -138,7 +136,8 @@ fun AddressScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    val options = listOf("Jakarta", "Bogor", "Depok", "Tangerang", "Bekasi", "Bandung")
+                    val options =
+                        listOf("Jakarta", "Bogor", "Depok", "Tangerang", "Bekasi", "Bandung")
                     var expanded by remember { mutableStateOf(false) }
                     FoodMarketTextField(
                         text = signUpState.city,

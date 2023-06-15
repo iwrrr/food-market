@@ -2,7 +2,6 @@ package com.hwaryun.order.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,15 +29,22 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.utils.convertUnixToDate
+import com.hwaryun.designsystem.utils.singleClick
+import com.hwaryun.designsystem.utils.toNumberFormat
+import com.hwaryun.domain.model.Food
+import com.hwaryun.domain.model.Transaction
+import com.hwaryun.domain.model.User
 
 @Composable
 fun OrderItem(
-    onOrderItemClick: () -> Unit
+    order: Transaction,
+    onOrderItemClick: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.surface)
-            .clickable { onOrderItemClick() }
+            .singleClick { onOrderItemClick(order.id) }
             .padding(horizontal = 24.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.Center
     ) {
@@ -48,7 +54,7 @@ fun OrderItem(
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(null)
+                    .data(order.food.picturePath)
                     .crossfade(true)
                     .build(),
                 placeholder = painterResource(R.drawable.ic_placeholder),
@@ -67,14 +73,14 @@ fun OrderItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Cherry Healthy",
+                    text = order.food.name,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodyLarge,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
                 Text(
-                    text = "3 items • IDR 18.000.000",
+                    text = "${order.quantity} items • IDR ${order.total.toNumberFormat()}",
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis,
@@ -90,7 +96,7 @@ fun OrderItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Mei 2, 09:00",
+                    text = order.updatedAt.convertUnixToDate("MMM d, HH:mm"),
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis,
@@ -98,16 +104,18 @@ fun OrderItem(
                     maxLines = 1,
                     textAlign = TextAlign.End
                 )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "Cancelled",
-                    modifier = Modifier.fillMaxWidth(),
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.error,
-                    maxLines = 1,
-                    textAlign = TextAlign.End
-                )
+                if (order.status == "Cancelled") {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = order.status,
+                        modifier = Modifier.fillMaxWidth(),
+                        style = MaterialTheme.typography.bodySmall,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.error,
+                        maxLines = 1,
+                        textAlign = TextAlign.End
+                    )
+                }
             }
         }
     }
@@ -118,6 +126,39 @@ fun OrderItem(
 fun OrderItemPreview() {
     FoodMarketTheme {
         OrderItem(
+            order = Transaction(
+                createdAt = 0L,
+                deletedAt = 0L,
+                foodId = 0,
+                id = 0,
+                paymentUrl = "",
+                quantity = "",
+                status = "",
+                total = 0,
+                updatedAt = 0L,
+                userId = 0,
+                food = Food(
+                    description = "",
+                    id = 0,
+                    ingredients = "",
+                    name = "",
+                    picturePath = "",
+                    price = 0,
+                    rate = "",
+                    types = ""
+                ),
+                user = User(
+                    address = "",
+                    city = "",
+                    email = "",
+                    houseNumber = "",
+                    id = 0,
+                    name = "",
+                    phoneNumber = "",
+                    profilePhotoPath = "",
+                    profilePhotoUrl = ""
+                )
+            ),
             onOrderItemClick = {}
         )
     }

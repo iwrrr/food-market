@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,29 +24,56 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTabSection
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.components.TabItem
-import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.ui.Yellow
+import com.hwaryun.domain.model.Transaction
 
 @Composable
-internal fun OrderRoute(onOrderClick: () -> Unit) {
-    OrderScreen(onOrderClick = onOrderClick)
+internal fun OrderRoute(
+    navigateToHome: () -> Unit,
+    onOrderClick: (Int) -> Unit,
+    viewModel: OrderViewModel = hiltViewModel()
+) {
+    val inProgressOrders = viewModel.inProgressOrders.collectAsLazyPagingItems()
+    val postOrders = viewModel.postOrders.collectAsLazyPagingItems()
+
+    OrderScreen(
+        navigateToHome = navigateToHome,
+        onOrderClick = onOrderClick,
+        inProgressOrders = inProgressOrders,
+        postOrders = postOrders
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun OrderScreen(onOrderClick: () -> Unit) {
+fun OrderScreen(
+    navigateToHome: () -> Unit,
+    onOrderClick: (Int) -> Unit,
+    inProgressOrders: LazyPagingItems<Transaction>,
+    postOrders: LazyPagingItems<Transaction>
+) {
+    val shouldShowLoading =
+        inProgressOrders.loadState.refresh is LoadState.Loading && postOrders.loadState.refresh is LoadState.Loading
+    val shouldShowEmptyScreen =
+        inProgressOrders.itemCount <= 0 && postOrders.itemCount <= 0
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            if (false) {
-
-            } else {
-                FoodMarketTopAppBar(title = "Your Orders", subtitle = "Wait for the best meal")
+            if (!shouldShowLoading) {
+                if (!shouldShowEmptyScreen) {
+                    FoodMarketTopAppBar(title = "Your Orders", subtitle = "Wait for the best meal")
+                }
             }
         },
         content = { innerPadding ->
@@ -53,12 +82,16 @@ fun OrderScreen(onOrderClick: () -> Unit) {
                     .padding(innerPadding)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = if (false) Arrangement.Center else Arrangement.Top
+                verticalArrangement = if (shouldShowEmptyScreen) Arrangement.Center else Arrangement.Top
             ) {
-                if (false) {
-                    EmptyContent()
-                } else {
-                    OrderContent()
+                when {
+                    shouldShowLoading -> LoadingContent()
+                    shouldShowEmptyScreen -> EmptyContent(navigateToHome)
+                    else -> OrderContent(
+                        onOrderClick = onOrderClick,
+                        inProgressOrders = inProgressOrders,
+                        postOrders = postOrders
+                    )
                 }
             }
         }
@@ -66,7 +99,11 @@ fun OrderScreen(onOrderClick: () -> Unit) {
 }
 
 @Composable
-private fun OrderContent() {
+private fun OrderContent(
+    onOrderClick: (Int) -> Unit,
+    inProgressOrders: LazyPagingItems<Transaction>,
+    postOrders: LazyPagingItems<Transaction>
+) {
     Spacer(modifier = Modifier.height(24.dp))
     FoodMarketTabSection(
         tabItems = listOf(
@@ -74,7 +111,8 @@ private fun OrderContent() {
                 title = "In Progress",
                 screen = {
                     OrderItemScreen(
-                        onOrderItemClick = {}
+                        onOrderItemClick = onOrderClick,
+                        orders = inProgressOrders
                     )
                 }
             ),
@@ -82,7 +120,8 @@ private fun OrderContent() {
                 title = "Past Orders",
                 screen = {
                     OrderItemScreen(
-                        onOrderItemClick = {}
+                        onOrderItemClick = onOrderClick,
+                        orders = postOrders
                     )
                 }
             ),
@@ -91,7 +130,7 @@ private fun OrderContent() {
 }
 
 @Composable
-private fun EmptyContent() {
+private fun EmptyContent(navigateToHome: () -> Unit) {
     Image(
         painter = painterResource(id = R.drawable.ic_order_empty),
         contentDescription = null,
@@ -116,14 +155,24 @@ private fun EmptyContent() {
     FoodMarketButton(
         text = "Find Foods",
         modifier = Modifier.fillMaxWidth(1f / 2),
-        onClick = { }
+        onClick = { navigateToHome() }
     )
+}
+
+@Composable
+private fun LoadingContent() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(color = Yellow)
+    }
 }
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DefaultPreview() {
-    FoodMarketTheme {
-        OrderScreen(onOrderClick = {})
-    }
+    //    FoodMarketTheme {
+    //        OrderScreen(onOrderClick = {}, inProgressOrders = inProgressOrders, postOrders = postOrders)
+    //    }
 }

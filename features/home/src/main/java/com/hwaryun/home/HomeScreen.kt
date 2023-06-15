@@ -26,6 +26,7 @@ import com.hwaryun.designsystem.components.TabItem
 import com.hwaryun.designsystem.layout.ChildLayout
 import com.hwaryun.designsystem.layout.VerticalScrollLayout
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.ui.Yellow
 import com.hwaryun.domain.model.Food
 import com.hwaryun.home.components.HeaderHome
 
@@ -144,7 +145,8 @@ fun HomeScreen(
                             PaddingValues(
                                 top = innerPadding.calculateTopPadding()
                             )
-                        )
+                        ),
+                    contentColor = Yellow
                 )
             }
         }

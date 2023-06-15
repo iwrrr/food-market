@@ -10,6 +10,7 @@ import com.hwaryun.foodmarket.ui.MainAppState
 import com.hwaryun.home.navigation.foodDetailsRoute
 import com.hwaryun.home.navigation.homeGraph
 import com.hwaryun.home.navigation.navigateToHomeGraph
+import com.hwaryun.order.navigation.navigateToOrderGraph
 import com.hwaryun.order.navigation.orderGraph
 import com.hwaryun.payment.navigation.navigateToPaymentGraph
 import com.hwaryun.payment.navigation.navigateToSuccessOrder
@@ -74,6 +75,7 @@ fun MainAppNavHost(
             )
             paymentGraph(
                 popBackStack = navController::popBackStack,
+                navigateToOrder = navController::navigateToOrderGraph,
                 navigateToSuccessOrder = {
                     navController.navigateToSuccessOrder(
                         navOptions = navOptions {
@@ -87,15 +89,18 @@ fun MainAppNavHost(
             )
             successOrderScreen(
                 navigateToHome = navController::popBackStack,
-                navigateToOrder = {
-                    navController.popBackStack()
-                    mainAppState.navigateToTopLevelDestination(TopLevelDestination.ORDER)
-                },
-                onShowSnackbar = onShowSnackbar,
-            )
+            ) {
+                navController.popBackStack()
+                mainAppState.navigateToTopLevelDestination(TopLevelDestination.ORDER)
+            }
         }
         orderGraph(
-            onOrderClick = {},
+            navigateToHome = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.HOME) },
+            onOrderClick = { transactionId ->
+                navController.navigateToPaymentGraph(
+                    transactionId = transactionId
+                )
+            },
             nestedGraphs = {}
         )
         profileGraph(

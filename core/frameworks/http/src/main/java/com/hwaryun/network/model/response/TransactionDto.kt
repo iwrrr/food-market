@@ -22,5 +22,9 @@ data class TransactionDto(
     @SerializedName("updated_at")
     val updatedAt: Long? = null,
     @SerializedName("user_id")
-    val userId: String? = null
+    val userId: String? = null,
+    @SerializedName("food")
+    val food: FoodDto? = null,
+    @SerializedName("user")
+    val user: AuthDto.UserDto? = null,
 )

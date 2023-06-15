@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 interface FoodRepository {
     fun getFoods(
         types: String? = null
-    ): Flow<PagingData<FoodDto.FoodItemDto>>
+    ): Flow<PagingData<FoodDto>>
 
     fun getFoodById(
         id: Int
-    ): Flow<NetworkClientResult<BaseResponse<FoodDto.FoodItemDto>>>
+    ): Flow<NetworkClientResult<BaseResponse<FoodDto>>>
 }

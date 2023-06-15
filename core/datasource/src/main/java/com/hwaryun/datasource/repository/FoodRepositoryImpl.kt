@@ -17,13 +17,13 @@ class FoodRepositoryImpl @Inject constructor(
 
     override fun getFoods(
         types: String?
-    ): Flow<PagingData<FoodDto.FoodItemDto>> = createPager { page ->
-        foodMarketApi.fetchFoods(page = page, types = types).data?.foods
+    ): Flow<PagingData<FoodDto>> = createPager { page ->
+        foodMarketApi.fetchFoods(page = page, types = types).data?.results
     }.flow
 
     override fun getFoodById(
         id: Int
-    ): Flow<NetworkClientResult<BaseResponse<FoodDto.FoodItemDto>>> = flow {
+    ): Flow<NetworkClientResult<BaseResponse<FoodDto>>> = flow {
         emit(execute { foodMarketApi.fetchFoodById(id) })
     }
 }

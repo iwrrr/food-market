@@ -9,7 +9,9 @@ import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.domain.mapper.toUser
 import com.hwaryun.domain.usecase.food.GetFoodDetailUseCase
+import com.hwaryun.domain.usecase.payment.CancelOrderUseCase
 import com.hwaryun.domain.usecase.payment.CheckoutUseCase
+import com.hwaryun.domain.usecase.payment.GetTransactionDetailUseCase
 import com.hwaryun.payment.navigation.FOOD_ID
 import com.hwaryun.payment.navigation.QTY
 import com.hwaryun.payment.navigation.TOTAL
@@ -25,7 +27,9 @@ import javax.inject.Inject
 @HiltViewModel
 class PaymentViewModel @Inject constructor(
     private val getFoodDetailUseCase: GetFoodDetailUseCase,
+    private val getTransactionDetailUseCase: GetTransactionDetailUseCase,
     private val checkoutUseCase: CheckoutUseCase,
+    private val cancelOrderUseCase: CancelOrderUseCase,
     private val userPreferenceManager: UserPreferenceManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -43,7 +47,7 @@ class PaymentViewModel @Inject constructor(
 
     init {
         if (transactionId != 0) {
-            // TODO: Integrate order feature
+            getTransactionDetail(transactionId)
         } else {
             getFoodDetail(foodId)
         }
@@ -73,6 +77,44 @@ class PaymentViewModel @Inject constructor(
                                 shippingCost = shippingCost,
                                 totalFoodPrice = totalFoodPrice,
                                 totalPrice = totalPrice
+                            )
+                        }
+                    },
+                    doOnError = {
+                        _paymentUiState.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                error = it.throwable?.message ?: "Unexpected error accrued"
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    private fun getTransactionDetail(transactionId: Int) {
+        viewModelScope.launch {
+            getTransactionDetailUseCase.execute(transactionId).collect { result ->
+                result.suspendSubscribe(
+                    doOnLoading = {
+                        _paymentUiState.update { state ->
+                            state.copy(isLoading = true)
+                        }
+                    },
+                    doOnSuccess = {
+                        val shippingCost = 10000
+                        val tax = totalFoodPrice.div(10)
+                        _paymentUiState.update { state ->
+                            state.copy(
+                                transaction = it.value,
+                                food = it.value?.food,
+                                isLoading = false,
+                                qty = it.value?.quantity.orZero(),
+                                tax = tax,
+                                shippingCost = shippingCost,
+                                totalFoodPrice = it.value?.food?.price.orZero(),
+                                totalPrice = it.value?.total.orZero()
                             )
                         }
                     },
@@ -120,6 +162,36 @@ class PaymentViewModel @Inject constructor(
                         _transactionUiState.update { state ->
                             state.copy(
                                 transaction = it.value,
+                                isLoading = false
+                            )
+                        }
+                    },
+                    doOnError = {
+                        _transactionUiState.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                error = it.throwable?.message ?: "Unexpected error accrued"
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    fun cancelOrder() {
+        viewModelScope.launch {
+            cancelOrderUseCase.execute(_paymentUiState.value.transaction?.id).collect { result ->
+                result.subscribe(
+                    doOnLoading = {
+                        _transactionUiState.update { state ->
+                            state.copy(isLoading = true)
+                        }
+                    },
+                    doOnSuccess = {
+                        _transactionUiState.update { state ->
+                            state.copy(
+                                isCancelled = true,
                                 isLoading = false
                             )
                         }

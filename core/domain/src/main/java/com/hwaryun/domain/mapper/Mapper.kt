@@ -23,7 +23,7 @@ fun AuthDto.UserDto?.toUser(): User {
     )
 }
 
-fun FoodDto.FoodItemDto?.toFood(): Food {
+fun FoodDto?.toFood(): Food {
     return Food(
         description = this?.description.orDash(),
         id = this?.id.orZero(),
@@ -37,6 +37,13 @@ fun FoodDto.FoodItemDto?.toFood(): Food {
 }
 
 fun TransactionDto?.toTransaction(): Transaction {
+    val status = when (this?.status) {
+        "CANCELLED" -> "Cancelled"
+        "ON_DELIVERY" -> "On Delivery"
+        "DELIVERED" -> "Delivered"
+        else -> "-"
+    }
+
     return Transaction(
         createdAt = this?.createdAt.orZero(),
         deletedAt = this?.deletedAt.orZero(),
@@ -44,9 +51,11 @@ fun TransactionDto?.toTransaction(): Transaction {
         id = this?.id.orZero(),
         paymentUrl = this?.paymentUrl.orDash(),
         quantity = this?.quantity.orDash(),
-        status = this?.status.orDash(),
-        total = this?.total.orDash(),
+        status = status,
+        total = this?.total.orZero(),
         updatedAt = this?.updatedAt.orZero(),
-        userId = this?.userId.orZero()
+        userId = this?.userId.orZero(),
+        food = this?.food.toFood(),
+        user = this?.user.toUser()
     )
 }

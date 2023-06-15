@@ -6,10 +6,14 @@ import com.hwaryun.network.model.request.LoginRequest
 import com.hwaryun.network.model.request.RegisterRequest
 import com.hwaryun.network.model.response.AuthDto
 import com.hwaryun.network.model.response.FoodDto
+import com.hwaryun.network.model.response.PagingDto
 import com.hwaryun.network.model.response.TransactionDto
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface FoodMarketApi {
@@ -32,15 +36,34 @@ interface FoodMarketApi {
         @Query("page") page: Int? = null,
         @Query("limit") limit: Int? = null,
         @Query("types") types: String? = null
-    ): BaseResponse<FoodDto>
+    ): BaseResponse<PagingDto<FoodDto>>
 
     @GET("food")
     suspend fun fetchFoodById(
         @Query("id") id: Int
-    ): BaseResponse<FoodDto.FoodItemDto>
+    ): BaseResponse<FoodDto>
 
     @POST("checkout")
     suspend fun checkout(
         @Body checkoutRequest: CheckoutRequest
+    ): BaseResponse<TransactionDto>
+
+    @GET("transaction")
+    suspend fun fetchTransactions(
+        @Query("page") page: Int? = null,
+        @Query("limit") limit: Int? = null,
+        @Query("status", encoded = true) status: String? = null
+    ): BaseResponse<PagingDto<TransactionDto>>
+
+    @GET("transaction")
+    suspend fun fetchTransactionById(
+        @Query("id") id: Int
+    ): BaseResponse<TransactionDto>
+
+    @FormUrlEncoded
+    @POST("transaction/{id}")
+    suspend fun cancelOrder(
+        @Path("id") id: Int,
+        @Field("status") status: String
     ): BaseResponse<TransactionDto>
 }

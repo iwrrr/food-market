@@ -4,13 +4,15 @@ import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.datasource.repository.AuthRepository
 import com.hwaryun.datasource.repository.FoodRepository
-import com.hwaryun.domain.usecase.food.GetFoodDetailUseCase
-import com.hwaryun.domain.usecase.auth.LogoutUseCase
-import com.hwaryun.domain.usecase.auth.CheckSignInFieldUseCase
-import com.hwaryun.domain.usecase.auth.SignInUseCase
+import com.hwaryun.datasource.repository.TransactionRepository
 import com.hwaryun.domain.usecase.auth.CheckAddressFieldUseCase
+import com.hwaryun.domain.usecase.auth.CheckSignInFieldUseCase
 import com.hwaryun.domain.usecase.auth.CheckSignUpFieldUseCase
+import com.hwaryun.domain.usecase.auth.LogoutUseCase
+import com.hwaryun.domain.usecase.auth.SignInUseCase
 import com.hwaryun.domain.usecase.auth.SignUpUseCase
+import com.hwaryun.domain.usecase.food.GetFoodDetailUseCase
+import com.hwaryun.domain.usecase.payment.GetTransactionDetailUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -98,5 +100,14 @@ object UseCaseModule {
         dispatcherProvider: DispatcherProvider
     ): GetFoodDetailUseCase {
         return GetFoodDetailUseCase(foodRepository, dispatcherProvider)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetTransactionDetailUseCase(
+        transactionRepository: TransactionRepository,
+        dispatcherProvider: DispatcherProvider
+    ): GetTransactionDetailUseCase {
+        return GetTransactionDetailUseCase(transactionRepository, dispatcherProvider)
     }
 }

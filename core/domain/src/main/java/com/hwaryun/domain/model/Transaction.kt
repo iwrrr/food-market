@@ -8,7 +8,9 @@ data class Transaction(
     val paymentUrl: String,
     val quantity: String,
     val status: String,
-    val total: String,
+    val total: Int,
     val updatedAt: Long,
-    val userId: Int
+    val userId: Int,
+    val food: Food,
+    val user: User
 )

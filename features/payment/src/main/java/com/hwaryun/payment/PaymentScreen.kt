@@ -43,16 +43,19 @@ import com.google.accompanist.placeholder.material.color
 import com.google.accompanist.placeholder.material.shimmer
 import com.google.accompanist.placeholder.placeholder
 import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.ButtonType
 import com.hwaryun.designsystem.components.DialogBoxLoading
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.LightGreen
+import com.hwaryun.designsystem.utils.convertUnixToDate
 import com.hwaryun.designsystem.utils.toNumberFormat
 
 @Composable
 internal fun PaymentRoute(
     popBackStack: () -> Unit,
+    navigateToOrder: () -> Unit,
     navigateToSuccessOrder: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: PaymentViewModel = hiltViewModel()
@@ -64,9 +67,11 @@ internal fun PaymentRoute(
         paymentUiState = paymentUiState,
         transactionUiState = transactionUiState,
         popBackStack = popBackStack,
+        navigateToOrder = navigateToOrder,
         navigateToSuccessOrder = navigateToSuccessOrder,
         onShowSnackbar = onShowSnackbar,
-        onCheckoutClick = viewModel::checkout
+        onCheckoutClick = viewModel::checkout,
+        onCancelOrderClick = viewModel::cancelOrder,
     )
 }
 
@@ -76,9 +81,11 @@ fun PaymentScreen(
     paymentUiState: PaymentUiState,
     transactionUiState: TransactionUiState,
     popBackStack: () -> Unit,
+    navigateToOrder: () -> Unit,
     navigateToSuccessOrder: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     onCheckoutClick: () -> Unit,
+    onCancelOrderClick: () -> Unit,
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -91,6 +98,10 @@ fun PaymentScreen(
 
             context.startActivity(intent)
             navigateToSuccessOrder()
+        }
+
+        if (transactionUiState.isCancelled) {
+            navigateToOrder()
         }
 
         if (transactionUiState.error.isNotEmpty()) {
@@ -469,7 +480,8 @@ fun PaymentScreen(
                         )
                     }
                 }
-                if (false) {
+                Spacer(modifier = Modifier.height(24.dp))
+                if (paymentUiState.transaction != null) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -482,15 +494,17 @@ fun PaymentScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
+                            val transactionCode =
+                                paymentUiState.transaction.updatedAt.convertUnixToDate("yyMM")
                             Text(
-                                text = "#FM209391",
+                                text = "#FM" + transactionCode + paymentUiState.transaction.id,
                                 modifier = Modifier.weight(1f),
                                 color = MaterialTheme.colorScheme.secondary,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
                             Text(
-                                text = "Paid",
+                                text = paymentUiState.transaction.status,
                                 modifier = Modifier.weight(1f),
                                 color = LightGreen,
                                 textAlign = TextAlign.End,
@@ -499,14 +513,27 @@ fun PaymentScreen(
                     }
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Column(
-                    modifier = Modifier.padding(24.dp)
-                ) {
-                    FoodMarketButton(
-                        text = "Checkout Now",
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onCheckoutClick() },
-                    )
+                if (!paymentUiState.isLoading) {
+                    Column(
+                        modifier = Modifier.padding(24.dp)
+                    ) {
+                        if (paymentUiState.transaction == null) {
+                            FoodMarketButton(
+                                text = "Checkout Now",
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { onCheckoutClick() },
+                            )
+                        } else {
+                            if (paymentUiState.transaction.status == "On Delivery") {
+                                FoodMarketButton(
+                                    text = "Cancel My Order",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    type = ButtonType.Error,
+                                    onClick = { onCancelOrderClick() },
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
@@ -525,9 +552,11 @@ private fun DefaultPreview() {
             paymentUiState = PaymentUiState(),
             transactionUiState = TransactionUiState(),
             popBackStack = {},
+            navigateToOrder = {},
             navigateToSuccessOrder = {},
             onShowSnackbar = { _, _ -> true },
-            onCheckoutClick = {}
+            onCheckoutClick = {},
+            onCancelOrderClick = {}
         )
     }
 }

@@ -1,29 +1,29 @@
-package com.hwaryun.domain.usecase.food
+package com.hwaryun.domain.usecase.payment
 
 import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.common.domain.FlowUseCase
 import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.common.result.UiResult
-import com.hwaryun.datasource.repository.FoodRepository
-import com.hwaryun.domain.mapper.toFood
-import com.hwaryun.domain.model.Food
+import com.hwaryun.datasource.repository.TransactionRepository
+import com.hwaryun.domain.mapper.toTransaction
+import com.hwaryun.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetFoodDetailUseCase @Inject constructor(
-    private val foodRepository: FoodRepository,
+class GetTransactionDetailUseCase @Inject constructor(
+    private val transactionRepository: TransactionRepository,
     dispatcherProvider: DispatcherProvider
-) : FlowUseCase<Int, UiResult<Food>>(dispatcherProvider.io) {
+) : FlowUseCase<Int, UiResult<Transaction>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: Int?): Flow<UiResult<Food>> = flow {
+    override suspend fun buildFlowUseCase(param: Int?): Flow<UiResult<Transaction>> = flow {
         emit(UiResult.Loading())
         param?.let { foodId ->
-            foodRepository.getFoodById(foodId).collect { result ->
+            transactionRepository.getTransactionDetail(foodId).collect { result ->
                 result.suspendSubscribe(
                     doOnSuccess = {
                         result.value?.data?.let {
-                            emit(UiResult.Success(it.toFood()))
+                            emit(UiResult.Success(it.toTransaction()))
                         }
                     },
                     doOnError = {

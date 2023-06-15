@@ -10,6 +10,9 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import timber.log.Timber
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 fun Modifier.singleClick(
     enabled: Boolean = true,
@@ -48,4 +51,10 @@ fun Int?.toNumberFormat(): String {
         Timber.e(e, "ERROR ====> ${e.localizedMessage}")
         "0"
     }
+}
+
+fun Long.convertUnixToDate(pattern: String): String {
+    val date = Date(this)
+    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+    return formatter.format(date)
 }

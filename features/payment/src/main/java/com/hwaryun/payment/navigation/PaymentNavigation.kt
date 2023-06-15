@@ -39,6 +39,7 @@ fun NavController.navigateToSuccessOrder(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.paymentGraph(
     popBackStack: () -> Unit,
+    navigateToOrder: () -> Unit,
     navigateToSuccessOrder: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
@@ -69,6 +70,7 @@ fun NavGraphBuilder.paymentGraph(
         ) {
             PaymentRoute(
                 popBackStack = popBackStack,
+                navigateToOrder = navigateToOrder,
                 navigateToSuccessOrder = navigateToSuccessOrder,
                 onShowSnackbar = onShowSnackbar
             )
@@ -79,7 +81,6 @@ fun NavGraphBuilder.paymentGraph(
 fun NavGraphBuilder.successOrderScreen(
     navigateToHome: () -> Unit,
     navigateToOrder: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     composable(route = successOrderRoute) {
         SuccessOrderRoute(
