@@ -58,7 +58,7 @@ fun FoodMarketTopAppBar(
                     Column {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.headlineMedium,
+                            style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth(),
                             overflow = TextOverflow.Ellipsis

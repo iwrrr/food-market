@@ -21,10 +21,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.designsystem.R
-import com.hwaryun.designsystem.components.ButtonType
+import com.hwaryun.designsystem.utils.ButtonType
 
 @Composable
 internal fun SuccessOrderRoute(
@@ -86,7 +86,7 @@ fun SuccessOrderScreen(
             FoodMarketButton(
                 text = "View My Order",
                 modifier = Modifier.fillMaxWidth(),
-                type = ButtonType.Secondary,
+                type = ButtonType.Outline,
                 onClick = { navigateToOrder() },
             )
         }

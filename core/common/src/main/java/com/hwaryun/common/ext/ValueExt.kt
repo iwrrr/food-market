@@ -1,6 +1,11 @@
 package com.hwaryun.common.ext
 
 import android.util.Patterns
+import timber.log.Timber
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 val CharSequence?.isValid: Boolean
     get() = if (this.isNullOrEmpty()) {
@@ -48,6 +53,27 @@ fun String?.isNullorDash(): Boolean {
 fun Any?.orFalse(): Boolean {
     return this != null
 }
+
+fun Int?.toNumberFormat(): String {
+    return try {
+        this?.let {
+            val format = NumberFormat.getInstance().apply {
+                maximumFractionDigits = 0
+            }
+            format.format(this)
+        } ?: "0"
+    } catch (e: Exception) {
+        Timber.e(e, "ERROR ====> ${e.localizedMessage}")
+        "0"
+    }
+}
+
+fun Long.convertUnixToDate(pattern: String): String {
+    val date = Date(this)
+    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+    return formatter.format(date)
+}
+
 
 fun <T> List<T>.isEmpty(callback: (List<T>) -> Unit) {
     if (this.isEmpty()) callback.invoke(this)

@@ -10,12 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,19 +23,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hwaryun.designsystem.components.ButtonType
+import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.CustomTextField
 import com.hwaryun.designsystem.components.DialogBoxLoading
 import com.hwaryun.designsystem.components.FoodMarketButton
-import com.hwaryun.designsystem.components.FoodMarketTextField
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
+import com.hwaryun.designsystem.ui.Black500
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.utils.ButtonType
 import com.hwaryun.signin.state.SignInUiState
 
 @Composable
@@ -70,6 +76,8 @@ fun SignInScreen(
     updateIsPasswordVisible: (Boolean) -> Unit,
     doSignIn: (String, String) -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+
     LaunchedEffect(signInUiState) {
         if (signInUiState.error.isNotEmpty()) {
             onShowSnackbar(signInUiState.error, null)
@@ -98,39 +106,72 @@ fun SignInScreen(
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    FoodMarketTextField(
-                        text = signInUiState.email,
+                    CustomTextField(
+                        value = signInUiState.email,
+                        onValueChange = { updateEmailState(it) },
                         showLabel = true,
-                        textLabel = "Email Address",
+                        label = "Email Address",
                         placeholder = "Type your email address",
+                        singleLine = true,
                         isError = signInUiState.isEmailError,
                         errorMsg = if (signInUiState.isEmailError) stringResource(id = signInUiState.errorEmailMsg) else "",
-                        onValueChange = { updateEmailState(it) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email
-                        )
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }
+                        ),
+                        trailingIcon = {
+                            if (signInUiState.email.isNotEmpty()) {
+                                IconButton(
+                                    modifier = Modifier.size(20.dp),
+                                    onClick = { updateEmailState("") }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_close_circle_bold),
+                                        tint = Black500,
+                                        contentDescription = "Clear Text"
+                                    )
+                                }
+                            }
+                        },
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    FoodMarketTextField(
-                        text = signInUiState.password,
+                    Spacer(modifier = Modifier.height(24.dp))
+                    CustomTextField(
+                        value = signInUiState.password,
+                        onValueChange = { updatePasswordState(it) },
                         showLabel = true,
-                        textLabel = "Password",
+                        label = "Password",
                         placeholder = "Type your password",
-                        isPasswordTextField = !signInUiState.isPasswordVisible,
+                        singleLine = true,
+                        visualTransformation = if (!signInUiState.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
                         isError = signInUiState.isPasswordError,
                         errorMsg = if (signInUiState.isPasswordError) stringResource(id = signInUiState.errorPasswordMsg) else "",
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
+                        ),
                         trailingIcon = {
                             IconButton(
+                                modifier = Modifier.size(20.dp),
                                 onClick = { updateIsPasswordVisible(!signInUiState.isPasswordVisible) }
                             ) {
+                                val icon = if (signInUiState.isPasswordVisible) {
+                                    painterResource(id = R.drawable.ic_eye_slash_bold)
+                                } else {
+                                    painterResource(id = R.drawable.ic_eye_bold)
+                                }
+
                                 Icon(
-                                    imageVector = if (signInUiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    tint = Color.Gray,
+                                    painter = icon,
+                                    tint = Black500,
                                     contentDescription = "Password Toggle"
                                 )
                             }
                         },
-                        onValueChange = { updatePasswordState(it) }
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     FoodMarketButton(
@@ -143,7 +184,7 @@ fun SignInScreen(
                     FoodMarketButton(
                         text = "Create New Account",
                         modifier = Modifier.fillMaxWidth(),
-                        type = ButtonType.Secondary,
+                        type = ButtonType.Outline,
                         onClick = { navigateToSignUpScreen() }
                     )
                 }

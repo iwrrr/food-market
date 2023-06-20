@@ -20,12 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hwaryun.designsystem.components.ButtonType
 import com.hwaryun.designsystem.components.DialogBoxLoading
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTabSection
 import com.hwaryun.designsystem.components.TabItem
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.utils.ButtonType
 import com.hwaryun.profile.components.HeaderProfile
 
 @Composable
@@ -87,7 +87,7 @@ fun ProfileScreen(
                 ) {
                     FoodMarketButton(
                         modifier = Modifier.fillMaxWidth(),
-                        type = ButtonType.Error,
+                        type = ButtonType.Text,
                         text = "Logout",
                         onClick = { onLogoutClick() },
                     )

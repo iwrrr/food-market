@@ -42,15 +42,15 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.color
 import com.google.accompanist.placeholder.material.shimmer
 import com.google.accompanist.placeholder.placeholder
+import com.hwaryun.common.ext.convertUnixToDate
+import com.hwaryun.common.ext.toNumberFormat
 import com.hwaryun.designsystem.R
-import com.hwaryun.designsystem.components.ButtonType
 import com.hwaryun.designsystem.components.DialogBoxLoading
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.LightGreen
-import com.hwaryun.designsystem.utils.convertUnixToDate
-import com.hwaryun.designsystem.utils.toNumberFormat
+import com.hwaryun.designsystem.utils.ButtonType
 
 @Composable
 internal fun PaymentRoute(
@@ -528,7 +528,7 @@ fun PaymentScreen(
                                 FoodMarketButton(
                                     text = "Cancel My Order",
                                     modifier = Modifier.fillMaxWidth(),
-                                    type = ButtonType.Error,
+                                    type = ButtonType.Text,
                                     onClick = { onCancelOrderClick() },
                                 )
                             }

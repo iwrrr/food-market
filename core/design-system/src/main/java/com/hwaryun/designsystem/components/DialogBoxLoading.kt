@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.designsystem.ui.Yellow
+import com.hwaryun.designsystem.ui.GojekGreen
 
 @Composable
 fun DialogBoxLoading(
@@ -47,7 +47,7 @@ fun DialogBoxLoading(
             ) {
 
                 CircularProgressIndicator(
-                    color = Yellow
+                    color = GojekGreen
                 )
 
                 // Gap between progress indicator and text
