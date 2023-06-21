@@ -38,11 +38,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.CustomTextField
 import com.hwaryun.designsystem.components.DialogBoxLoading
-import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTopAppBar
+import com.hwaryun.designsystem.components.atoms.Button
+import com.hwaryun.designsystem.components.atoms.ButtonType
 import com.hwaryun.designsystem.ui.Black500
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.designsystem.utils.ButtonType
 import com.hwaryun.signin.state.SignInUiState
 
 @Composable
@@ -174,14 +174,13 @@ fun SignInScreen(
                         },
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    FoodMarketButton(
+                    Button(
                         text = "Sign In",
                         modifier = Modifier.fillMaxWidth(),
-                        type = ButtonType.Primary,
                         onClick = { doSignIn(signInUiState.email, signInUiState.password) }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    FoodMarketButton(
+                    Button(
                         text = "Create New Account",
                         modifier = Modifier.fillMaxWidth(),
                         type = ButtonType.Outline,
