@@ -855,11 +855,11 @@ private fun AsphaltColors.contentColorFor(backgroundColor: Color): Color {
 
 @Composable
 @ReadOnlyComposable
-fun pressedColorFor(backgroundColor: Color) =
-    AsphaltTheme.colors.pressedColorFor(backgroundColor).takeOrElse { LocalContentColor.current }
+fun pressedColor(defaultColor: Color) =
+    AsphaltTheme.colors.pressedColor(defaultColor).takeOrElse { LocalContentColor.current }
 
-private fun AsphaltColors.pressedColorFor(backgroundColor: Color): Color {
-    return when (backgroundColor) {
+private fun AsphaltColors.pressedColor(defaultColor: Color): Color {
+    return when (defaultColor) {
         gojek_green_500 -> gojek_green_700
         gojek_green_50 -> gojek_green_100
         payment_blue_500 -> payment_blue_700

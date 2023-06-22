@@ -29,9 +29,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.AsphaltAppBar
 import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTabSection
-import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.components.TabItem
 import com.hwaryun.designsystem.ui.Yellow
 import com.hwaryun.domain.model.Transaction
@@ -72,7 +72,7 @@ fun OrderScreen(
         topBar = {
             if (!shouldShowLoading) {
                 if (!shouldShowEmptyScreen) {
-                    FoodMarketTopAppBar(title = "Your Orders", subtitle = "Wait for the best meal")
+                    AsphaltAppBar(title = "Your Orders", subtitle = "Wait for the best meal")
                 }
             }
         },

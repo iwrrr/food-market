@@ -45,9 +45,9 @@ import com.google.accompanist.placeholder.placeholder
 import com.hwaryun.common.ext.convertUnixToDate
 import com.hwaryun.common.ext.toNumberFormat
 import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.AsphaltAppBar
 import com.hwaryun.designsystem.components.DialogBoxLoading
 import com.hwaryun.designsystem.components.FoodMarketButton
-import com.hwaryun.designsystem.components.FoodMarketTopAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.LightGreen
 import com.hwaryun.designsystem.utils.ButtonType
@@ -111,7 +111,7 @@ fun PaymentScreen(
 
     Scaffold(
         topBar = {
-            FoodMarketTopAppBar(
+            AsphaltAppBar(
                 title = "Payment",
                 subtitle = "You deserve better meal",
                 showNavigateBack = true,

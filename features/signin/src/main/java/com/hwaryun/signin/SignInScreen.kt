@@ -1,6 +1,5 @@
 package com.hwaryun.signin
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,12 +17,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,13 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.R
-import com.hwaryun.designsystem.components.CustomTextField
+import com.hwaryun.designsystem.components.AsphaltAppBar
 import com.hwaryun.designsystem.components.DialogBoxLoading
-import com.hwaryun.designsystem.components.FoodMarketTopAppBar
-import com.hwaryun.designsystem.components.atoms.Button
+import com.hwaryun.designsystem.components.atoms.AsphaltButton
+import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.atoms.ButtonType
-import com.hwaryun.designsystem.ui.Black500
+import com.hwaryun.designsystem.components.molecules.AsphaltInputGroup
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.signin.state.SignInUiState
 
 @Composable
@@ -54,7 +54,7 @@ internal fun SignInRoute(
     val signInUiState by viewModel.signInUiState.collectAsStateWithLifecycle()
 
     SignInScreen(
-        signInUiState = signInUiState,
+        signInState = signInUiState,
         navigateToSignUpScreen = navigateToSignUpScreen,
         onShowSnackbar = onShowSnackbar,
         updateEmailState = viewModel::updateEmailState,
@@ -65,10 +65,9 @@ internal fun SignInRoute(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun SignInScreen(
-    signInUiState: SignInUiState,
+    signInState: SignInUiState,
     navigateToSignUpScreen: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     updateEmailState: (String) -> Unit,
@@ -76,18 +75,20 @@ fun SignInScreen(
     updateIsPasswordVisible: (Boolean) -> Unit,
     doSignIn: (String, String) -> Unit,
 ) {
+    var shouldShowTrailingIcon by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(signInUiState) {
-        if (signInUiState.error.isNotEmpty()) {
-            onShowSnackbar(signInUiState.error, null)
+    LaunchedEffect(signInState) {
+        if (signInState.error.isNotEmpty()) {
+            onShowSnackbar(signInState.error, null)
         }
     }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = AsphaltTheme.colors.cool_gray_1cCp_50,
         topBar = {
-            FoodMarketTopAppBar(
+            AsphaltAppBar(
                 title = "Sign In",
                 subtitle = "Find your best ever meal"
             )
@@ -101,20 +102,24 @@ fun SignInScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(AsphaltTheme.colors.pure_white_500)
                         .verticalScroll(rememberScrollState())
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    CustomTextField(
-                        value = signInUiState.email,
+                    AsphaltInputGroup(
+                        value = signInState.email,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .onFocusChanged { shouldShowTrailingIcon = it.isFocused },
                         onValueChange = { updateEmailState(it) },
                         showLabel = true,
+                        required = true,
                         label = "Email Address",
                         placeholder = "Type your email address",
                         singleLine = true,
-                        isError = signInUiState.isEmailError,
-                        errorMsg = if (signInUiState.isEmailError) stringResource(id = signInUiState.errorEmailMsg) else "",
+                        isError = signInState.isEmailError,
+                        errorMsg = if (signInState.isEmailError) stringResource(id = signInState.errorEmailMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next
@@ -125,14 +130,13 @@ fun SignInScreen(
                             }
                         ),
                         trailingIcon = {
-                            if (signInUiState.email.isNotEmpty()) {
+                            if (signInState.email.isNotEmpty() && shouldShowTrailingIcon) {
                                 IconButton(
                                     modifier = Modifier.size(20.dp),
                                     onClick = { updateEmailState("") }
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.ic_close_circle_bold),
-                                        tint = Black500,
                                         contentDescription = "Clear Text"
                                     )
                                 }
@@ -140,16 +144,18 @@ fun SignInScreen(
                         },
                     )
                     Spacer(modifier = Modifier.height(24.dp))
-                    CustomTextField(
-                        value = signInUiState.password,
+                    AsphaltInputGroup(
+                        value = signInState.password,
+                        modifier = Modifier.fillMaxWidth(),
                         onValueChange = { updatePasswordState(it) },
                         showLabel = true,
+                        required = true,
                         label = "Password",
                         placeholder = "Type your password",
                         singleLine = true,
-                        visualTransformation = if (!signInUiState.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
-                        isError = signInUiState.isPasswordError,
-                        errorMsg = if (signInUiState.isPasswordError) stringResource(id = signInUiState.errorPasswordMsg) else "",
+                        visualTransformation = if (!signInState.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+                        isError = signInState.isPasswordError,
+                        errorMsg = if (signInState.isPasswordError) stringResource(id = signInState.errorPasswordMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Password,
                             imeAction = ImeAction.Done
@@ -157,9 +163,9 @@ fun SignInScreen(
                         trailingIcon = {
                             IconButton(
                                 modifier = Modifier.size(20.dp),
-                                onClick = { updateIsPasswordVisible(!signInUiState.isPasswordVisible) }
+                                onClick = { updateIsPasswordVisible(!signInState.isPasswordVisible) }
                             ) {
-                                val icon = if (signInUiState.isPasswordVisible) {
+                                val icon = if (signInState.isPasswordVisible) {
                                     painterResource(id = R.drawable.ic_eye_slash_bold)
                                 } else {
                                     painterResource(id = R.drawable.ic_eye_bold)
@@ -167,28 +173,29 @@ fun SignInScreen(
 
                                 Icon(
                                     painter = icon,
-                                    tint = Black500,
                                     contentDescription = "Password Toggle"
                                 )
                             }
                         },
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    Button(
-                        text = "Sign In",
+                    AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { doSignIn(signInUiState.email, signInUiState.password) }
-                    )
+                        onClick = { doSignIn(signInState.email, signInState.password) }
+                    ) {
+                        AsphaltText(text = "Sign In")
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        text = "Create New Account",
+                    AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),
                         type = ButtonType.Outline,
                         onClick = { navigateToSignUpScreen() }
-                    )
+                    ) {
+                        AsphaltText(text = "Create New Account")
+                    }
                 }
 
-                if (signInUiState.isLoading) {
+                if (signInState.isLoading) {
                     DialogBoxLoading()
                 }
             }
@@ -201,7 +208,7 @@ fun SignInScreen(
 private fun DefaultPreview() {
     FoodMarketTheme {
         SignInScreen(
-            signInUiState = SignInUiState(),
+            signInState = SignInUiState(),
             navigateToSignUpScreen = {},
             updateEmailState = {},
             updatePasswordState = {},

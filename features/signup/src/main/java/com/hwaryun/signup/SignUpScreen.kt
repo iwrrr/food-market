@@ -9,12 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,16 +23,24 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hwaryun.designsystem.components.FoodMarketButton
+import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.AsphaltAppBar
 import com.hwaryun.designsystem.components.FoodMarketCircleImage
-import com.hwaryun.designsystem.components.FoodMarketTextField
-import com.hwaryun.designsystem.components.FoodMarketTopAppBar
+import com.hwaryun.designsystem.components.atoms.AsphaltButton
+import com.hwaryun.designsystem.components.atoms.AsphaltText
+import com.hwaryun.designsystem.components.molecules.AsphaltInputGroup
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.signup.state.SignUpState
 
@@ -70,6 +77,8 @@ fun SignUpScreen(
     validateFirstStep: (String, String, String) -> Unit,
 ) {
     var isFirstStepCompleted by rememberSaveable { mutableStateOf(true) }
+    var shouldShowTrailingIcon by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     if (signUpState.firstStep != null && isFirstStepCompleted) {
         LaunchedEffect(Unit) {
@@ -81,7 +90,7 @@ fun SignUpScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            FoodMarketTopAppBar(
+            AsphaltAppBar(
                 title = "Sign Up",
                 subtitle = "Register and eat",
                 showNavigateBack = true,
@@ -103,54 +112,117 @@ fun SignUpScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     FoodMarketCircleImage(width = 110.dp, height = 110.dp, borderEnabled = true)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    FoodMarketTextField(
-                        text = signUpState.name,
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AsphaltInputGroup(
+                        value = signUpState.name,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .onFocusChanged { shouldShowTrailingIcon = it.isFocused },
+                        onValueChange = { updateNameState(it) },
                         showLabel = true,
-                        textLabel = "Full Name",
+                        required = true,
+                        label = "Full Name",
                         placeholder = "Type your full name",
+                        singleLine = true,
                         isError = signUpState.isNameError,
                         errorMsg = if (signUpState.isNameError) stringResource(id = signUpState.errorNameMsg) else "",
-                        onValueChange = { updateNameState(it) },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }
+                        ),
+                        trailingIcon = {
+                            if (signUpState.name.isNotEmpty() && shouldShowTrailingIcon) {
+                                IconButton(
+                                    modifier = Modifier.size(20.dp),
+                                    onClick = { updateEmailState("") }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_close_circle_bold),
+                                        contentDescription = "Clear Text"
+                                    )
+                                }
+                            }
+                        },
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    FoodMarketTextField(
-                        text = signUpState.email,
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AsphaltInputGroup(
+                        value = signUpState.email,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .onFocusChanged { shouldShowTrailingIcon = it.isFocused },
+                        onValueChange = { updateEmailState(it) },
                         showLabel = true,
-                        textLabel = "Email Address",
+                        required = true,
+                        label = "Email Address",
                         placeholder = "Type your email address",
+                        singleLine = true,
                         isError = signUpState.isEmailError,
                         errorMsg = if (signUpState.isEmailError) stringResource(id = signUpState.errorEmailMsg) else "",
-                        onValueChange = { updateEmailState(it) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email
-                        )
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }
+                        ),
+                        trailingIcon = {
+                            if (signUpState.email.isNotEmpty() && shouldShowTrailingIcon) {
+                                IconButton(
+                                    modifier = Modifier.size(20.dp),
+                                    onClick = { updateEmailState("") }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_close_circle_bold),
+                                        contentDescription = "Clear Text"
+                                    )
+                                }
+                            }
+                        },
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    FoodMarketTextField(
-                        text = signUpState.password,
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AsphaltInputGroup(
+                        value = signUpState.password,
+                        modifier = Modifier.fillMaxWidth(),
+                        onValueChange = { updatePasswordState(it) },
                         showLabel = true,
-                        textLabel = "Password",
+                        required = true,
+                        label = "Password",
                         placeholder = "Type your password",
-                        isPasswordTextField = !signUpState.isPasswordVisible,
+                        singleLine = true,
+                        visualTransformation = if (!signUpState.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
                         isError = signUpState.isPasswordError,
                         errorMsg = if (signUpState.isPasswordError) stringResource(id = signUpState.errorPasswordMsg) else "",
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
+                        ),
                         trailingIcon = {
                             IconButton(
+                                modifier = Modifier.size(20.dp),
                                 onClick = { updateIsPasswordVisible(!signUpState.isPasswordVisible) }
                             ) {
+                                val icon = if (signUpState.isPasswordVisible) {
+                                    painterResource(id = R.drawable.ic_eye_slash_bold)
+                                } else {
+                                    painterResource(id = R.drawable.ic_eye_bold)
+                                }
+
                                 Icon(
-                                    imageVector = if (signUpState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    tint = Color.Gray,
+                                    painter = icon,
                                     contentDescription = "Password Toggle"
                                 )
                             }
                         },
-                        onValueChange = { updatePasswordState(it) }
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    FoodMarketButton(
-                        text = "Continue",
+                    AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             validateFirstStep(
@@ -160,7 +232,9 @@ fun SignUpScreen(
                             )
                             isFirstStepCompleted = true
                         }
-                    )
+                    ) {
+                        AsphaltText(text = "Continue")
+                    }
                 }
             }
         }

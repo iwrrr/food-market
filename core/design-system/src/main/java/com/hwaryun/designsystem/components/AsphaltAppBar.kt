@@ -13,9 +13,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -27,11 +26,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FoodMarketTopAppBar(
+fun AsphaltAppBar(
     title: String,
     subtitle: String,
     modifier: Modifier = Modifier,
@@ -43,11 +44,12 @@ fun FoodMarketTopAppBar(
 
     Column(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surface)
+            .background(AsphaltTheme.colors.pure_white_500)
             .height(100.dp),
         verticalArrangement = Arrangement.Center
     ) {
         TopAppBar(
+            colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = AsphaltTheme.colors.pure_white_500),
             title = {
                 Row {
                     Spacer(
@@ -56,18 +58,17 @@ fun FoodMarketTopAppBar(
                         )
                     )
                     Column {
-                        Text(
+                        AsphaltText(
                             text = title,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth(),
+                            style = AsphaltTheme.typography.titleExtraLarge,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Text(
+                        AsphaltText(
                             text = subtitle,
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.fillMaxWidth(),
+                            color = AsphaltTheme.colors.cool_gray_500,
+                            style = AsphaltTheme.typography.titleSmallDemi,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
@@ -91,7 +92,7 @@ fun FoodMarketTopAppBar(
                         )
                     }
                 }
-            }
+            },
         )
     }
 }
@@ -100,7 +101,7 @@ fun FoodMarketTopAppBar(
 @Composable
 fun TopBarPreview() {
     FoodMarketTheme {
-        FoodMarketTopAppBar(
+        AsphaltAppBar(
             title = "Title",
             subtitle = "Subtitle",
         )
