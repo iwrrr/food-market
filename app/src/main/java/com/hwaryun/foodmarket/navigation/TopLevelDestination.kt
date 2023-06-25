@@ -2,31 +2,32 @@ package com.hwaryun.foodmarket.navigation
 
 import com.hwaryun.designsystem.R
 import com.hwaryun.home.navigation.homeRoute
-import com.hwaryun.order.navigation.orderRoute
+import com.hwaryun.order.navigation.transactionRoute
 import com.hwaryun.profile.navigation.profileRoute
 
 enum class TopLevelDestination(
-    val selectedIcon: Int,
-    val unselectedIcon: Int,
-    val iconTextId: String,
+    val icon: Int,
+    val label: String,
     val route: String
 ) {
     HOME(
-        selectedIcon = R.drawable.ic_home,
-        unselectedIcon = R.drawable.ic_home_normal,
-        iconTextId = "Home",
+        icon = R.drawable.ic_home,
+        label = "Home",
         route = homeRoute,
     ),
-    ORDER(
-        selectedIcon = R.drawable.ic_order,
-        unselectedIcon = R.drawable.ic_order_normal,
-        iconTextId = "Order",
-        route = orderRoute,
+    SEARCH(
+        icon = R.drawable.ic_search,
+        label = "Search",
+        route = "",
+    ),
+    TRANSACTION(
+        icon = R.drawable.ic_receipt_item,
+        label = "Transaction",
+        route = transactionRoute,
     ),
     PROFILE(
-        selectedIcon = R.drawable.ic_profile,
-        unselectedIcon = R.drawable.ic_profile_normal,
-        iconTextId = "Profile",
+        icon = R.drawable.ic_profile_circle,
+        label = "Profile",
         route = profileRoute,
     ),
 }

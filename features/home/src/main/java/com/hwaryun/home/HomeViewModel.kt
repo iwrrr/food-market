@@ -2,17 +2,12 @@ package com.hwaryun.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
-import androidx.paging.map
+import com.hwaryun.common.ext.subscribe
 import com.hwaryun.datasource.datastore.UserPreferenceManager
-import com.hwaryun.datasource.repository.FoodRepository
-import com.hwaryun.domain.mapper.toFood
-import com.hwaryun.domain.mapper.toUser
+import com.hwaryun.domain.usecase.food.GetTrendingFoodsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,52 +15,55 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val userPreferenceManager: UserPreferenceManager,
-    foodRepository: FoodRepository
+    private val getTrendingFoodsUseCase: GetTrendingFoodsUseCase
 ) : ViewModel() {
 
-    private val _homeUiState = MutableStateFlow(HomeUiState())
-    val homeUiState = _homeUiState.asStateFlow()
+    private val _state = MutableStateFlow(HomeState())
+    val state = _state.asStateFlow()
 
     init {
+        getTrendingFoods()
+    }
+
+    private fun getTrendingFoods() {
         viewModelScope.launch {
-            val data = userPreferenceManager.user.first()
-            if (data != null) {
-                _homeUiState.update {
-                    it.copy(user = data.toUser())
-                }
+            getTrendingFoodsUseCase.invoke().collect { result ->
+                result.subscribe(
+                    doOnLoading = {
+                        _state.update {
+                            it.copy(
+                                isLoading = true
+                            )
+                        }
+                    },
+                    doOnSuccess = {
+                        result.value?.let { foods ->
+                            _state.update {
+                                it.copy(
+                                    foods = foods,
+                                    isLoading = false
+                                )
+                            }
+                        }
+                    },
+                    doOnEmpty = {
+                        _state.update {
+                            it.copy(
+                                foods = emptyList(),
+                                isLoading = false
+                            )
+                        }
+                    },
+                    doOnError = {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                error = result.throwable?.message.toString()
+                            )
+                        }
+                    }
+                )
             }
         }
     }
-
-    val foods = foodRepository.getFoods()
-        .map { pagingData ->
-            pagingData.map {
-                it.toFood()
-            }
-        }
-        .cachedIn(viewModelScope)
-
-    val newFoods = foodRepository.getFoods("new_food")
-        .map { pagingData ->
-            pagingData.map {
-                it.toFood()
-            }
-        }
-        .cachedIn(viewModelScope)
-
-    val popularFoods = foodRepository.getFoods("popular")
-        .map { pagingData ->
-            pagingData.map {
-                it.toFood()
-            }
-        }
-        .cachedIn(viewModelScope)
-
-    val recommendedFoods = foodRepository.getFoods("recommended")
-        .map { pagingData ->
-            pagingData.map {
-                it.toFood()
-            }
-        }
-        .cachedIn(viewModelScope)
 }

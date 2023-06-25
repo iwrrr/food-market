@@ -4,7 +4,13 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
@@ -20,12 +26,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.hwaryun.designsystem.ui.Primary
+import com.hwaryun.designsystem.components.AsphaltBottomNavigation
+import com.hwaryun.designsystem.components.AsphaltNavigationItem
+import com.hwaryun.designsystem.components.atoms.AsphaltText
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
+import com.hwaryun.designsystem.ui.asphalt.LocalContentColor
 import com.hwaryun.foodmarket.navigation.MainAppNavHost
 import com.hwaryun.foodmarket.navigation.TopLevelDestination
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainApp(
     mainAppState: MainAppState = rememberMainAppState(),
@@ -33,6 +42,7 @@ fun MainApp(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
+        containerColor = AsphaltTheme.colors.pure_white_500,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             MainBottomBar(
@@ -46,6 +56,7 @@ fun MainApp(
         MainAppNavHost(
             mainAppState = mainAppState,
             startDestination = startDestination,
+            modifier = Modifier.statusBarsPadding(),
             onShowSnackbar = { message, actionLabel ->
                 snackbarHostState.showSnackbar(
                     message = message,
@@ -69,27 +80,23 @@ fun MainBottomBar(
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it }),
     ) {
-        NavigationBar(
-            tonalElevation = 0.dp
-        ) {
+        AsphaltBottomNavigation {
             destinations.forEach { topLevelDestination ->
                 val selected =
                     currentDestination.isTopLevelDestinationInHierarchy(topLevelDestination)
-                NavigationBarItem(
+                AsphaltNavigationItem(
                     selected = selected,
                     onClick = { onNavigateToDestination(topLevelDestination) },
                     icon = {
-                        val icon = if (selected) {
-                            painterResource(id = topLevelDestination.selectedIcon)
-                        } else {
-                            painterResource(id = topLevelDestination.unselectedIcon)
-                        }
-                        Icon(icon, contentDescription = "")
+                        Icon(
+                            painter = painterResource(id = topLevelDestination.icon),
+                            contentDescription = topLevelDestination.label,
+                            tint = LocalContentColor.current
+                        )
                     },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Primary,
-                        indicatorColor = MaterialTheme.colorScheme.surface
-                    )
+                    label = {
+                        AsphaltText(text = topLevelDestination.label)
+                    }
                 )
             }
         }

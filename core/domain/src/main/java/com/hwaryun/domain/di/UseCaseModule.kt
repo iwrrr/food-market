@@ -6,12 +6,13 @@ import com.hwaryun.datasource.repository.AuthRepository
 import com.hwaryun.datasource.repository.FoodRepository
 import com.hwaryun.datasource.repository.TransactionRepository
 import com.hwaryun.domain.usecase.auth.CheckAddressFieldUseCase
+import com.hwaryun.domain.usecase.auth.CheckRegisterFieldUseCase
 import com.hwaryun.domain.usecase.auth.CheckSignInFieldUseCase
-import com.hwaryun.domain.usecase.auth.CheckSignUpFieldUseCase
+import com.hwaryun.domain.usecase.auth.LoginUseCase
 import com.hwaryun.domain.usecase.auth.LogoutUseCase
-import com.hwaryun.domain.usecase.auth.SignInUseCase
 import com.hwaryun.domain.usecase.auth.SignUpUseCase
 import com.hwaryun.domain.usecase.food.GetFoodDetailUseCase
+import com.hwaryun.domain.usecase.food.GetTrendingFoodsUseCase
 import com.hwaryun.domain.usecase.payment.GetTransactionDetailUseCase
 import dagger.Module
 import dagger.Provides
@@ -30,8 +31,8 @@ object UseCaseModule {
         userPreferenceManager: UserPreferenceManager,
         checkSignInFieldUseCase: CheckSignInFieldUseCase,
         dispatcherProvider: DispatcherProvider
-    ): SignInUseCase {
-        return SignInUseCase(
+    ): LoginUseCase {
+        return LoginUseCase(
             repository,
             userPreferenceManager,
             checkSignInFieldUseCase,
@@ -67,8 +68,8 @@ object UseCaseModule {
     @Provides
     fun provideCheckSignUpFieldUseCase(
         dispatcherProvider: DispatcherProvider
-    ): CheckSignUpFieldUseCase {
-        return CheckSignUpFieldUseCase(dispatcherProvider)
+    ): CheckRegisterFieldUseCase {
+        return CheckRegisterFieldUseCase(dispatcherProvider)
     }
 
     @Singleton
@@ -91,6 +92,15 @@ object UseCaseModule {
             userPreferenceManager,
             dispatcherProvider
         )
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetTrendingFoodsUseCase(
+        foodRepository: FoodRepository,
+        dispatcherProvider: DispatcherProvider
+    ): GetTrendingFoodsUseCase {
+        return GetTrendingFoodsUseCase(foodRepository, dispatcherProvider)
     }
 
     @Singleton

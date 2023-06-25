@@ -47,8 +47,15 @@ class MainAppState(val navHostController: NavHostController) {
 
         when (topLevelDestination) {
             TopLevelDestination.HOME -> navHostController.navigateToHomeGraph(topLevelNavOptions)
-            TopLevelDestination.ORDER -> navHostController.navigateToOrderGraph(topLevelNavOptions)
-            TopLevelDestination.PROFILE -> navHostController.navigateToProfileGraph(topLevelNavOptions)
+            TopLevelDestination.TRANSACTION -> navHostController.navigateToOrderGraph(
+                topLevelNavOptions
+            )
+
+            TopLevelDestination.PROFILE -> navHostController.navigateToProfileGraph(
+                topLevelNavOptions
+            )
+
+            else -> {}
         }
     }
 }

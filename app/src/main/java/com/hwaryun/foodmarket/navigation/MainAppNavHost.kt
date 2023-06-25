@@ -10,19 +10,19 @@ import com.hwaryun.foodmarket.ui.MainAppState
 import com.hwaryun.home.navigation.foodDetailsRoute
 import com.hwaryun.home.navigation.homeGraph
 import com.hwaryun.home.navigation.navigateToHomeGraph
+import com.hwaryun.login.navigation.loginGraph
+import com.hwaryun.login.navigation.loginGraphRoute
 import com.hwaryun.order.navigation.navigateToOrderGraph
-import com.hwaryun.order.navigation.orderGraph
+import com.hwaryun.order.navigation.transactionGraph
 import com.hwaryun.payment.navigation.navigateToPaymentGraph
 import com.hwaryun.payment.navigation.navigateToSuccessOrder
 import com.hwaryun.payment.navigation.paymentGraph
 import com.hwaryun.payment.navigation.successOrderScreen
 import com.hwaryun.profile.navigation.profileGraph
-import com.hwaryun.signin.navigation.signInGraph
-import com.hwaryun.signin.navigation.signInGraphRoute
 import com.hwaryun.signup.navigation.addressScreen
 import com.hwaryun.signup.navigation.navigateToAddress
-import com.hwaryun.signup.navigation.navigateToSignUpGraph
-import com.hwaryun.signup.navigation.signUpGraph
+import com.hwaryun.signup.navigation.navigateToRegisterGraph
+import com.hwaryun.signup.navigation.registerGraph
 
 @Composable
 fun MainAppNavHost(
@@ -37,11 +37,11 @@ fun MainAppNavHost(
         modifier = modifier,
         startDestination = startDestination
     ) {
-        signInGraph(
-            navigateToSignUpScreen = navController::navigateToSignUpGraph,
+        loginGraph(
+            navigateToSignUpScreen = navController::navigateToRegisterGraph,
             onShowSnackbar = onShowSnackbar,
         )
-        signUpGraph(
+        registerGraph(
             navController = navController,
             popBackStack = navController::popBackStack,
             navigateToAddressScreen = navController::navigateToAddress
@@ -53,7 +53,7 @@ fun MainAppNavHost(
                 navigateToHomeScreen = {
                     navController.navigateToHomeGraph(
                         navOptions = navOptions {
-                            popUpTo(signInGraphRoute) {
+                            popUpTo(loginGraphRoute) {
                                 inclusive = true
                             }
                         }
@@ -91,10 +91,10 @@ fun MainAppNavHost(
                 navigateToHome = navController::popBackStack,
             ) {
                 navController.popBackStack()
-                mainAppState.navigateToTopLevelDestination(TopLevelDestination.ORDER)
+                mainAppState.navigateToTopLevelDestination(TopLevelDestination.TRANSACTION)
             }
         }
-        orderGraph(
+        transactionGraph(
             navigateToHome = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.HOME) },
             onOrderClick = { transactionId ->
                 navController.navigateToPaymentGraph(

@@ -684,7 +684,7 @@ fun lightAsphaltColors(
     cool_gray_800: Color = Color(0xFF404244),
     cool_gray_900: Color = Color(0xFF313234),
     cool_gray_1cCp_50: Color = Color(0xFFFBFBFB),
-    cool_gray_1cCp_100: Color = Color(0xFFF3F3F2),
+    cool_gray_1cCp_100: Color = Color(0xFFF6F6F6),
     cool_gray_1cCp_200: Color = Color(0xFFEEEEEC),
     cool_gray_1cCp_300: Color = Color(0xFFE6E6E4),
     cool_gray_1cCp_400: Color = Color(0xFFE1E1DE),
@@ -886,8 +886,8 @@ private fun AsphaltColors.pressedColor(defaultColor: Color): Color {
     }
 }
 
-internal val LocalColors = staticCompositionLocalOf { lightAsphaltColors() }
+val LocalColors = staticCompositionLocalOf { lightAsphaltColors() }
 
-internal val LocalContentColor = compositionLocalOf { Black500 }
+val LocalContentColor = compositionLocalOf { Black500 }
 
-internal val LocalContentAlpha = compositionLocalOf { 1f }
+val LocalContentAlpha = compositionLocalOf { 1f }

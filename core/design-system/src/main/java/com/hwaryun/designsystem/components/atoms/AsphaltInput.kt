@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -49,21 +50,7 @@ fun AsphaltInput(
     singleLine: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = AsphaltTheme.colors.gojek_green_500,
-        errorCursorColor = AsphaltTheme.colors.retail_red_500,
-        focusedBorderColor = AsphaltTheme.colors.sub_black_500,
-        unfocusedBorderColor = AsphaltTheme.colors.cool_gray_500,
-        disabledBorderColor = AsphaltTheme.colors.cool_gray_1cCp_500,
-        errorBorderColor = AsphaltTheme.colors.retail_red_500,
-        focusedLeadingIconColor = AsphaltTheme.colors.sub_black_500,
-        unfocusedLeadingIconColor = AsphaltTheme.colors.cool_gray_500,
-        disabledLeadingIconColor = AsphaltTheme.colors.cool_gray_1cCp_500,
-        errorLeadingIconColor = AsphaltTheme.colors.sub_black_500,
-        focusedTrailingIconColor = AsphaltTheme.colors.sub_black_500,
-        unfocusedTrailingIconColor = AsphaltTheme.colors.cool_gray_500,
-        disabledTrailingIconColor = AsphaltTheme.colors.cool_gray_1cCp_500,
-        errorTrailingIconColor = AsphaltTheme.colors.sub_black_500,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
     ),
 ) {
     val textSelectionColors = TextSelectionColors(
@@ -90,7 +77,7 @@ fun AsphaltInput(
             interactionSource = interactionSource,
             cursorBrush = SolidColor(AsphaltTheme.colors.gojek_green_500),
         ) { innerTextField ->
-            TextFieldDefaults.OutlinedTextFieldDecorationBox(
+            OutlinedTextFieldDefaults.DecorationBox(
                 value = value,
                 innerTextField = innerTextField,
                 enabled = enabled,
@@ -110,14 +97,14 @@ fun AsphaltInput(
                 leadingIcon = leadingIcon,
                 trailingIcon = trailingIcon,
                 colors = colors,
-                contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
-                    top = 10.dp,
-                    bottom = 0.dp,
+                contentPadding = TextFieldDefaults.contentPaddingWithoutLabel(
                     start = 0.dp,
-                    end = 0.dp
+                    top = 10.dp,
+                    end = 0.dp,
+                    bottom = 0.dp,
                 ),
                 container = {
-                    TextFieldDefaults.FilledContainerBox(
+                    TextFieldDefaults.ContainerBox(
                         enabled = enabled,
                         isError = isError,
                         interactionSource = interactionSource,
@@ -134,7 +121,7 @@ fun AsphaltInput(
     backgroundColor = 0xFFFFFFFF
 )
 @Composable
-fun FoodMarketTextFieldPreview() {
+private fun DefaultPreview() {
     FoodMarketTheme {
         AsphaltInput(
             value = "aaa",

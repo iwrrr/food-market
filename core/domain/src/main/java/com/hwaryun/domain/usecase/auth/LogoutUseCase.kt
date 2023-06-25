@@ -16,7 +16,7 @@ class LogoutUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<Nothing, UiResult<Unit>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: Nothing?): Flow<UiResult<Unit>> = flow {
+    override fun buildFlowUseCase(param: Nothing?): Flow<UiResult<Unit>> = flow {
         emit(UiResult.Loading())
         authRepository.logout().collect { result ->
             result.suspendSubscribe(

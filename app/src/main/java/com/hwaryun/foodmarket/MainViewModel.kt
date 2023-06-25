@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.home.navigation.homeGraphRoute
-import com.hwaryun.signin.navigation.signInGraphRoute
+import com.hwaryun.login.navigation.loginGraphRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ class MainViewModel @Inject constructor(
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _startDestination: MutableStateFlow<String> = MutableStateFlow(signInGraphRoute)
+    private val _startDestination: MutableStateFlow<String> = MutableStateFlow(loginGraphRoute)
     val startDestination = _startDestination.asStateFlow()
 
     init {
@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(
                 if (user != null) {
                     _startDestination.value = homeGraphRoute
                 } else {
-                    _startDestination.value = signInGraphRoute
+                    _startDestination.value = loginGraphRoute
                 }
                 delay(300)
                 _isLoading.value = false

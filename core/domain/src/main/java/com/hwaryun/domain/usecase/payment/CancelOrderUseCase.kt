@@ -16,7 +16,7 @@ class CancelOrderUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<Int, UiResult<Transaction>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: Int?): Flow<UiResult<Transaction>> = flow {
+    override fun buildFlowUseCase(param: Int?): Flow<UiResult<Transaction>> = flow {
         emit(UiResult.Loading())
         param?.let { transactionId ->
             transactionRepository.cancelOrder(transactionId).collect { result ->

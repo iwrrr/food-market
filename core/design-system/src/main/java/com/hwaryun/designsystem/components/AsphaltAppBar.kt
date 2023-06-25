@@ -57,21 +57,12 @@ fun AsphaltAppBar(
                             if (showNavigateBack) 12.dp else 8.dp
                         )
                     )
-                    Column {
-                        AsphaltText(
-                            text = title,
-                            modifier = Modifier.fillMaxWidth(),
-                            style = AsphaltTheme.typography.titleExtraLarge,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        AsphaltText(
-                            text = subtitle,
-                            modifier = Modifier.fillMaxWidth(),
-                            color = AsphaltTheme.colors.cool_gray_500,
-                            style = AsphaltTheme.typography.titleSmallDemi,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    AsphaltText(
+                        text = title,
+                        modifier = Modifier.fillMaxWidth(),
+                        style = AsphaltTheme.typography.titleExtraLarge,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             },
             navigationIcon = {

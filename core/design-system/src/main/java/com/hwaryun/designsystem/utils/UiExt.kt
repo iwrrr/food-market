@@ -1,7 +1,8 @@
 package com.hwaryun.designsystem.utils
 
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.LocalIndication
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -37,16 +38,16 @@ fun Modifier.singleClick(
         onClickLabel = onClickLabel,
         onClick = { multipleEventsCutter.processEvent { onClick() } },
         role = role,
-        indication = LocalIndication.current,
+        indication = null,
         interactionSource = remember { MutableInteractionSource() }
     )
 }
 
-enum class ButtonState { Pressed, Idle }
+enum class ButtonState { Pressed, Released }
 
 fun Modifier.bounceClick() = composed {
-    var buttonState by remember { mutableStateOf(ButtonState.Idle) }
-    val scale by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0.98f else 1f)
+    var state by remember { mutableStateOf(ButtonState.Released) }
+    val scale by animateFloatAsState(if (state == ButtonState.Pressed) 0.98f else 1f)
 
     this
         .graphicsLayer {
@@ -58,11 +59,43 @@ fun Modifier.bounceClick() = composed {
             indication = null,
             onClick = {}
         )
-        .pointerInput(buttonState) {
+        .pointerInput(state) {
             awaitPointerEventScope {
-                buttonState = if (buttonState == ButtonState.Pressed) {
+                state = if (state == ButtonState.Pressed) {
                     waitForUpOrCancellation()
-                    ButtonState.Idle
+                    ButtonState.Released
+                } else {
+                    awaitFirstDown(false)
+                    ButtonState.Pressed
+                }
+            }
+        }
+}
+
+fun Modifier.springClick() = composed {
+    var state by remember { mutableStateOf(ButtonState.Released) }
+    val scale by animateFloatAsState(
+        targetValue = if (state == ButtonState.Pressed) 0.85f else 1f,
+        animationSpec = if (state == ButtonState.Released) {
+            spring(
+                dampingRatio = Spring.DampingRatioHighBouncy,
+                stiffness = Spring.StiffnessMediumLow
+            )
+        } else {
+            spring()
+        }
+    )
+
+    this
+        .graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        }
+        .pointerInput(state) {
+            awaitPointerEventScope {
+                state = if (state == ButtonState.Pressed) {
+                    waitForUpOrCancellation()
+                    ButtonState.Released
                 } else {
                     awaitFirstDown(false)
                     ButtonState.Pressed

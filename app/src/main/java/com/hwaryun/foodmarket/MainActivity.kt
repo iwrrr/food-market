@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.foodmarket.ui.MainApp
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
             viewModel.isLoading.value
         }
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             FoodMarketTheme {
                 // A surface container using the 'background' color from the theme

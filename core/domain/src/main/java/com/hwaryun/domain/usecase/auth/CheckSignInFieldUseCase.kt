@@ -15,9 +15,9 @@ import javax.inject.Inject
 
 class CheckSignInFieldUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
-) : FlowUseCase<SignInUseCase.Param, UiResult<CheckFieldResult>>(dispatcherProvider.io) {
+) : FlowUseCase<LoginUseCase.Param, UiResult<CheckFieldResult>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: SignInUseCase.Param?): Flow<UiResult<CheckFieldResult>> =
+    override fun buildFlowUseCase(param: LoginUseCase.Param?): Flow<UiResult<CheckFieldResult>> =
         flow {
             param?.let {
                 val result = mutableListOf<Pair<Int, Int>>()

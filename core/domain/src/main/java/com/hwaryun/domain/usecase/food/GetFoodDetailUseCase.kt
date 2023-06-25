@@ -16,15 +16,13 @@ class GetFoodDetailUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<Int, UiResult<Food>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: Int?): Flow<UiResult<Food>> = flow {
+    override fun buildFlowUseCase(param: Int?): Flow<UiResult<Food>> = flow {
         emit(UiResult.Loading())
         param?.let { foodId ->
             foodRepository.getFoodById(foodId).collect { result ->
                 result.suspendSubscribe(
                     doOnSuccess = {
-                        result.value?.data?.let {
-                            emit(UiResult.Success(it.toFood()))
-                        }
+                        emit(UiResult.Success(result.value?.data.toFood()))
                     },
                     doOnError = {
                         emit(UiResult.Failure(it.throwable))

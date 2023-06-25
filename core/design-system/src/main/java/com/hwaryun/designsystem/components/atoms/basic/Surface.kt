@@ -11,12 +11,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.designsystem.ui.asphalt.LocalContentColor
 import com.hwaryun.designsystem.ui.asphalt.contentColorFor
@@ -29,6 +32,7 @@ fun Surface(
     shape: Shape = RectangleShape,
     color: Color = AsphaltTheme.colors.pure_white_500,
     contentColor: Color = contentColorFor(color),
+    elevation: Dp = 0.dp,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit,
@@ -41,7 +45,8 @@ fun Surface(
                 .surface(
                     shape = shape,
                     backgroundColor = color,
-                    border = border
+                    border = border,
+                    elevation = elevation
                 )
                 .clickable(
                     interactionSource = interactionSource,
@@ -62,6 +67,7 @@ fun Surface(
     shape: Shape = RectangleShape,
     color: Color = AsphaltTheme.colors.pure_white_500,
     contentColor: Color = contentColorFor(color),
+    elevation: Dp = 0.dp,
     border: BorderStroke? = null,
     content: @Composable () -> Unit
 ) {
@@ -73,7 +79,8 @@ fun Surface(
                 .surface(
                     shape = shape,
                     backgroundColor = color,
-                    border = border
+                    border = border,
+                    elevation = elevation
                 )
                 .semantics(mergeDescendants = false) {}
                 .pointerInput(Unit) {},
@@ -88,7 +95,9 @@ fun Modifier.surface(
     shape: Shape,
     backgroundColor: Color,
     border: BorderStroke?,
+    elevation: Dp
 ) = this
+    .shadow(elevation, shape, clip = false)
     .then(if (border != null) Modifier.border(border, shape) else Modifier)
     .background(color = backgroundColor, shape = shape)
     .clip(shape)

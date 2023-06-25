@@ -36,7 +36,7 @@ class ProfileViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            logoutUseCase.execute().collect { result ->
+            logoutUseCase.invoke().collect { result ->
                 result.subscribe(
                     doOnLoading = {
                         _profileUiState.update { state ->

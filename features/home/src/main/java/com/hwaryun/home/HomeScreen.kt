@@ -1,33 +1,44 @@
 package com.hwaryun.home
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.hwaryun.designsystem.components.FoodMarketTabSection
-import com.hwaryun.designsystem.components.TabItem
-import com.hwaryun.designsystem.layout.ChildLayout
-import com.hwaryun.designsystem.layout.VerticalScrollLayout
+import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.atoms.AsphaltText
+import com.hwaryun.designsystem.components.molecules.AsphaltSearchBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.designsystem.ui.Yellow
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
+import com.hwaryun.designsystem.utils.singleClick
 import com.hwaryun.domain.model.Food
+import com.hwaryun.home.components.FoodItem
 import com.hwaryun.home.components.HeaderHome
 
 const val FOOD_SECTION = "food_section"
@@ -38,125 +49,188 @@ internal fun HomeRoute(
     onFoodClick: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val homeUiState by viewModel.homeUiState.collectAsStateWithLifecycle()
-    val foods = viewModel.foods.collectAsLazyPagingItems()
-    val newFoods = viewModel.newFoods.collectAsLazyPagingItems()
-    val popularFoods = viewModel.popularFoods.collectAsLazyPagingItems()
-    val recommendedFoods = viewModel.recommendedFoods.collectAsLazyPagingItems()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     HomeScreen(
-        homeUiState = homeUiState,
-        foods = foods,
-        newFoods = newFoods,
-        popularFoods = popularFoods,
-        recommendedFoods = recommendedFoods,
-        onFoodClick = onFoodClick
+        state = state,
+        onFoodClick = onFoodClick,
+        onTrendingSectionClick = {}
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
-    homeUiState: HomeUiState,
-    foods: LazyPagingItems<Food>,
-    newFoods: LazyPagingItems<Food>,
-    popularFoods: LazyPagingItems<Food>,
-    recommendedFoods: LazyPagingItems<Food>,
+    state: HomeState,
     onFoodClick: (Int) -> Unit,
+    onTrendingSectionClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
-            HeaderHome(uiState = homeUiState)
+            HeaderHome()
         },
         content = { innerPadding ->
-
-            val pullRefreshState = rememberPullRefreshState(false, {
-                foods.refresh()
-                newFoods.refresh()
-                popularFoods.refresh()
-                recommendedFoods.refresh()
-            })
-
-            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-                VerticalScrollLayout(
-                    modifier = Modifier
-                        .padding(
-                            PaddingValues(
-                                top = innerPadding.calculateTopPadding(),
-                                bottom = 58.dp
-                            )
-                        ),
-                    state = rememberLazyListState(),
-                    ChildLayout(
-                        contentType = FOOD_SECTION,
-                        content = {
-                            FoodSection(
-                                listState = rememberLazyListState(),
-                                foods = foods,
-                                onFoodClick = onFoodClick,
-                            )
+            Column(
+                modifier = Modifier
+                    .padding(top = innerPadding.calculateTopPadding())
+            ) {
+                Row(modifier = Modifier.padding(horizontal = 24.dp)) {
+                    AsphaltSearchBar(
+                        query = "",
+                        onQueryChange = {},
+                        onSearchFocusChange = {},
+                        onClearQuery = {},
+                        onBack = {},
+                        placeholder = "Perfect food for lunch",
+                        enabled = false
+                    )
+                }
+                Box {
+                    LazyColumn {
+                        item {
+                            TrendingSection()
                         }
-                    ),
-                    ChildLayout(
-                        contentType = FOOD_TAB_SECTION,
-                        isSticky = true,
-                        content = {
-                            FoodMarketTabSection(
-                                tabItems = listOf(
-                                    TabItem(
-                                        title = "New Taste",
-                                        screen = {
-                                            FoodsScreen(
-                                                foods = newFoods,
-                                                onFoodClick = onFoodClick
-                                            )
-                                        }
-                                    ),
-                                    TabItem(
-                                        title = "Popular",
-                                        screen = {
-                                            FoodsScreen(
-                                                foods = popularFoods,
-                                                onFoodClick = onFoodClick
-                                            )
-                                        }
-                                    ),
-                                    TabItem(
-                                        title = "Recommended",
-                                        screen = {
-                                            FoodsScreen(
-                                                foods = recommendedFoods,
-                                                onFoodClick = onFoodClick
-                                            )
-                                        }
-                                    ),
-                                )
-                            )
+                        item {
+                            TrendingContent(foods = state.foods, onFoodClick = onFoodClick)
                         }
-                    ),
-                )
+                        item {
+                            PromoSection()
+                        }
+                        item {
+                            PromoContent()
+                        }
+                    }
 
-                PullRefreshIndicator(
-                    refreshing = false,
-                    state = pullRefreshState,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(
-                            PaddingValues(
-                                top = innerPadding.calculateTopPadding()
-                            )
-                        ),
-                    contentColor = Yellow
-                )
+                }
             }
         }
     )
+}
+
+@Composable
+private fun TrendingSection() {
+    Spacer(modifier = Modifier.height(16.dp))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            AsphaltText(
+                text = "Trending Now",
+                modifier = Modifier.fillMaxWidth(),
+                style = AsphaltTheme.typography.titleLarge
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            AsphaltText(
+                text = "The food menu based on our data",
+                modifier = Modifier.fillMaxWidth(),
+                color = AsphaltTheme.colors.cool_gray_500,
+                style = AsphaltTheme.typography.bodySmall
+            )
+        }
+        Icon(
+            painter = painterResource(id = R.drawable.ic_arrow_right),
+            contentDescription = "More foods",
+            modifier = Modifier.singleClick { }
+        )
+    }
+}
+
+@Composable
+private fun TrendingContent(
+    foods: List<Food>,
+    onFoodClick: (Int) -> Unit
+) {
+    Spacer(modifier = Modifier.height(16.dp))
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.height(200.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(foods) { food ->
+            FoodItem(
+                food = food,
+                isLoading = false,
+                onFoodClick = onFoodClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun PromoSection() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            AsphaltText(
+                text = "Promotion",
+                modifier = Modifier.fillMaxWidth(),
+                style = AsphaltTheme.typography.titleLarge
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            AsphaltText(
+                text = "All best deal only for you",
+                modifier = Modifier.fillMaxWidth(),
+                color = AsphaltTheme.colors.cool_gray_500,
+                style = AsphaltTheme.typography.bodySmall
+            )
+        }
+        Icon(
+            painter = painterResource(id = R.drawable.ic_arrow_right),
+            contentDescription = "More foods",
+            modifier = Modifier.singleClick { }
+        )
+    }
+}
+
+@Composable
+private fun PromoContent() {
+    val promotions = (0..1).toList()
+    Spacer(modifier = Modifier.height(16.dp))
+    LazyRow(
+        contentPadding = PaddingValues(
+            start = 24.dp,
+            end = 24.dp,
+            bottom = 100.dp
+        ),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        items(promotions) {
+            Image(
+                painter = painterResource(id = R.drawable.promotion_1),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillParentMaxWidth(0.9f)
+                    .aspectRatio(16f / 9f)
+                    .height(140.dp)
+                    .clip(AsphaltTheme.shapes.small),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DefaultPreview() {
     FoodMarketTheme {
-        //        HomeScreen(onFoodClick = {})
+        HomeScreen(
+            state = HomeState(),
+            onFoodClick = {},
+            onTrendingSectionClick = {}
+        )
     }
 }

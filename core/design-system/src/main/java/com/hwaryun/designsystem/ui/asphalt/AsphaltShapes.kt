@@ -6,7 +6,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.dp
 
 class AsphaltShapes(
-    val small: CornerBasedShape = RoundedCornerShape(8.dp),
+    val small: CornerBasedShape = RoundedCornerShape(12.dp),
     val medium: CornerBasedShape = RoundedCornerShape(24.dp),
     val large: CornerBasedShape = RoundedCornerShape(44.dp)
 ) {

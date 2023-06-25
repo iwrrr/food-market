@@ -10,12 +10,12 @@ android {
 dependencies {
     implementation(project(":core:design-system"))
     implementation(project(":core:datasource"))
-    implementation(project(":features:signin"))
-    implementation(project(":features:signup"))
+    implementation(project(":features:login"))
+    implementation(project(":features:register"))
     implementation(project(":features:home"))
-    implementation(project(":features:order"))
+    implementation(project(":features:transaction"))
     implementation(project(":features:profile"))
-    implementation(project(":features:food_detail"))
+    implementation(project(":features:food-detail"))
     implementation(project(":features:payment"))
 
     implementation(libs.androidx.ktx)

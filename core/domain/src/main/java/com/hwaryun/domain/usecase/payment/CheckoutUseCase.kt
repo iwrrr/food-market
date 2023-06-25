@@ -16,7 +16,7 @@ class CheckoutUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<CheckoutUseCase.Param, UiResult<Transaction>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: Param?): Flow<UiResult<Transaction>> = flow {
+    override fun buildFlowUseCase(param: Param?): Flow<UiResult<Transaction>> = flow {
         emit(UiResult.Loading())
         param?.let { param ->
             transactionRepository.checkoutFood(

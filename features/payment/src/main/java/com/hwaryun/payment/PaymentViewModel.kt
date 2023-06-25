@@ -57,7 +57,7 @@ class PaymentViewModel @Inject constructor(
 
     private fun getFoodDetail(foodId: Int) {
         viewModelScope.launch {
-            getFoodDetailUseCase.execute(foodId).collect { result ->
+            getFoodDetailUseCase.invoke(foodId).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
                         _paymentUiState.update { state ->
@@ -95,7 +95,7 @@ class PaymentViewModel @Inject constructor(
 
     private fun getTransactionDetail(transactionId: Int) {
         viewModelScope.launch {
-            getTransactionDetailUseCase.execute(transactionId).collect { result ->
+            getTransactionDetailUseCase.invoke(transactionId).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
                         _paymentUiState.update { state ->
@@ -144,7 +144,7 @@ class PaymentViewModel @Inject constructor(
 
     fun checkout() {
         viewModelScope.launch {
-            checkoutUseCase.execute(
+            checkoutUseCase.invoke(
                 CheckoutUseCase.Param(
                     _paymentUiState.value.food?.id.orZero(),
                     _paymentUiState.value.user?.id.orZero(),
@@ -181,7 +181,7 @@ class PaymentViewModel @Inject constructor(
 
     fun cancelOrder() {
         viewModelScope.launch {
-            cancelOrderUseCase.execute(_paymentUiState.value.transaction?.id).collect { result ->
+            cancelOrderUseCase.invoke(_paymentUiState.value.transaction?.id).collect { result ->
                 result.subscribe(
                     doOnLoading = {
                         _transactionUiState.update { state ->

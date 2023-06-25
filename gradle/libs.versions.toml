@@ -1,8 +1,8 @@
 [versions]
 # Plugin
-androidGradlePlugin= "8.0.0"
-kotlinAndroid= "1.8.20"
-kotlinKapt= "1.7.20"
+androidGradlePlugin = "8.0.0"
+kotlinAndroid = "1.8.20"
+kotlinKapt = "1.7.20"
 
 coreKtx = "1.8.0"
 lifecycleRuntimeKtx = "2.3.1"
@@ -11,11 +11,11 @@ accompanist = "0.31.3-beta"
 
 # Compose
 activityCompose = "1.5.1"
-composeBom = "2023.04.01"
+composeBom = "2023.05.01"
 androidxLifecycle = "2.5.1"
 runtimeTracing = "1.0.0-alpha01"
-navigation= "2.5.3"
-navigationAnimation= "0.31.2-alpha"
+navigation = "2.5.3"
+navigationAnimation = "0.31.2-alpha"
 
 # Coil
 coil = "2.4.0"
@@ -72,7 +72,7 @@ kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-pl
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 activity-compose = { group = "androidx.activity", name = "activity-compose" }
 ui = { group = "androidx.compose.ui", name = "ui" }
-ui-graphics= { group = "androidx.compose.ui", name = "ui-graphics" }
+ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 material = { group = "androidx.compose.material", name = "material" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
@@ -94,10 +94,10 @@ ratingbar = { group = "com.github.a914-gowtham", name = "compose-ratingbar", ver
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-ext-junit= { group = "androidx.test.ext", name = "junit", version.ref = "extJunit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "extJunit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-ui-test-manifest= { module = "androidx.compose.ui:ui-test-manifest" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 
 # Asynchronous
@@ -126,7 +126,7 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 # Dependency Injection
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-hilt-navigation-compose =  { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
@@ -147,5 +147,5 @@ datastore = ["androidx.datastore.core", "androidx.datastore.preferences"]
 # presentation
 
 # framework
- # network
- # database
+# network
+# database

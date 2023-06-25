@@ -20,10 +20,10 @@ class SignUpUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<SignUpUseCase.Param, UiResult<User>>(dispatcherProvider.io) {
 
-    override suspend fun buildFlowUseCase(param: Param?): Flow<UiResult<User>> = flow {
+    override fun buildFlowUseCase(param: Param?): Flow<UiResult<User>> = flow {
         emit(UiResult.Loading())
         param?.let {
-            checkAddressFieldUseCase.execute(param).first().suspendSubscribe(
+            checkAddressFieldUseCase.invoke(param).first().suspendSubscribe(
                 doOnSuccess = {
                     repository.signUp(
                         param.name,
