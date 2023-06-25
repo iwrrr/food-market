@@ -72,7 +72,7 @@ fun OrderScreen(
         topBar = {
             if (!shouldShowLoading) {
                 if (!shouldShowEmptyScreen) {
-                    AsphaltAppBar(title = "Your Orders", subtitle = "Wait for the best meal")
+                    AsphaltAppBar(title = "Your Orders")
                 }
             }
         },

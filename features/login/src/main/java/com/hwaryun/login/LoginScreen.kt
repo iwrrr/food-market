@@ -87,10 +87,7 @@ fun LoginScreen(
         modifier = Modifier.fillMaxSize(),
         containerColor = AsphaltTheme.colors.cool_gray_1cCp_50,
         topBar = {
-            AsphaltAppBar(
-                title = "Sign In",
-                subtitle = "Find your best ever meal"
-            )
+            AsphaltAppBar(title = "Sign In")
         },
         content = { innerPadding ->
             Box(

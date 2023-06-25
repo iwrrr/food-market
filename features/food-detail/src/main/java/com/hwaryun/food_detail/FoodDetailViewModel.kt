@@ -19,8 +19,8 @@ class FoodDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _foodDetailUiState = MutableStateFlow(FoodDetailUiState())
-    val foodDetailUiState = _foodDetailUiState.asStateFlow()
+    private val _foodDetailState = MutableStateFlow(FoodDetailState())
+    val state = _foodDetailState.asStateFlow()
 
     init {
         val foodId = savedStateHandle.get<Int>(FOOD_ID) ?: 0
@@ -32,15 +32,15 @@ class FoodDetailViewModel @Inject constructor(
             getFoodDetailUseCase.invoke(foodId).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
-                        _foodDetailUiState.emit(
-                            FoodDetailUiState(
+                        _foodDetailState.emit(
+                            FoodDetailState(
                                 isLoading = true
                             )
                         )
                     },
                     doOnSuccess = {
-                        _foodDetailUiState.emit(
-                            FoodDetailUiState(
+                        _foodDetailState.emit(
+                            FoodDetailState(
                                 food = it.value,
                                 isLoading = false,
                                 totalPrice = it.value?.price ?: 0
@@ -48,8 +48,8 @@ class FoodDetailViewModel @Inject constructor(
                         )
                     },
                     doOnError = {
-                        _foodDetailUiState.emit(
-                            FoodDetailUiState(
+                        _foodDetailState.emit(
+                            FoodDetailState(
                                 food = it.value,
                                 isLoading = false,
                                 error = it.throwable?.message ?: "Unexpected error accrued"
@@ -64,12 +64,12 @@ class FoodDetailViewModel @Inject constructor(
     fun addQuantity(qty: Int) {
         var totalQty = qty
         if (totalQty >= 15) {
-            _foodDetailUiState.update {
+            _foodDetailState.update {
                 it.copy(qty = 15)
             }
         } else {
             totalQty++
-            _foodDetailUiState.update {
+            _foodDetailState.update {
                 it.copy(qty = totalQty)
             }
         }
@@ -80,12 +80,12 @@ class FoodDetailViewModel @Inject constructor(
     fun reduceQuantity(qty: Int) {
         var totalQty = qty
         if (totalQty <= 1) {
-            _foodDetailUiState.update {
+            _foodDetailState.update {
                 it.copy(qty = 1)
             }
         } else {
             totalQty--
-            _foodDetailUiState.update {
+            _foodDetailState.update {
                 it.copy(qty = totalQty)
             }
         }
@@ -94,9 +94,9 @@ class FoodDetailViewModel @Inject constructor(
     }
 
     private fun updateTotalPrice(qty: Int) {
-        _foodDetailUiState.update {
+        _foodDetailState.update {
             it.copy(
-                totalPrice = qty * (_foodDetailUiState.value.food?.price ?: 0)
+                totalPrice = qty * (_foodDetailState.value.food?.price ?: 0)
             )
         }
     }

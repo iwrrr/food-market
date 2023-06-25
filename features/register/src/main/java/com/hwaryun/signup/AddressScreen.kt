@@ -100,12 +100,10 @@ fun AddressScreen(
         topBar = {
             AsphaltAppBar(
                 title = "Address",
-                subtitle = "Make sure it’s valid",
-                showNavigateBack = true,
-                onNavigateBack = {
-                    popBackStack()
-                }
-            )
+                showNavigateBack = true
+            ) {
+                popBackStack()
+            }
         },
         content = { innerPadding ->
 

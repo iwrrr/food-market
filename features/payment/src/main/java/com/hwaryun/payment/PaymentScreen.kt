@@ -113,10 +113,8 @@ fun PaymentScreen(
         topBar = {
             AsphaltAppBar(
                 title = "Payment",
-                subtitle = "You deserve better meal",
-                showNavigateBack = true,
-                onNavigateBack = { popBackStack() }
-            )
+                showNavigateBack = true
+            ) { popBackStack() }
         }
     ) { innerPadding ->
         Box(

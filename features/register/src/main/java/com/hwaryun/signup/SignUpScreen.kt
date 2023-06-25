@@ -92,10 +92,8 @@ fun SignUpScreen(
         topBar = {
             AsphaltAppBar(
                 title = "Sign Up",
-                subtitle = "Register and eat",
-                showNavigateBack = true,
-                onNavigateBack = { popBackStack() }
-            )
+                showNavigateBack = true
+            ) { popBackStack() }
         },
         content = { innerPadding ->
             Box(

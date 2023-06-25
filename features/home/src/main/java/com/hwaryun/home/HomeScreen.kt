@@ -68,6 +68,7 @@ fun HomeScreen(
         topBar = {
             HeaderHome()
         },
+        containerColor = AsphaltTheme.colors.pure_white_500,
         content = { innerPadding ->
             Column(
                 modifier = Modifier
