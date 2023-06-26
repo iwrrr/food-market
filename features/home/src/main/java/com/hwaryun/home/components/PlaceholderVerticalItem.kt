@@ -94,7 +94,7 @@ fun PlaceholderVerticalItem() {
                 Text(
                     text = "",
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .width(100.dp)
                         .placeholder(
                             visible = true,
                             highlight = PlaceholderHighlight.shimmer(),

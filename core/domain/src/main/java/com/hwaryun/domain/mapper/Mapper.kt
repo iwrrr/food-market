@@ -33,7 +33,7 @@ fun FoodDto?.toFood(): Food {
         name = this?.name.orDash(),
         picturePath = this?.picturePath.orDash(),
         price = this?.price.orZero(),
-        rate = this?.rate.orDash(),
+        rate = (this?.rate ?: "0").toFloat(),
         types = this?.types.orDash(),
     )
 }

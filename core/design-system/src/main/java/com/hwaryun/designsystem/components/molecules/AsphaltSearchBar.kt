@@ -62,12 +62,15 @@ fun AsphaltSearchBar(
         AnimatedVisibility(visible = focused) {
             // Back button
             IconButton(
-                modifier = Modifier.padding(start = 2.dp),
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .size(24.dp),
                 onClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
                     onBack()
-                }) {
+                }
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_arrow_left),
                     contentDescription = null
@@ -106,11 +109,7 @@ fun SearchTextField(
     val focusRequester = remember { FocusRequester() }
 
     Surface(
-        modifier = modifier
-            .then(
-                Modifier
-                    .height(48.dp)
-            ),
+        modifier = Modifier.height(48.dp),
         color = AsphaltTheme.colors.cool_gray_1cCp_100,
         shape = RoundedCornerShape(12.dp),
     ) {
@@ -140,11 +139,9 @@ fun SearchTextField(
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(1f)
-                            .onFocusChanged {
-                                onSearchFocusChange(it.isFocused)
-                            }
+                            .onFocusChanged { onSearchFocusChange(it.isFocused) }
                             .focusRequester(focusRequester)
-                            .padding(top = 10.dp, bottom = 8.dp, start = 0.dp, end = 8.dp),
+                            .padding(top = 15.dp, bottom = 12.dp, start = 0.dp, end = 8.dp),
                         enabled = enabled,
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(
@@ -191,13 +188,14 @@ private fun SearchHint(
 private fun DefaultPreview() {
     FoodMarketTheme {
         AsphaltSearchBar(
-            query = "",
+            query = "Search",
             onQueryChange = {},
             onSearchFocusChange = {},
             onClearQuery = {},
             onBack = {},
+            placeholder = "Search",
             enabled = false,
-            focused = false,
+            focused = true,
         )
     }
 }

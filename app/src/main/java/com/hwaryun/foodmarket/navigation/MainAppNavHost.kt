@@ -20,6 +20,7 @@ import com.hwaryun.payment.navigation.navigateToCartGraph
 import com.hwaryun.payment.navigation.navigateToSuccessOrder
 import com.hwaryun.payment.navigation.successOrderScreen
 import com.hwaryun.profile.navigation.profileGraph
+import com.hwaryun.search.navigation.searchGraph
 import com.hwaryun.signup.navigation.addressScreen
 import com.hwaryun.signup.navigation.navigateToAddress
 import com.hwaryun.signup.navigation.navigateToRegisterGraph
@@ -65,6 +66,7 @@ fun MainAppNavHost(
         homeGraph(
             onCartClick = navController::navigateToCartGraph,
             onFoodClick = navController::navigateToFoodDetails,
+            onSearchClick = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.SEARCH) },
         ) {
             foodDetailsScreen(
                 navigateToCart = {
@@ -96,6 +98,12 @@ fun MainAppNavHost(
                 navigateToHome = navController::popBackStack,
             )
         }
+        searchGraph(
+            navigateToHome = {},
+            onFoodClick = navController::navigateToFoodDetails,
+            onShowSnackbar = onShowSnackbar,
+            nestedGraphs = {}
+        )
         transactionGraph(
             navigateToHome = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.HOME) },
             onOrderClick = { transactionId ->

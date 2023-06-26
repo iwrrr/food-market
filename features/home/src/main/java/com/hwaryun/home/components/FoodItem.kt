@@ -103,7 +103,7 @@ fun FoodItem(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 AsphaltText(
-                    text = food.rate,
+                    text = "${food.rate}",
                     modifier = Modifier
                         .placeholder(
                             visible = isLoading,
@@ -130,7 +130,7 @@ private fun DefaultPreview() {
                 name = "Food",
                 picturePath = "",
                 price = 0,
-                rate = "5.0",
+                rate = 5f,
                 types = ""
             ),
             onFoodClick = {}

@@ -45,6 +45,7 @@ import com.hwaryun.home.components.HeaderHome
 internal fun HomeRoute(
     onCartClick: () -> Unit,
     onFoodClick: (Int) -> Unit,
+    onSearchClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -53,7 +54,7 @@ internal fun HomeRoute(
         state = state,
         onCartClick = onCartClick,
         onFoodClick = onFoodClick,
-        onTrendingSectionClick = {}
+        onSearchClick = onSearchClick
     )
 }
 
@@ -62,7 +63,7 @@ fun HomeScreen(
     state: HomeState,
     onCartClick: () -> Unit,
     onFoodClick: (Int) -> Unit,
-    onTrendingSectionClick: () -> Unit
+    onSearchClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -77,11 +78,12 @@ fun HomeScreen(
                 Row(modifier = Modifier.padding(horizontal = 24.dp)) {
                     AsphaltSearchBar(
                         query = "",
+                        modifier = Modifier.singleClick { onSearchClick() },
                         onQueryChange = {},
                         onSearchFocusChange = {},
                         onClearQuery = {},
                         onBack = {},
-                        placeholder = "Perfect food for lunch",
+                        placeholder = "Mau makan apa nih?",
                         enabled = false
                     )
                 }
@@ -121,13 +123,13 @@ private fun TrendingSection() {
             modifier = Modifier.weight(1f)
         ) {
             AsphaltText(
-                text = "Trending Now",
+                text = "Yang lagi trending",
                 modifier = Modifier.fillMaxWidth(),
                 style = AsphaltTheme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             AsphaltText(
-                text = "The food menu based on our data",
+                text = "Makanan yang lagi banyak dicari.",
                 modifier = Modifier.fillMaxWidth(),
                 color = AsphaltTheme.colors.cool_gray_500,
                 style = AsphaltTheme.typography.bodySmall
@@ -177,13 +179,13 @@ private fun PromoSection() {
             modifier = Modifier.weight(1f)
         ) {
             AsphaltText(
-                text = "Promotion",
+                text = "Promosi",
                 modifier = Modifier.fillMaxWidth(),
                 style = AsphaltTheme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             AsphaltText(
-                text = "All best deal only for you",
+                text = "Beli makanan favoritmu ga perlu keluar banyak uang.",
                 modifier = Modifier.fillMaxWidth(),
                 color = AsphaltTheme.colors.cool_gray_500,
                 style = AsphaltTheme.typography.bodySmall
@@ -232,7 +234,7 @@ private fun DefaultPreview() {
             state = HomeState(),
             onCartClick = {},
             onFoodClick = {},
-            onTrendingSectionClick = {}
+            onSearchClick = {}
         )
     }
 }

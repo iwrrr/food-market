@@ -13,6 +13,7 @@ import com.hwaryun.foodmarket.navigation.TopLevelDestination
 import com.hwaryun.home.navigation.navigateToHomeGraph
 import com.hwaryun.order.navigation.navigateToTransactionGraph
 import com.hwaryun.profile.navigation.navigateToProfileGraph
+import com.hwaryun.search.navigation.navigateToSearchGraph
 
 @Composable
 fun rememberMainAppState(
@@ -47,6 +48,7 @@ class MainAppState(val navHostController: NavHostController) {
 
         when (topLevelDestination) {
             TopLevelDestination.HOME -> navHostController.navigateToHomeGraph(topLevelNavOptions)
+            TopLevelDestination.SEARCH -> navHostController.navigateToSearchGraph(topLevelNavOptions)
             TopLevelDestination.TRANSACTION -> navHostController.navigateToTransactionGraph(
                 topLevelNavOptions
             )

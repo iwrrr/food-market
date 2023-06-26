@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,8 +14,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hwaryun.common.ext.orDash
 import com.hwaryun.designsystem.components.FoodMarketCircleImage
+import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.profile.ProfileUiState
 
 @Composable
@@ -27,7 +28,7 @@ fun HeaderProfile(
 ) {
     Column(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surface)
+            .background(AsphaltTheme.colors.pure_white_500)
             .height(230.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -40,21 +41,20 @@ fun HeaderProfile(
             borderEnabled = true
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = uiState.user?.name.toString(),
+        AsphaltText(
+            text = uiState.user?.name.orDash(),
             modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
+            style = AsphaltTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = uiState.user?.email.toString(),
+        AsphaltText(
+            text = uiState.user?.email.orDash(),
             modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = AsphaltTheme.typography.titleSmallDemi,
+            color = AsphaltTheme.colors.cool_gray_500,
             textAlign = TextAlign.Center,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1

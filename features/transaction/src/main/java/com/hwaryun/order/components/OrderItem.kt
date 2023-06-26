@@ -144,7 +144,7 @@ fun OrderItemPreview() {
                     name = "",
                     picturePath = "",
                     price = 0,
-                    rate = "",
+                    rate = 0f,
                     types = ""
                 ),
                 user = User(

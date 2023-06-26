@@ -35,7 +35,8 @@ interface FoodMarketApi {
     suspend fun fetchFoods(
         @Query("page") page: Int? = null,
         @Query("limit") limit: Int? = null,
-        @Query("types") types: String? = null
+        @Query("name") name: String? = null,
+        @Query("types") types: String? = null,
     ): BaseResponse<PagingDto<FoodDto>>
 
     @GET("food")

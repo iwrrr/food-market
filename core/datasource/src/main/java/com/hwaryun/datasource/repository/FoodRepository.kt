@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface FoodRepository {
     fun getFoods(
-        types: String? = null
+        name: String? = null
     ): Flow<PagingData<FoodDto>>
 
     fun getTrendingFoods(types: String): Flow<DataResult<BaseResponse<PagingDto<FoodDto>>>>

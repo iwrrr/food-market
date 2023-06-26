@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.domain.usecase.auth.CheckRegisterFieldUseCase
-import com.hwaryun.domain.usecase.auth.SignUpUseCase
+import com.hwaryun.domain.usecase.auth.RegisterUpUseCase
 import com.hwaryun.domain.utils.ADDRESS_FIELD
 import com.hwaryun.domain.utils.CITY_FIELD
 import com.hwaryun.domain.utils.EMAIL_FIELD
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val checkRegisterFieldUseCase: CheckRegisterFieldUseCase,
-    private val signUpUseCase: SignUpUseCase
+    private val registerUpUseCase: RegisterUpUseCase
 ) : ViewModel() {
 
     private val _registerState = MutableStateFlow(RegisterState())
@@ -63,8 +63,8 @@ class RegisterViewModel @Inject constructor(
 
     fun signUp() {
         viewModelScope.launch {
-            signUpUseCase.invoke(
-                SignUpUseCase.Param(
+            registerUpUseCase.invoke(
+                RegisterUpUseCase.Param(
                     name = _registerState.value.name,
                     email = _registerState.value.email,
                     password = _registerState.value.password,

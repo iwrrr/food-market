@@ -7,6 +7,6 @@ data class Food(
     val name: String,
     val picturePath: String,
     val price: Int,
-    val rate: String,
+    val rate: Float,
     val types: String
 )

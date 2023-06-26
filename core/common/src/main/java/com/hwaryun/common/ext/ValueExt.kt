@@ -39,11 +39,15 @@ fun Int?.orZero(): Int {
 }
 
 fun Long?.orZero(): Long {
-    return this ?: 0
+    return this ?: 0L
 }
 
 fun Double?.orZero(): Double {
     return this ?: 0.0
+}
+
+fun Float?.orZero(): Float {
+    return this ?: 0f
 }
 
 fun String?.isNullorDash(): Boolean {

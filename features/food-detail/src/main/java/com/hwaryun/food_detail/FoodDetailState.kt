@@ -4,7 +4,6 @@ import com.hwaryun.domain.model.Food
 
 data class FoodDetailState(
     val food: Food? = null,
-    val addToCart: Any? = null,
     val isLoading: Boolean = false,
     val error: String = ""
 )

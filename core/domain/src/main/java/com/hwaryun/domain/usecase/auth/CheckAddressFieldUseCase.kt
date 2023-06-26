@@ -16,9 +16,9 @@ import javax.inject.Inject
 
 class CheckAddressFieldUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider
-) : FlowUseCase<SignUpUseCase.Param, UiResult<CheckFieldResult>>(dispatcherProvider.io) {
+) : FlowUseCase<RegisterUpUseCase.Param, UiResult<CheckFieldResult>>(dispatcherProvider.io) {
 
-    override fun buildFlowUseCase(param: SignUpUseCase.Param?): Flow<UiResult<CheckFieldResult>> =
+    override fun buildFlowUseCase(param: RegisterUpUseCase.Param?): Flow<UiResult<CheckFieldResult>> =
         flow {
             param?.let {
                 val result = mutableListOf<Pair<Int, Int>>()

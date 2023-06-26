@@ -17,9 +17,9 @@ class FoodRepositoryImpl @Inject constructor(
 ) : FoodRepository {
 
     override fun getFoods(
-        types: String?
+        name: String?
     ): Flow<PagingData<FoodDto>> = createPager { page ->
-        foodMarketApi.fetchFoods(page = page, types = types).data?.results
+        foodMarketApi.fetchFoods(page = page, name = name).data?.results
     }.flow
 
     override fun getTrendingFoods(types: String): Flow<DataResult<BaseResponse<PagingDto<FoodDto>>>> =

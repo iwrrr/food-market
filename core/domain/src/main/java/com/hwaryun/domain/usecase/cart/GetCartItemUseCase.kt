@@ -22,9 +22,7 @@ class GetCartItemUseCase @Inject constructor(
             dataResult.suspendSubscribe(
                 doOnSuccess = {
                     dataResult.value?.let { carts ->
-                        if (carts.isEmpty()) {
-                            emit(UiResult.Empty())
-                        } else {
+                        if (carts.isNotEmpty()) {
                             emit(UiResult.Success(carts.first().toCart()))
                         }
                     }

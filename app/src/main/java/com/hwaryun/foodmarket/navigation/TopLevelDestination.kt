@@ -4,6 +4,7 @@ import com.hwaryun.designsystem.R
 import com.hwaryun.home.navigation.homeRoute
 import com.hwaryun.order.navigation.transactionRoute
 import com.hwaryun.profile.navigation.profileRoute
+import com.hwaryun.search.navigation.searchRoute
 
 enum class TopLevelDestination(
     val icon: Int,
@@ -18,7 +19,7 @@ enum class TopLevelDestination(
     SEARCH(
         icon = R.drawable.ic_search,
         label = "Search",
-        route = "",
+        route = searchRoute,
     ),
     TRANSACTION(
         icon = R.drawable.ic_receipt_item,

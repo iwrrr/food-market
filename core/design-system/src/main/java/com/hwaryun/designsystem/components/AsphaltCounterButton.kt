@@ -37,7 +37,7 @@ fun AsphaltCounterButton(
         FilledIconButton(
             modifier = Modifier
                 .size(28.dp),
-            enabled = value > 1,
+            enabled = value > 0,
             shape = RoundedCornerShape(8.dp),
             colors = IconButtonDefaults.filledIconButtonColors(AsphaltTheme.colors.cool_gray_1cCp_100),
             onClick = { onDecrementClick(value) }
@@ -74,6 +74,6 @@ fun AsphaltCounterButton(
 @Composable
 private fun DefaultPreview() {
     FoodMarketTheme {
-        AsphaltCounterButton(value = 0, onDecrementClick = {}, onIncrementClick = {})
+        AsphaltCounterButton(value = 1, onDecrementClick = {}, onIncrementClick = {})
     }
 }

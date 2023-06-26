@@ -22,8 +22,11 @@ class FoodDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(FoodDetailState())
-    val state = _state.asStateFlow()
+    private val _foodDetailState = MutableStateFlow(FoodDetailState())
+    val foodDetailState = _foodDetailState.asStateFlow()
+
+    private val _addToCartState = MutableStateFlow(AddToCartState())
+    val addToCartState = _addToCartState.asStateFlow()
 
     init {
         val foodId = savedStateHandle.get<Int>(FOOD_ID) ?: 0
@@ -35,14 +38,14 @@ class FoodDetailViewModel @Inject constructor(
             getFoodDetailUseCase.invoke(foodId).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
-                        _state.update { state ->
+                        _foodDetailState.update { state ->
                             state.copy(
                                 isLoading = true
                             )
                         }
                     },
                     doOnSuccess = {
-                        _state.update { state ->
+                        _foodDetailState.update { state ->
                             state.copy(
                                 food = it.value,
                                 isLoading = false,
@@ -50,7 +53,7 @@ class FoodDetailViewModel @Inject constructor(
                         }
                     },
                     doOnError = {
-                        _state.update { state ->
+                        _foodDetailState.update { state ->
                             state.copy(
                                 isLoading = false,
                                 error = it.throwable?.message ?: "Unexpected error accrued"
@@ -67,14 +70,14 @@ class FoodDetailViewModel @Inject constructor(
             addToCartUseCase.invoke(food).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
-                        _state.update { state ->
+                        _addToCartState.update { state ->
                             state.copy(
                                 isLoading = true
                             )
                         }
                     },
                     doOnSuccess = {
-                        _state.update { state ->
+                        _addToCartState.update { state ->
                             state.copy(
                                 addToCart = it.value,
                                 isLoading = false,
@@ -82,7 +85,7 @@ class FoodDetailViewModel @Inject constructor(
                         }
                     },
                     doOnError = {
-                        _state.update { state ->
+                        _addToCartState.update { state ->
                             state.copy(
                                 isLoading = false,
                                 error = it.throwable?.message ?: "Unexpected error accrued"
@@ -95,7 +98,7 @@ class FoodDetailViewModel @Inject constructor(
     }
 
     fun resetErrorState() {
-        _state.update {
+        _foodDetailState.update {
             it.copy(error = "")
         }
     }

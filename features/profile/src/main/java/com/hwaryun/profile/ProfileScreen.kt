@@ -21,11 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.components.DialogBoxLoading
-import com.hwaryun.designsystem.components.FoodMarketButton
 import com.hwaryun.designsystem.components.FoodMarketTabSection
 import com.hwaryun.designsystem.components.TabItem
+import com.hwaryun.designsystem.components.atoms.AsphaltButton
+import com.hwaryun.designsystem.components.atoms.AsphaltText
+import com.hwaryun.designsystem.components.atoms.ButtonType
 import com.hwaryun.designsystem.ui.FoodMarketTheme
-import com.hwaryun.designsystem.utils.ButtonType
 import com.hwaryun.profile.components.HeaderProfile
 
 @Composable
@@ -85,12 +86,13 @@ fun ProfileScreen(
                         .fillMaxWidth()
                         .padding(24.dp)
                 ) {
-                    FoodMarketButton(
+                    AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),
-                        type = ButtonType.Text,
-                        text = "Logout",
+                        type = ButtonType.Outline,
                         onClick = { onLogoutClick() },
-                    )
+                    ) {
+                        AsphaltText(text = "Logout")
+                    }
                 }
             }
 

@@ -126,7 +126,7 @@ fun VerticalFoodItemPreview() {
                 name = "",
                 picturePath = "",
                 price = 0,
-                rate = "",
+                rate = 0f,
                 types = "",
             ),
             onFoodClick = {}

@@ -57,10 +57,12 @@ internal fun FoodDetailRoute(
     onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: FoodDetailViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val foodDetailState by viewModel.foodDetailState.collectAsStateWithLifecycle()
+    val addToCartState by viewModel.addToCartState.collectAsStateWithLifecycle()
 
     FoodDetailScreen(
-        state = state,
+        foodDetailState = foodDetailState,
+        addToCartState = addToCartState,
         navigateToCart = navigateToCart,
         addToCart = viewModel::addToCart,
         resetErrorState = viewModel::resetErrorState,
@@ -71,7 +73,8 @@ internal fun FoodDetailRoute(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FoodDetailScreen(
-    state: FoodDetailState,
+    foodDetailState: FoodDetailState,
+    addToCartState: AddToCartState,
     navigateToCart: () -> Unit,
     addToCart: (Food) -> Unit,
     resetErrorState: () -> Unit,
@@ -80,17 +83,16 @@ fun FoodDetailScreen(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(state) {
-        if (state.addToCart != null) {
+    LaunchedEffect(addToCartState) {
+        if (addToCartState.addToCart != null) {
             navigateToCart()
         }
 
-        if (state.error.isNotEmpty()) {
-            onShowSnackbar(state.error, null)
+        if (addToCartState.error.isNotEmpty()) {
+            onShowSnackbar(addToCartState.error, null)
             resetErrorState()
         }
     }
-
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -113,7 +115,7 @@ fun FoodDetailScreen(
                 Box {
                     AsyncImage(
                         model = ImageRequest.Builder(context)
-                            .data(state.food?.picturePath)
+                            .data(foodDetailState.food?.picturePath)
                             .crossfade(true)
                             .build(),
                         placeholder = painterResource(R.drawable.ic_placeholder),
@@ -123,7 +125,7 @@ fun FoodDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .placeholder(
-                                visible = state.isLoading,
+                                visible = foodDetailState.isLoading,
                                 highlight = PlaceholderHighlight.shimmer(),
                                 color = PlaceholderDefaults.color(),
                                 shape = AsphaltTheme.shapes.medium
@@ -131,7 +133,7 @@ fun FoodDetailScreen(
                             .height(300.dp)
                             .clip(AsphaltTheme.shapes.medium)
                     )
-                    if (state.food?.types?.contains("popular") == true) {
+                    if (foodDetailState.food?.types?.contains("popular") == true) {
                         AsphaltText(
                             text = "Trending",
                             modifier = Modifier
@@ -145,11 +147,11 @@ fun FoodDetailScreen(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 AsphaltText(
-                    text = "${state.food?.name}",
+                    text = "${foodDetailState.food?.name}",
                     modifier = Modifier
                         .fillMaxWidth()
                         .placeholder(
-                            visible = state.isLoading,
+                            visible = foodDetailState.isLoading,
                             highlight = PlaceholderHighlight.shimmer(),
                             color = PlaceholderDefaults.color(),
                             shape = RoundedCornerShape(8.dp)
@@ -171,10 +173,10 @@ fun FoodDetailScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     AsphaltText(
-                        text = "${state.food?.rate}",
+                        text = "${foodDetailState.food?.rate}",
                         modifier = Modifier
                             .placeholder(
-                                visible = state.isLoading,
+                                visible = foodDetailState.isLoading,
                                 highlight = PlaceholderHighlight.shimmer(),
                                 color = PlaceholderDefaults.color(),
                                 shape = RoundedCornerShape(8.dp)
@@ -184,11 +186,11 @@ fun FoodDetailScreen(
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 AsphaltText(
-                    text = "${state.food?.ingredients}",
+                    text = "${foodDetailState.food?.ingredients}",
                     modifier = Modifier
                         .fillMaxWidth()
                         .placeholder(
-                            visible = state.isLoading,
+                            visible = foodDetailState.isLoading,
                             highlight = PlaceholderHighlight.shimmer(),
                             color = PlaceholderDefaults.color(),
                             shape = RoundedCornerShape(8.dp)
@@ -201,7 +203,7 @@ fun FoodDetailScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsphaltText(
-                        text = "Rp ${state.food?.price.toNumberFormat()}",
+                        text = "Rp ${foodDetailState.food?.price.toNumberFormat()}",
                         modifier = Modifier.weight(1f),
                         style = AsphaltTheme.typography.titleExtraLarge.copy(
                             fontWeight = FontWeight.Medium
@@ -210,12 +212,13 @@ fun FoodDetailScreen(
                     )
                     AsphaltButton(
                         modifier = Modifier.weight(1f),
-                        enabled = !state.isLoading,
+                        enabled = !addToCartState.isLoading,
+                        isLoading = addToCartState.isLoading,
                         onClick = {
-                            state.food?.let(addToCart)
+                            foodDetailState.food?.let(addToCart)
                         }
                     ) {
-                        AsphaltText(text = "Add to cart")
+                        AsphaltText(text = "Tambah ke keranjang")
                     }
                 }
             }
@@ -228,11 +231,12 @@ fun FoodDetailScreen(
 fun FoodDetailScreenPreview() {
     FoodMarketTheme {
         FoodDetailScreen(
-            state = FoodDetailState(),
+            foodDetailState = FoodDetailState(),
             navigateToCart = {},
             addToCart = {},
             resetErrorState = {},
-            onShowSnackbar = { _, _ -> false }
+            onShowSnackbar = { _, _ -> false },
+            addToCartState = AddToCartState()
         )
     }
 }
