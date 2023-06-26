@@ -1,6 +1,11 @@
 package com.hwaryun.database
 
-//@Database(entities = [Class::class], version = 1)
-//abstract class AppDatabase : RoomDatabase() {
-//    abstract fun yourDao(): BaseDao<Unit>
-//}
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.hwaryun.database.model.CartEntity
+
+@Database(entities = [CartEntity::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+
+    abstract val cartDao: CartDao
+}

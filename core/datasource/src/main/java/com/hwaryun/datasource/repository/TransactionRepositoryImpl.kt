@@ -1,9 +1,9 @@
 package com.hwaryun.datasource.repository
 
 import androidx.paging.PagingData
+import com.hwaryun.common.ext.execute
 import com.hwaryun.common.http.infrastructure.BaseResponse
-import com.hwaryun.common.http.infrastructure.execute
-import com.hwaryun.common.result.NetworkClientResult
+import com.hwaryun.common.result.DataResult
 import com.hwaryun.datasource.paging.createPager
 import com.hwaryun.network.FoodMarketApi
 import com.hwaryun.network.model.request.CheckoutRequest
@@ -21,7 +21,7 @@ class TransactionRepositoryImpl @Inject constructor(
         userId: Int,
         qty: Int,
         total: Int
-    ): Flow<NetworkClientResult<BaseResponse<TransactionDto>>> = flow {
+    ): Flow<DataResult<BaseResponse<TransactionDto>>> = flow {
         val body = CheckoutRequest(
             foodId = foodId,
             userId = userId,
@@ -37,12 +37,12 @@ class TransactionRepositoryImpl @Inject constructor(
             foodMarketApi.fetchTransactions(page = page, status = status).data?.results
         }.flow
 
-    override fun getTransactionDetail(id: Int): Flow<NetworkClientResult<BaseResponse<TransactionDto>>> =
+    override fun getTransactionDetail(id: Int): Flow<DataResult<BaseResponse<TransactionDto>>> =
         flow {
             emit(execute { foodMarketApi.fetchTransactionById(id) })
         }
 
-    override fun cancelOrder(id: Int): Flow<NetworkClientResult<BaseResponse<TransactionDto>>> =
+    override fun cancelOrder(id: Int): Flow<DataResult<BaseResponse<TransactionDto>>> =
         flow {
             emit(execute { foodMarketApi.cancelOrder(id, "CANCELLED") })
         }

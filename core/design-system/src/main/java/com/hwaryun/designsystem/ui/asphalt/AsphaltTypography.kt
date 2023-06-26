@@ -1,7 +1,6 @@
 package com.hwaryun.designsystem.ui.asphalt
 
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -39,91 +38,76 @@ class AsphaltTypography internal constructor(
             fontWeight = FontWeight.Bold,
             fontSize = 28.sp,
             lineHeight = 44.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         titleExtraLarge: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
             lineHeight = 36.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         titleLarge: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 21.sp,
             lineHeight = 28.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         titleModerateBold: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             lineHeight = 24.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         titleModerateDemi: TextStyle = TextStyle(
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp,
             lineHeight = 24.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         titleSmallBold: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             lineHeight = 20.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         titleSmallDemi: TextStyle = TextStyle(
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
             lineHeight = 20.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         titleTinyBold: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
             lineHeight = 20.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         titleTinyDemi: TextStyle = TextStyle(
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
             lineHeight = 20.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         bodyModerate: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             lineHeight = 20.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         bodySmall: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
             lineHeight = 20.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         captionModerateDemi: TextStyle = TextStyle(
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp,
             lineHeight = 16.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         captionModerateBook: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
             fontSize = 13.sp,
             lineHeight = 16.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         captionSmallDemi: TextStyle = TextStyle(
             fontWeight = FontWeight.Medium,
             fontSize = 12.sp,
             lineHeight = 16.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
         captionSmallBook: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
             fontSize = 12.sp,
             lineHeight = 16.sp,
-            platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
     ) : this(
         titleHero.withDefaultFontFamily(defaultFontFamily),

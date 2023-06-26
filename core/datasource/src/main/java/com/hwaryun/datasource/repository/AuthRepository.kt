@@ -1,7 +1,7 @@
 package com.hwaryun.datasource.repository
 
 import com.hwaryun.common.http.infrastructure.BaseResponse
-import com.hwaryun.common.result.NetworkClientResult
+import com.hwaryun.common.result.DataResult
 import com.hwaryun.network.model.response.AuthDto
 import kotlinx.coroutines.flow.Flow
 
@@ -9,7 +9,7 @@ interface AuthRepository {
     suspend fun signIn(
         email: String,
         password: String
-    ): Flow<NetworkClientResult<BaseResponse<AuthDto>>>
+    ): Flow<DataResult<BaseResponse<AuthDto>>>
 
     suspend fun signUp(
         name: String,
@@ -19,7 +19,7 @@ interface AuthRepository {
         city: String,
         houseNumber: String,
         phoneNumber: String,
-    ): Flow<NetworkClientResult<BaseResponse<AuthDto>>>
+    ): Flow<DataResult<BaseResponse<AuthDto>>>
 
-    suspend fun logout(): Flow<NetworkClientResult<Boolean?>>
+    suspend fun logout(): Flow<DataResult<Boolean?>>
 }

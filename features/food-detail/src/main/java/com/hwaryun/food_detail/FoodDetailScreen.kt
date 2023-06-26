@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,19 +49,22 @@ import com.hwaryun.designsystem.components.atoms.AsphaltButton
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
+import com.hwaryun.domain.model.Food
 
 @Composable
 internal fun FoodDetailRoute(
-    onOrderClick: (foodId: Int?, qty: Int, total: Int) -> Unit,
+    navigateToCart: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: FoodDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     FoodDetailScreen(
         state = state,
-        onOrderClick = onOrderClick,
-        addQuantity = viewModel::addQuantity,
-        reduceQuantity = viewModel::reduceQuantity
+        navigateToCart = navigateToCart,
+        addToCart = viewModel::addToCart,
+        resetErrorState = viewModel::resetErrorState,
+        onShowSnackbar = onShowSnackbar
     )
 }
 
@@ -68,12 +72,25 @@ internal fun FoodDetailRoute(
 @Composable
 fun FoodDetailScreen(
     state: FoodDetailState,
-    addQuantity: (Int) -> Unit,
-    reduceQuantity: (Int) -> Unit,
-    onOrderClick: (foodId: Int?, qty: Int, total: Int) -> Unit,
+    navigateToCart: () -> Unit,
+    addToCart: (Food) -> Unit,
+    resetErrorState: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(state) {
+        if (state.addToCart != null) {
+            navigateToCart()
+        }
+
+        if (state.error.isNotEmpty()) {
+            onShowSnackbar(state.error, null)
+            resetErrorState()
+        }
+    }
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -90,7 +107,7 @@ fun FoodDetailScreen(
                         top = it.calculateTopPadding() + 16.dp,
                         start = 24.dp,
                         end = 24.dp,
-                        bottom = 24.dp,
+                        bottom = it.calculateBottomPadding() + 16.dp,
                     ),
             ) {
                 Box {
@@ -195,7 +212,7 @@ fun FoodDetailScreen(
                         modifier = Modifier.weight(1f),
                         enabled = !state.isLoading,
                         onClick = {
-                            onOrderClick(state.food?.id, state.qty, state.totalPrice)
+                            state.food?.let(addToCart)
                         }
                     ) {
                         AsphaltText(text = "Add to cart")
@@ -212,9 +229,10 @@ fun FoodDetailScreenPreview() {
     FoodMarketTheme {
         FoodDetailScreen(
             state = FoodDetailState(),
-            addQuantity = {},
-            reduceQuantity = {},
-            onOrderClick = { _, _, _ -> }
+            navigateToCart = {},
+            addToCart = {},
+            resetErrorState = {},
+            onShowSnackbar = { _, _ -> false }
         )
     }
 }

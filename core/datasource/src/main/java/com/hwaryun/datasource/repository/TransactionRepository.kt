@@ -2,7 +2,7 @@ package com.hwaryun.datasource.repository
 
 import androidx.paging.PagingData
 import com.hwaryun.common.http.infrastructure.BaseResponse
-import com.hwaryun.common.result.NetworkClientResult
+import com.hwaryun.common.result.DataResult
 import com.hwaryun.network.model.response.TransactionDto
 import kotlinx.coroutines.flow.Flow
 
@@ -13,7 +13,7 @@ interface TransactionRepository {
         userId: Int,
         qty: Int,
         total: Int
-    ): Flow<NetworkClientResult<BaseResponse<TransactionDto>>>
+    ): Flow<DataResult<BaseResponse<TransactionDto>>>
 
     fun getTransactions(
         status: String? = null
@@ -21,10 +21,10 @@ interface TransactionRepository {
 
     fun getTransactionDetail(
         id: Int
-    ): Flow<NetworkClientResult<BaseResponse<TransactionDto>>>
+    ): Flow<DataResult<BaseResponse<TransactionDto>>>
 
     fun cancelOrder(
         id: Int
-    ): Flow<NetworkClientResult<BaseResponse<TransactionDto>>>
+    ): Flow<DataResult<BaseResponse<TransactionDto>>>
 }
 

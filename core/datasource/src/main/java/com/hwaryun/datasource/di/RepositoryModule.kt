@@ -2,6 +2,8 @@ package com.hwaryun.datasource.di
 
 import com.hwaryun.datasource.repository.AuthRepository
 import com.hwaryun.datasource.repository.AuthRepositoryImpl
+import com.hwaryun.datasource.repository.CartRepository
+import com.hwaryun.datasource.repository.CartRepositoryImpl
 import com.hwaryun.datasource.repository.FoodRepository
 import com.hwaryun.datasource.repository.FoodRepositoryImpl
 import com.hwaryun.datasource.repository.TransactionRepository
@@ -27,4 +29,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindTransactionRepository(transactionRepositoryImpl: TransactionRepositoryImpl): TransactionRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindCartRepository(cartRepositoryImpl: CartRepositoryImpl): CartRepository
 }

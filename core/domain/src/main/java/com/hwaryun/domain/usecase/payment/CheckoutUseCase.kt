@@ -4,6 +4,7 @@ import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.common.domain.FlowUseCase
 import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.common.result.UiResult
+import com.hwaryun.datasource.repository.CartRepository
 import com.hwaryun.datasource.repository.TransactionRepository
 import com.hwaryun.domain.mapper.toTransaction
 import com.hwaryun.domain.model.Transaction
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class CheckoutUseCase @Inject constructor(
     private val transactionRepository: TransactionRepository,
+    private val cartRepository: CartRepository,
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<CheckoutUseCase.Param, UiResult<Transaction>>(dispatcherProvider.io) {
 
@@ -27,8 +29,17 @@ class CheckoutUseCase @Inject constructor(
             ).collect { result ->
                 result.suspendSubscribe(
                     doOnSuccess = {
-                        result.value?.data?.let {
-                            emit(UiResult.Success(it.toTransaction()))
+                        cartRepository.clearCart().collect { cartResult ->
+                            cartResult.suspendSubscribe(
+                                doOnSuccess = {
+                                    result.value?.data?.let {
+                                        emit(UiResult.Success(it.toTransaction()))
+                                    }
+                                },
+                                doOnError = {
+                                    emit(UiResult.Failure(it.throwable))
+                                }
+                            )
                         }
                     },
                     doOnError = {

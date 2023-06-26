@@ -12,11 +12,12 @@ import com.hwaryun.home.navigation.homeGraph
 import com.hwaryun.home.navigation.navigateToHomeGraph
 import com.hwaryun.login.navigation.loginGraph
 import com.hwaryun.login.navigation.loginGraphRoute
-import com.hwaryun.order.navigation.navigateToOrderGraph
+import com.hwaryun.order.navigation.navigateToTransactionGraph
 import com.hwaryun.order.navigation.transactionGraph
-import com.hwaryun.payment.navigation.navigateToPaymentGraph
+import com.hwaryun.payment.navigation.cartGraph
+import com.hwaryun.payment.navigation.cartGraphRoute
+import com.hwaryun.payment.navigation.navigateToCartGraph
 import com.hwaryun.payment.navigation.navigateToSuccessOrder
-import com.hwaryun.payment.navigation.paymentGraph
 import com.hwaryun.payment.navigation.successOrderScreen
 import com.hwaryun.profile.navigation.profileGraph
 import com.hwaryun.signup.navigation.addressScreen
@@ -62,22 +63,12 @@ fun MainAppNavHost(
             )
         }
         homeGraph(
+            onCartClick = navController::navigateToCartGraph,
             onFoodClick = navController::navigateToFoodDetails,
         ) {
             foodDetailsScreen(
-                onOrderClick = { foodId, qty, total ->
-                    navController.navigateToPaymentGraph(
-                        foodId = foodId,
-                        qty = qty,
-                        total = total
-                    )
-                }
-            )
-            paymentGraph(
-                popBackStack = navController::popBackStack,
-                navigateToOrder = navController::navigateToOrderGraph,
-                navigateToSuccessOrder = {
-                    navController.navigateToSuccessOrder(
+                navigateToCart = {
+                    navController.navigateToCartGraph(
                         navOptions = navOptions {
                             popUpTo(foodDetailsRoute) {
                                 inclusive = true
@@ -87,19 +78,28 @@ fun MainAppNavHost(
                 },
                 onShowSnackbar = onShowSnackbar,
             )
+            cartGraph(
+                popBackStack = navController::popBackStack,
+                navigateToOrder = navController::navigateToTransactionGraph,
+                navigateToSuccessOrder = {
+                    navController.navigateToSuccessOrder(
+                        navOptions = navOptions {
+                            popUpTo(cartGraphRoute) {
+                                inclusive = true
+                            }
+                        }
+                    )
+                },
+                onShowSnackbar = onShowSnackbar,
+            )
             successOrderScreen(
                 navigateToHome = navController::popBackStack,
-            ) {
-                navController.popBackStack()
-                mainAppState.navigateToTopLevelDestination(TopLevelDestination.TRANSACTION)
-            }
+            )
         }
         transactionGraph(
             navigateToHome = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.HOME) },
             onOrderClick = { transactionId ->
-                navController.navigateToPaymentGraph(
-                    transactionId = transactionId
-                )
+                navController.navigateToCartGraph()
             },
             nestedGraphs = {}
         )

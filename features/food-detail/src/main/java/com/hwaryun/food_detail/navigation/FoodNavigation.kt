@@ -16,7 +16,8 @@ fun NavController.navigateToFoodDetails(foodId: Int, navOptions: NavOptions? = n
 }
 
 fun NavGraphBuilder.foodDetailsScreen(
-    onOrderClick: (foodId: Int?, qty: Int, total: Int) -> Unit
+    navigateToCart: () -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     composable(
         route = foodDetailsRoute,
@@ -25,7 +26,8 @@ fun NavGraphBuilder.foodDetailsScreen(
         )
     ) {
         FoodDetailRoute(
-            onOrderClick = onOrderClick
+            navigateToCart = navigateToCart,
+            onShowSnackbar = onShowSnackbar
         )
     }
 }

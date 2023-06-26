@@ -1,6 +1,6 @@
 package com.hwaryun.common.ext
 
-import com.hwaryun.common.result.NetworkClientResult
+import com.hwaryun.common.result.DataResult
 import com.hwaryun.common.result.UiResult
 
 fun <T> UiResult<T>.subscribe(
@@ -31,12 +31,12 @@ suspend fun <T> UiResult<T>.suspendSubscribe(
     }
 }
 
-suspend fun <T> NetworkClientResult<T>.suspendSubscribe(
-    doOnSuccess: suspend (resource: NetworkClientResult<T>) -> Unit,
-    doOnError: suspend (resource: NetworkClientResult<T>) -> Unit,
+suspend fun <T> DataResult<T>.suspendSubscribe(
+    doOnSuccess: suspend (resource: DataResult<T>) -> Unit,
+    doOnError: suspend (resource: DataResult<T>) -> Unit,
 ) {
     when (this) {
-        is NetworkClientResult.Success -> doOnSuccess.invoke(this)
-        is NetworkClientResult.Failure -> doOnError.invoke(this)
+        is DataResult.Success -> doOnSuccess.invoke(this)
+        is DataResult.Failure -> doOnError.invoke(this)
     }
 }

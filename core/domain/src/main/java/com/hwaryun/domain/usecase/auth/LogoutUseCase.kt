@@ -6,12 +6,14 @@ import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.common.result.UiResult
 import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.datasource.repository.AuthRepository
+import com.hwaryun.datasource.repository.CartRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class LogoutUseCase @Inject constructor(
     private val authRepository: AuthRepository,
+    private val cartRepository: CartRepository,
     private val userPreferenceManager: UserPreferenceManager,
     dispatcherProvider: DispatcherProvider
 ) : FlowUseCase<Nothing, UiResult<Unit>>(dispatcherProvider.io) {
@@ -22,7 +24,16 @@ class LogoutUseCase @Inject constructor(
             result.suspendSubscribe(
                 doOnSuccess = {
                     userPreferenceManager.clearUser()
-                    emit(UiResult.Success(Unit))
+                    cartRepository.clearCart().collect { cartResult ->
+                        cartResult.suspendSubscribe(
+                            doOnSuccess = {
+                                emit(UiResult.Success(Unit))
+                            },
+                            doOnError = {
+                                emit(UiResult.Failure(it.throwable))
+                            }
+                        )
+                    }
                 },
                 doOnError = {
                     emit(UiResult.Failure(it.throwable))

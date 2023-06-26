@@ -12,5 +12,3 @@ abstract class FlowUseCase<P, R : Any> constructor(private val dispatcher: Corou
         return buildFlowUseCase(params).flowOn(dispatcher)
     }
 }
-
-class ConnectivityException : Throwable()

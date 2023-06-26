@@ -2,7 +2,7 @@ package com.hwaryun.payment
 
 import com.hwaryun.domain.model.Transaction
 
-data class TransactionUiState(
+data class TransactionState(
     val transaction: Transaction? = null,
     val isCancelled: Boolean = false,
     val isLoading: Boolean = false,

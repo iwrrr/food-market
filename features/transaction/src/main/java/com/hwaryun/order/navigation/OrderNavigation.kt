@@ -10,7 +10,7 @@ import com.hwaryun.order.OrderRoute
 const val transactionGraphRoute = "transaction_graph_route"
 const val transactionRoute = "transaction_route"
 
-fun NavController.navigateToOrderGraph(navOptions: NavOptions? = null) {
+fun NavController.navigateToTransactionGraph(navOptions: NavOptions? = null) {
     this.navigate(transactionGraphRoute, navOptions)
 }
 

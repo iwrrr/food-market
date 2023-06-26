@@ -2,6 +2,8 @@ package com.hwaryun.domain.mapper
 
 import com.hwaryun.common.ext.orDash
 import com.hwaryun.common.ext.orZero
+import com.hwaryun.database.model.CartEntity
+import com.hwaryun.domain.model.Cart
 import com.hwaryun.domain.model.Food
 import com.hwaryun.domain.model.Transaction
 import com.hwaryun.domain.model.User
@@ -57,5 +59,23 @@ fun TransactionDto?.toTransaction(): Transaction {
         userId = this?.userId.orZero(),
         food = this?.food.toFood(),
         user = this?.user.toUser()
+    )
+}
+
+fun Food.toCartEntity(): CartEntity {
+    return CartEntity(
+        id = id,
+        name = name,
+        picturePath = picturePath,
+        price = price
+    )
+}
+
+fun CartEntity.toCart(): Cart {
+    return Cart(
+        id = id,
+        name = name,
+        picturePath = picturePath,
+        price = price
     )
 }

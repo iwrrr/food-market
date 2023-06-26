@@ -18,6 +18,7 @@ fun NavController.navigateToHomeGraph(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.homeGraph(
+    onCartClick: () -> Unit,
     onFoodClick: (Int) -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
@@ -29,6 +30,7 @@ fun NavGraphBuilder.homeGraph(
             route = homeRoute
         ) {
             HomeRoute(
+                onCartClick = onCartClick,
                 onFoodClick = onFoodClick
             )
         }

@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.ext.suspendSubscribe
+import com.hwaryun.domain.model.Food
+import com.hwaryun.domain.usecase.cart.AddToCartUseCase
 import com.hwaryun.domain.usecase.food.GetFoodDetailUseCase
 import com.hwaryun.food_detail.navigation.FOOD_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,11 +18,12 @@ import javax.inject.Inject
 @HiltViewModel
 class FoodDetailViewModel @Inject constructor(
     private val getFoodDetailUseCase: GetFoodDetailUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _foodDetailState = MutableStateFlow(FoodDetailState())
-    val state = _foodDetailState.asStateFlow()
+    private val _state = MutableStateFlow(FoodDetailState())
+    val state = _state.asStateFlow()
 
     init {
         val foodId = savedStateHandle.get<Int>(FOOD_ID) ?: 0
@@ -32,72 +35,68 @@ class FoodDetailViewModel @Inject constructor(
             getFoodDetailUseCase.invoke(foodId).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
-                        _foodDetailState.emit(
-                            FoodDetailState(
+                        _state.update { state ->
+                            state.copy(
                                 isLoading = true
                             )
-                        )
+                        }
                     },
                     doOnSuccess = {
-                        _foodDetailState.emit(
-                            FoodDetailState(
+                        _state.update { state ->
+                            state.copy(
                                 food = it.value,
                                 isLoading = false,
-                                totalPrice = it.value?.price ?: 0
                             )
-                        )
+                        }
                     },
                     doOnError = {
-                        _foodDetailState.emit(
-                            FoodDetailState(
-                                food = it.value,
+                        _state.update { state ->
+                            state.copy(
                                 isLoading = false,
                                 error = it.throwable?.message ?: "Unexpected error accrued"
                             )
-                        )
+                        }
                     }
                 )
             }
         }
     }
 
-    fun addQuantity(qty: Int) {
-        var totalQty = qty
-        if (totalQty >= 15) {
-            _foodDetailState.update {
-                it.copy(qty = 15)
-            }
-        } else {
-            totalQty++
-            _foodDetailState.update {
-                it.copy(qty = totalQty)
+    fun addToCart(food: Food) {
+        viewModelScope.launch {
+            addToCartUseCase.invoke(food).collect { result ->
+                result.suspendSubscribe(
+                    doOnLoading = {
+                        _state.update { state ->
+                            state.copy(
+                                isLoading = true
+                            )
+                        }
+                    },
+                    doOnSuccess = {
+                        _state.update { state ->
+                            state.copy(
+                                addToCart = it.value,
+                                isLoading = false,
+                            )
+                        }
+                    },
+                    doOnError = {
+                        _state.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                error = it.throwable?.message ?: "Unexpected error accrued"
+                            )
+                        }
+                    }
+                )
             }
         }
-
-        updateTotalPrice(totalQty)
     }
 
-    fun reduceQuantity(qty: Int) {
-        var totalQty = qty
-        if (totalQty <= 1) {
-            _foodDetailState.update {
-                it.copy(qty = 1)
-            }
-        } else {
-            totalQty--
-            _foodDetailState.update {
-                it.copy(qty = totalQty)
-            }
-        }
-
-        updateTotalPrice(totalQty)
-    }
-
-    private fun updateTotalPrice(qty: Int) {
-        _foodDetailState.update {
-            it.copy(
-                totalPrice = qty * (_foodDetailState.value.food?.price ?: 0)
-            )
+    fun resetErrorState() {
+        _state.update {
+            it.copy(error = "")
         }
     }
 }

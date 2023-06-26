@@ -26,11 +26,12 @@ import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 @Composable
 fun HeaderHome(
     modifier: Modifier = Modifier,
+    onCartClick: () -> Unit
 ) {
     Column(
         modifier = modifier
             .background(AsphaltTheme.colors.pure_white_500)
-            .height(96.dp)
+            .height(100.dp)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -59,7 +60,7 @@ fun HeaderHome(
                 )
             }
             FilledIconButton(
-                onClick = {},
+                onClick = { onCartClick() },
                 colors = IconButtonDefaults.filledIconButtonColors(AsphaltTheme.colors.cool_gray_1cCp_100)
             ) {
                 Icon(
@@ -75,6 +76,8 @@ fun HeaderHome(
 @Composable
 fun HeaderHomePreview() {
     FoodMarketTheme {
-        HeaderHome()
+        HeaderHome(
+            onCartClick = {}
+        )
     }
 }

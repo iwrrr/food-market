@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.hwaryun.foodmarket.navigation.TopLevelDestination
 import com.hwaryun.home.navigation.navigateToHomeGraph
-import com.hwaryun.order.navigation.navigateToOrderGraph
+import com.hwaryun.order.navigation.navigateToTransactionGraph
 import com.hwaryun.profile.navigation.navigateToProfileGraph
 
 @Composable
@@ -47,7 +47,7 @@ class MainAppState(val navHostController: NavHostController) {
 
         when (topLevelDestination) {
             TopLevelDestination.HOME -> navHostController.navigateToHomeGraph(topLevelNavOptions)
-            TopLevelDestination.TRANSACTION -> navHostController.navigateToOrderGraph(
+            TopLevelDestination.TRANSACTION -> navHostController.navigateToTransactionGraph(
                 topLevelNavOptions
             )
 

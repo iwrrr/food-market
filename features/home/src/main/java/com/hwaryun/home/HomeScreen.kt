@@ -41,11 +41,9 @@ import com.hwaryun.domain.model.Food
 import com.hwaryun.home.components.FoodItem
 import com.hwaryun.home.components.HeaderHome
 
-const val FOOD_SECTION = "food_section"
-const val FOOD_TAB_SECTION = "food_tab_section"
-
 @Composable
 internal fun HomeRoute(
+    onCartClick: () -> Unit,
     onFoodClick: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -53,6 +51,7 @@ internal fun HomeRoute(
 
     HomeScreen(
         state = state,
+        onCartClick = onCartClick,
         onFoodClick = onFoodClick,
         onTrendingSectionClick = {}
     )
@@ -61,12 +60,13 @@ internal fun HomeRoute(
 @Composable
 fun HomeScreen(
     state: HomeState,
+    onCartClick: () -> Unit,
     onFoodClick: (Int) -> Unit,
     onTrendingSectionClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
-            HeaderHome()
+            HeaderHome(onCartClick = onCartClick)
         },
         containerColor = AsphaltTheme.colors.pure_white_500,
         content = { innerPadding ->
@@ -230,6 +230,7 @@ private fun DefaultPreview() {
     FoodMarketTheme {
         HomeScreen(
             state = HomeState(),
+            onCartClick = {},
             onFoodClick = {},
             onTrendingSectionClick = {}
         )

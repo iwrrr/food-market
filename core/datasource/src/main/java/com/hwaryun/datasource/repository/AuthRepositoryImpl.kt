@@ -1,8 +1,8 @@
 package com.hwaryun.datasource.repository
 
+import com.hwaryun.common.ext.execute
 import com.hwaryun.common.http.infrastructure.BaseResponse
-import com.hwaryun.common.http.infrastructure.execute
-import com.hwaryun.common.result.NetworkClientResult
+import com.hwaryun.common.result.DataResult
 import com.hwaryun.network.FoodMarketApi
 import com.hwaryun.network.model.request.LoginRequest
 import com.hwaryun.network.model.request.RegisterRequest
@@ -18,7 +18,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signIn(
         email: String,
         password: String
-    ): Flow<NetworkClientResult<BaseResponse<AuthDto>>> = flow {
+    ): Flow<DataResult<BaseResponse<AuthDto>>> = flow {
         val loginRequest = LoginRequest(
             email = email,
             password = password
@@ -35,7 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
         city: String,
         houseNumber: String,
         phoneNumber: String
-    ): Flow<NetworkClientResult<BaseResponse<AuthDto>>> = flow {
+    ): Flow<DataResult<BaseResponse<AuthDto>>> = flow {
         val registerRequest = RegisterRequest(
             name = name,
             email = email,
@@ -50,7 +50,7 @@ class AuthRepositoryImpl @Inject constructor(
         emit(execute { foodMarketApi.register(registerRequest) })
     }
 
-    override suspend fun logout(): Flow<NetworkClientResult<Boolean?>> = flow {
+    override suspend fun logout(): Flow<DataResult<Boolean?>> = flow {
         emit(execute { foodMarketApi.logout().data })
     }
 }

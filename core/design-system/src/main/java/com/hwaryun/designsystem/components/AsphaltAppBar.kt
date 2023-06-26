@@ -42,10 +42,10 @@ fun AsphaltAppBar(
         modifier = modifier
             .background(AsphaltTheme.colors.pure_white_500)
             .height(60.dp)
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 10.dp),
         contentAlignment = Alignment.CenterStart
     ) {
-        if (true) {
+        if (showNavigateBack) {
             IconButton(
                 onClick = {
                     if (SystemClock.elapsedRealtime() - lastClickTime < clickDisablePeriod) {
