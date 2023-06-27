@@ -35,8 +35,8 @@ import com.hwaryun.datasource.paging.subscribe
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.ui.Yellow
 import com.hwaryun.domain.model.Transaction
-import com.hwaryun.order.components.OrderItem
-import com.hwaryun.order.components.PlaceholderOrderItem
+import com.hwaryun.order.components.PlaceholderTransactionItem
+import com.hwaryun.order.components.TransactionItem
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -123,19 +123,19 @@ private fun OrderContent(
             doOnLoading = {
                 item {
                     repeat(10) {
-                        PlaceholderOrderItem()
+                        PlaceholderTransactionItem()
                     }
                 }
             },
             doOnNotLoading = {
                 items(orders, key = { it.id }) { order ->
                     if (order != null) {
-                        OrderItem(
-                            order = order,
-                            onOrderItemClick = onOrderItemClick
+                        TransactionItem(
+                            transaction = order,
+                            onTransactionClick = onOrderItemClick
                         )
                     } else {
-                        PlaceholderOrderItem()
+                        PlaceholderTransactionItem()
                     }
                 }
             },
@@ -144,7 +144,7 @@ private fun OrderContent(
         orders.loadState.append.subscribe(
             doOnLoading = {
                 item {
-                    PlaceholderOrderItem()
+                    PlaceholderTransactionItem()
                 }
             }
         )

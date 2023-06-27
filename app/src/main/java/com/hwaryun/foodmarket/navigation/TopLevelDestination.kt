@@ -13,22 +13,22 @@ enum class TopLevelDestination(
 ) {
     HOME(
         icon = R.drawable.ic_home,
-        label = "Home",
+        label = "Beranda",
         route = homeRoute,
     ),
     SEARCH(
         icon = R.drawable.ic_search,
-        label = "Search",
+        label = "Cari",
         route = searchRoute,
     ),
     TRANSACTION(
         icon = R.drawable.ic_receipt_item,
-        label = "Transaction",
+        label = "Transaksi",
         route = transactionRoute,
     ),
     PROFILE(
         icon = R.drawable.ic_profile_circle,
-        label = "Profile",
+        label = "Profil",
         route = profileRoute,
     ),
 }

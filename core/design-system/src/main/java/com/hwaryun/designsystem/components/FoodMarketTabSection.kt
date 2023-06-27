@@ -15,7 +15,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -29,7 +29,7 @@ fun FoodMarketTabSection(
     modifier: Modifier = Modifier,
     tabItems: List<TabItem>
 ) {
-    var tabIndex by remember { mutableStateOf(0) }
+    var tabIndex by remember { mutableIntStateOf(0) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         ScrollableTabRow(

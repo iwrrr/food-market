@@ -245,4 +245,10 @@ class RegisterViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetErrorState() {
+        _registerState.update {
+            it.copy(error = "")
+        }
+    }
 }

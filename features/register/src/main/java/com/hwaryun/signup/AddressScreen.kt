@@ -64,6 +64,7 @@ internal fun AddressRoute(
         updateAddressState = viewModel::updateAddressState,
         updateHouseNumberState = viewModel::updateHouseNumberState,
         updateCityState = viewModel::updateCityState,
+        resetErrorState = viewModel::resetErrorState,
         doSignUp = viewModel::signUp,
     )
 }
@@ -77,8 +78,9 @@ fun AddressScreen(
     updateAddressState: (String) -> Unit,
     updateHouseNumberState: (String) -> Unit,
     updateCityState: (String) -> Unit,
+    resetErrorState: () -> Unit,
     doSignUp: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     var shouldShowTrailingIcon by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -90,6 +92,7 @@ fun AddressScreen(
 
         if (registerState.error.isNotEmpty()) {
             onShowSnackbar(registerState.error, null)
+            resetErrorState()
         }
     }
 
@@ -97,7 +100,7 @@ fun AddressScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AsphaltAppBar(
-                title = "Address",
+                title = "Alamat",
                 showNavigateBack = true
             ) {
                 popBackStack()
@@ -126,8 +129,8 @@ fun AddressScreen(
                         onValueChange = { updatePhoneNumberState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Phone No.",
-                        placeholder = "Type your phone number",
+                        label = "No. Telepon",
+                        placeholder = "Masukkan nomor telepon kamu",
                         singleLine = true,
                         isError = registerState.isPhoneNumberError,
                         errorMsg = if (registerState.isPhoneNumberError) stringResource(id = registerState.errorPhoneNumberMsg) else "",
@@ -163,8 +166,8 @@ fun AddressScreen(
                         onValueChange = { updateAddressState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Address",
-                        placeholder = "Type your address",
+                        label = "Alamat",
+                        placeholder = "Masukkan alamat kamu",
                         singleLine = true,
                         isError = registerState.isAddressError,
                         errorMsg = if (registerState.isAddressError) stringResource(id = registerState.errorAddressMsg) else "",
@@ -200,8 +203,8 @@ fun AddressScreen(
                         onValueChange = { updateHouseNumberState(it) },
                         showLabel = true,
                         required = true,
-                        label = "House No.",
-                        placeholder = "Type your house number",
+                        label = "No. Rumah",
+                        placeholder = "Masukkan nomor rumah kamu",
                         singleLine = true,
                         isError = registerState.isHouseNumberError,
                         errorMsg = if (registerState.isHouseNumberError) stringResource(id = registerState.errorHouseNumberMsg) else "",
@@ -236,8 +239,8 @@ fun AddressScreen(
                     AsphaltDropdown(
                         text = registerState.city,
                         showLabel = true,
-                        textLabel = "City",
-                        placeholder = "Select your city",
+                        textLabel = "Kota",
+                        placeholder = "Pilih kota",
                         expanded = expanded,
                         onExpandedChange = {
                             expanded = !expanded
@@ -260,7 +263,7 @@ fun AddressScreen(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { doSignUp() }
                     ) {
-                        AsphaltText(text = "Sign Up Now")
+                        AsphaltText(text = "Daftar Sekarang")
                     }
 
                     if (registerState.isLoading) {
@@ -284,6 +287,7 @@ private fun DefaultPreview() {
             updateAddressState = {},
             updateHouseNumberState = {},
             updateCityState = {},
+            resetErrorState = {},
             doSignUp = {},
             onShowSnackbar = { _, _ -> true },
         )

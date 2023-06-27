@@ -114,8 +114,8 @@ fun LoginScreen(
                         onValueChange = { updateEmailState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Email Address",
-                        placeholder = "Type your email address",
+                        label = "Email",
+                        placeholder = "Masukkan email kamu",
                         singleLine = true,
                         isError = loginState.isEmailError,
                         errorMsg = if (loginState.isEmailError) stringResource(id = loginState.errorEmailMsg) else "",
@@ -149,8 +149,8 @@ fun LoginScreen(
                         onValueChange = { updatePasswordState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Password",
-                        placeholder = "Type your password",
+                        label = "Kata Sandi",
+                        placeholder = "Masukkan kata sandi kamu",
                         singleLine = true,
                         visualTransformation = if (!loginState.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
                         isError = loginState.isPasswordError,
@@ -192,7 +192,7 @@ fun LoginScreen(
                         type = ButtonType.Outline,
                         onClick = { navigateToSignUpScreen() }
                     ) {
-                        AsphaltText(text = "Create New Account")
+                        AsphaltText(text = "Buat Akun")
                     }
                 }
 

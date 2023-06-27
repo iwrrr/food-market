@@ -32,12 +32,12 @@ fun AccountScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {  }
+                .clickable { }
                 .padding(horizontal = 24.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Edit Profile")
+            Text(text = "Edit Profil")
             Icon(
                 imageVector = Icons.Rounded.ArrowForwardIos,
                 contentDescription = null,
@@ -47,12 +47,12 @@ fun AccountScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {  }
+                .clickable { }
                 .padding(horizontal = 24.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Home Address")
+            Text(text = "Alamat Rumah")
             Icon(
                 imageVector = Icons.Rounded.ArrowForwardIos,
                 contentDescription = null,
@@ -62,12 +62,12 @@ fun AccountScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {  }
+                .clickable { }
                 .padding(horizontal = 24.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Security")
+            Text(text = "Keamanan")
             Icon(
                 imageVector = Icons.Rounded.ArrowForwardIos,
                 contentDescription = null,
@@ -77,12 +77,12 @@ fun AccountScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {  }
+                .clickable { }
                 .padding(horizontal = 24.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Payments")
+            Text(text = "Pembayaran")
             Icon(
                 imageVector = Icons.Rounded.ArrowForwardIos,
                 contentDescription = null,

@@ -32,12 +32,12 @@ fun FoodMarketScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {  }
+                .clickable { }
                 .padding(horizontal = 24.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Rate App")
+            Text(text = "Nilai Aplikasi")
             Icon(
                 imageVector = Icons.Rounded.ArrowForwardIos,
                 contentDescription = null,
@@ -47,12 +47,12 @@ fun FoodMarketScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {  }
+                .clickable { }
                 .padding(horizontal = 24.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Help Center")
+            Text(text = "Pusat Bantuan")
             Icon(
                 imageVector = Icons.Rounded.ArrowForwardIos,
                 contentDescription = null,
@@ -62,12 +62,12 @@ fun FoodMarketScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {  }
+                .clickable { }
                 .padding(horizontal = 24.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Privacy & Policy")
+            Text(text = "Kebijakan Pribadi")
             Icon(
                 imageVector = Icons.Rounded.ArrowForwardIos,
                 contentDescription = null,
@@ -77,12 +77,12 @@ fun FoodMarketScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {  }
+                .clickable { }
                 .padding(horizontal = 24.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Terms & Conditions")
+            Text(text = "Syarat & Ketentuan")
             Icon(
                 imageVector = Icons.Rounded.ArrowForwardIos,
                 contentDescription = null,

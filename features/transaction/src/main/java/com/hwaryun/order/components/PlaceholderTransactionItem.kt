@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,13 +31,15 @@ import com.google.accompanist.placeholder.material.color
 import com.google.accompanist.placeholder.material.shimmer
 import com.google.accompanist.placeholder.placeholder
 import com.hwaryun.designsystem.R
+import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 
 @Composable
-fun PlaceholderOrderItem() {
+fun PlaceholderTransactionItem() {
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.surface)
+            .background(AsphaltTheme.colors.pure_white_500)
             .padding(horizontal = 24.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.Center
     ) {
@@ -73,7 +73,7 @@ fun PlaceholderOrderItem() {
                     .weight(2f),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
+                AsphaltText(
                     text = "",
                     modifier = Modifier
                         .fillMaxWidth(2f / 3)
@@ -83,12 +83,12 @@ fun PlaceholderOrderItem() {
                             color = PlaceholderDefaults.color(),
                             shape = RoundedCornerShape(8.dp)
                         ),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = AsphaltTheme.typography.titleModerateDemi,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(
+                AsphaltText(
                     text = "",
                     modifier = Modifier
                         .fillMaxWidth(1f / 2)
@@ -98,9 +98,9 @@ fun PlaceholderOrderItem() {
                             color = PlaceholderDefaults.color(),
                             shape = RoundedCornerShape(8.dp)
                         ),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = AsphaltTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = AsphaltTheme.colors.cool_gray_500,
                     maxLines = 1
                 )
             }
@@ -111,7 +111,7 @@ fun PlaceholderOrderItem() {
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
+                AsphaltText(
                     text = "",
                     modifier = Modifier
                         .fillMaxWidth()
@@ -121,14 +121,14 @@ fun PlaceholderOrderItem() {
                             color = PlaceholderDefaults.color(),
                             shape = RoundedCornerShape(8.dp)
                         ),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = AsphaltTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = AsphaltTheme.colors.cool_gray_500,
                     maxLines = 1,
                     textAlign = TextAlign.End
                 )
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(
+                AsphaltText(
                     text = "",
                     modifier = Modifier
                         .fillMaxWidth(3f / 4)
@@ -138,9 +138,9 @@ fun PlaceholderOrderItem() {
                             color = PlaceholderDefaults.color(),
                             shape = RoundedCornerShape(8.dp)
                         ),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = AsphaltTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.error,
+                    color = AsphaltTheme.colors.retail_red_500,
                     maxLines = 1,
                     textAlign = TextAlign.End
                 )
@@ -153,6 +153,6 @@ fun PlaceholderOrderItem() {
 @Composable
 private fun DefaultPreview() {
     FoodMarketTheme {
-        PlaceholderOrderItem()
+        PlaceholderTransactionItem()
     }
 }

@@ -14,13 +14,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -52,7 +56,7 @@ internal fun RegisterRoute(
 ) {
     val registerState by viewModel.registerState.collectAsStateWithLifecycle()
 
-    SignUpScreen(
+    RegisterScreen(
         registerState = registerState,
         popBackStack = popBackStack,
         navigateToAddressScreen = navigateToAddressScreen,
@@ -64,9 +68,8 @@ internal fun RegisterRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(
+fun RegisterScreen(
     registerState: RegisterState,
     popBackStack: () -> Unit,
     navigateToAddressScreen: () -> Unit,
@@ -91,7 +94,7 @@ fun SignUpScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AsphaltAppBar(
-                title = "Sign Up",
+                title = "Daftar",
                 showNavigateBack = true
             ) { popBackStack() }
         },
@@ -119,8 +122,8 @@ fun SignUpScreen(
                         onValueChange = { updateNameState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Full Name",
-                        placeholder = "Type your full name",
+                        label = "Nama Lengkap",
+                        placeholder = "Masukkan nama lengkap kamu",
                         singleLine = true,
                         isError = registerState.isNameError,
                         errorMsg = if (registerState.isNameError) stringResource(id = registerState.errorNameMsg) else "",
@@ -156,8 +159,8 @@ fun SignUpScreen(
                         onValueChange = { updateEmailState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Email Address",
-                        placeholder = "Type your email address",
+                        label = "Email",
+                        placeholder = "Masukkan email kamu",
                         singleLine = true,
                         isError = registerState.isEmailError,
                         errorMsg = if (registerState.isEmailError) stringResource(id = registerState.errorEmailMsg) else "",
@@ -191,8 +194,8 @@ fun SignUpScreen(
                         onValueChange = { updatePasswordState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Password",
-                        placeholder = "Type your password",
+                        label = "Kata Sandi",
+                        placeholder = "Masukkan kata sandi kamu",
                         singleLine = true,
                         visualTransformation = if (!registerState.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
                         isError = registerState.isPasswordError,
@@ -231,7 +234,7 @@ fun SignUpScreen(
                             isFirstStepCompleted = true
                         }
                     ) {
-                        AsphaltText(text = "Continue")
+                        AsphaltText(text = "Lanjut")
                     }
                 }
             }
@@ -243,7 +246,7 @@ fun SignUpScreen(
 @Composable
 private fun DefaultPreview() {
     FoodMarketTheme {
-        SignUpScreen(
+        RegisterScreen(
             popBackStack = {},
             navigateToAddressScreen = {},
             registerState = RegisterState(),

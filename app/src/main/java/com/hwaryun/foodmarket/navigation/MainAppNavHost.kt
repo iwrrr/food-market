@@ -106,7 +106,7 @@ fun MainAppNavHost(
         )
         transactionGraph(
             navigateToHome = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.HOME) },
-            onOrderClick = { transactionId ->
+            onTransactionClick = { transactionId ->
                 navController.navigateToCartGraph()
             },
             nestedGraphs = {}

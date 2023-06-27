@@ -2,6 +2,7 @@ package com.hwaryun.profile
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,6 +27,7 @@ import com.hwaryun.designsystem.components.atoms.AsphaltButton
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.atoms.ButtonType
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.profile.components.HeaderProfile
 
 @Composable
@@ -41,7 +42,6 @@ internal fun ProfileRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(
@@ -50,6 +50,7 @@ fun ProfileScreen(
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = AsphaltTheme.colors.pure_white_500
     ) {
         Box(
             modifier = Modifier
@@ -69,9 +70,10 @@ fun ProfileScreen(
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 FoodMarketTabSection(
+                    modifier = Modifier.background(AsphaltTheme.colors.pure_white_500),
                     tabItems = listOf(
                         TabItem(
-                            title = "Account",
+                            title = "Akun",
                             screen = { AccountScreen() }
                         ),
                         TabItem(
