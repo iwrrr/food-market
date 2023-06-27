@@ -2,9 +2,9 @@ package com.hwaryun.foodmarket.navigation
 
 import com.hwaryun.designsystem.R
 import com.hwaryun.home.navigation.homeRoute
-import com.hwaryun.order.navigation.transactionRoute
 import com.hwaryun.profile.navigation.profileRoute
 import com.hwaryun.search.navigation.searchRoute
+import com.hwaryun.transaction.navigation.transactionRoute
 
 enum class TopLevelDestination(
     val icon: Int,

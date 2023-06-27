@@ -16,8 +16,9 @@ dependencies {
     implementation(project(":features:search"))
     implementation(project(":features:transaction"))
     implementation(project(":features:profile"))
-    implementation(project(":features:food-detail"))
     implementation(project(":features:cart"))
+    implementation(project(":features:food-detail"))
+    implementation(project(":features:transaction-detail"))
 
     implementation(libs.androidx.ktx)
     implementation(libs.lifecycle.runtime.ktx)

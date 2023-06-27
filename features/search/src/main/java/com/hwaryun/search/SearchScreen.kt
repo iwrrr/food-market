@@ -49,7 +49,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 internal fun SearchRoute(
-    navigateToHome: () -> Unit,
     onFoodClick: (Int) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: SearchViewModel = hiltViewModel()
@@ -58,20 +57,15 @@ internal fun SearchRoute(
     val query by viewModel.query.collectAsStateWithLifecycle()
     val foods = viewModel.foods.collectAsLazyPagingItems()
 
-    //    val inProgressOrders = viewModel.inProgressOrders.collectAsLazyPagingItems()
-    //    val postOrders = viewModel.postOrders.collectAsLazyPagingItems()
-
     SearchScreen(
         state = state,
         query = query,
         foods = foods,
-        navigateToHome = navigateToHome,
         onFoodClick = onFoodClick,
         onShowSnackbar = onShowSnackbar,
         onQueryChange = viewModel::onQueryChange,
         onFocusChange = viewModel::onFocusChange,
-        //        inProgressOrders = inProgressOrders,
-        //        postOrders = postOrders
+        resetErrorState = viewModel::resetErrorState,
     )
 }
 
@@ -82,17 +76,24 @@ fun SearchScreen(
     state: SearchState,
     query: String,
     foods: LazyPagingItems<Food>,
-    navigateToHome: () -> Unit,
     onFoodClick: (Int) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     onQueryChange: (String) -> Unit,
     onFocusChange: (Boolean) -> Unit,
+    resetErrorState: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+    }
+
+    LaunchedEffect(state) {
+        if (state.error.isNotEmpty()) {
+            onShowSnackbar(state.error, null)
+            resetErrorState()
+        }
     }
 
     Scaffold(
@@ -257,11 +258,11 @@ private fun DefaultPreview() {
             ),
             query = "",
             foods = flow.collectAsLazyPagingItems(),
-            navigateToHome = {},
             onFoodClick = {},
             onShowSnackbar = { _, _ -> false },
-            onQueryChange = { },
-            onFocusChange = { },
+            onQueryChange = { _ -> },
+            onFocusChange = { _ -> },
+            resetErrorState = {},
         )
     }
 }

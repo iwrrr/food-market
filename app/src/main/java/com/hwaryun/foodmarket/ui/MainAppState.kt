@@ -11,9 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.hwaryun.foodmarket.navigation.TopLevelDestination
 import com.hwaryun.home.navigation.navigateToHomeGraph
-import com.hwaryun.order.navigation.navigateToTransactionGraph
 import com.hwaryun.profile.navigation.navigateToProfileGraph
 import com.hwaryun.search.navigation.navigateToSearchGraph
+import com.hwaryun.transaction.navigation.navigateToTransactionGraph
 
 @Composable
 fun rememberMainAppState(

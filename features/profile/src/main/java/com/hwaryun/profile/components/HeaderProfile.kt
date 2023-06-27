@@ -19,12 +19,12 @@ import com.hwaryun.designsystem.components.FoodMarketCircleImage
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
-import com.hwaryun.profile.ProfileUiState
+import com.hwaryun.profile.ProfileState
 
 @Composable
 fun HeaderProfile(
     modifier: Modifier = Modifier,
-    uiState: ProfileUiState,
+    uiState: ProfileState,
 ) {
     Column(
         modifier = modifier
@@ -67,7 +67,7 @@ fun HeaderProfile(
 fun HeaderProfilePreview() {
     FoodMarketTheme {
         HeaderProfile(
-            uiState = ProfileUiState(),
+            uiState = ProfileState(),
         )
     }
 }

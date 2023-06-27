@@ -19,14 +19,14 @@ class ProfileViewModel @Inject constructor(
     private val userPreferenceManager: UserPreferenceManager
 ) : ViewModel() {
 
-    private val _profileUiState = MutableStateFlow(ProfileUiState())
-    val profileUiState = _profileUiState.asStateFlow()
+    private val _profileState = MutableStateFlow(ProfileState())
+    val profileState = _profileState.asStateFlow()
 
     init {
         viewModelScope.launch {
             userPreferenceManager.user.collect { result ->
                 if (result != null) {
-                    _profileUiState.update { state ->
+                    _profileState.update { state ->
                         state.copy(user = result.toUser())
                     }
                 }
@@ -39,12 +39,12 @@ class ProfileViewModel @Inject constructor(
             logoutUseCase.invoke().collect { result ->
                 result.subscribe(
                     doOnLoading = {
-                        _profileUiState.update { state ->
+                        _profileState.update { state ->
                             state.copy(isLoading = true)
                         }
                     },
                     doOnSuccess = {
-                        _profileUiState.update { state ->
+                        _profileState.update { state ->
                             state.copy(
                                 logout = it.value,
                                 isLoading = false
@@ -52,7 +52,7 @@ class ProfileViewModel @Inject constructor(
                         }
                     },
                     doOnError = {
-                        _profileUiState.update { state ->
+                        _profileState.update { state ->
                             state.copy(
                                 isLoading = false,
                                 error = result.throwable?.message ?: "Unexpected error accrued"
@@ -61,6 +61,12 @@ class ProfileViewModel @Inject constructor(
                     }
                 )
             }
+        }
+    }
+
+    fun resetErrorState() {
+        _profileState.update {
+            it.copy(error = "")
         }
     }
 }

@@ -3,7 +3,6 @@ package com.hwaryun.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.ext.subscribe
-import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.domain.usecase.food.GetTrendingFoodsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val userPreferenceManager: UserPreferenceManager,
     private val getTrendingFoodsUseCase: GetTrendingFoodsUseCase
 ) : ViewModel() {
 

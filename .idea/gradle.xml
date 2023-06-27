@@ -41,6 +41,7 @@
             <option value="$PROJECT_DIR$/features/register" />
             <option value="$PROJECT_DIR$/features/search" />
             <option value="$PROJECT_DIR$/features/transaction" />
+            <option value="$PROJECT_DIR$/features/transaction-detail" />
           </set>
         </option>
       </GradleProjectSettings>

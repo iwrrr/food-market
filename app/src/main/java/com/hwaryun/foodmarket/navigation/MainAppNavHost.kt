@@ -4,6 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
+import com.hwaryun.cart.navigation.cartGraph
+import com.hwaryun.cart.navigation.cartGraphRoute
+import com.hwaryun.cart.navigation.navigateToCartGraph
+import com.hwaryun.cart.navigation.navigateToSuccessOrder
+import com.hwaryun.cart.navigation.successOrderScreen
 import com.hwaryun.food_detail.navigation.foodDetailsScreen
 import com.hwaryun.food_detail.navigation.navigateToFoodDetails
 import com.hwaryun.foodmarket.ui.MainAppState
@@ -12,19 +17,16 @@ import com.hwaryun.home.navigation.homeGraph
 import com.hwaryun.home.navigation.navigateToHomeGraph
 import com.hwaryun.login.navigation.loginGraph
 import com.hwaryun.login.navigation.loginGraphRoute
-import com.hwaryun.order.navigation.navigateToTransactionGraph
-import com.hwaryun.order.navigation.transactionGraph
-import com.hwaryun.payment.navigation.cartGraph
-import com.hwaryun.payment.navigation.cartGraphRoute
-import com.hwaryun.payment.navigation.navigateToCartGraph
-import com.hwaryun.payment.navigation.navigateToSuccessOrder
-import com.hwaryun.payment.navigation.successOrderScreen
 import com.hwaryun.profile.navigation.profileGraph
 import com.hwaryun.search.navigation.searchGraph
 import com.hwaryun.signup.navigation.addressScreen
 import com.hwaryun.signup.navigation.navigateToAddress
 import com.hwaryun.signup.navigation.navigateToRegisterGraph
 import com.hwaryun.signup.navigation.registerGraph
+import com.hwaryun.transaction.navigation.navigateToTransactionGraph
+import com.hwaryun.transaction.navigation.transactionGraph
+import com.hwaryun.transaction_detail.navigation.navigateToTransactionDetailGraph
+import com.hwaryun.transaction_detail.navigation.transactionDetailsScreen
 
 @Composable
 fun MainAppNavHost(
@@ -95,25 +97,25 @@ fun MainAppNavHost(
                 onShowSnackbar = onShowSnackbar,
             )
             successOrderScreen(
-                navigateToHome = navController::popBackStack,
+                navigateToHome = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.HOME) },
             )
         }
         searchGraph(
-            navigateToHome = {},
             onFoodClick = navController::navigateToFoodDetails,
+            onShowSnackbar = onShowSnackbar
+        ) {}
+        transactionGraph(
+            onTransactionClick = navController::navigateToTransactionDetailGraph,
+            onShowSnackbar = onShowSnackbar
+        ) {
+            transactionDetailsScreen(
+                popBackStack = navController::popBackStack,
+                onShowSnackbar = onShowSnackbar
+            )
+        }
+        profileGraph(
             onShowSnackbar = onShowSnackbar,
             nestedGraphs = {}
-        )
-        transactionGraph(
-            navigateToHome = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.HOME) },
-            onTransactionClick = { transactionId ->
-                navController.navigateToCartGraph()
-            },
-            nestedGraphs = {}
-        )
-        profileGraph(
-            nestedGraphs = {},
-            onShowSnackbar = onShowSnackbar
         )
     }
 }

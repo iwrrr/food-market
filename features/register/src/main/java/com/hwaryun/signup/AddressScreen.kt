@@ -71,16 +71,16 @@ internal fun AddressRoute(
 
 @Composable
 fun AddressScreen(
+    registerState: RegisterState,
     navigateToHomeScreen: () -> Unit,
     popBackStack: () -> Unit,
-    registerState: RegisterState,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     updatePhoneNumberState: (String) -> Unit,
     updateAddressState: (String) -> Unit,
     updateHouseNumberState: (String) -> Unit,
     updateCityState: (String) -> Unit,
     resetErrorState: () -> Unit,
     doSignUp: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     var shouldShowTrailingIcon by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current

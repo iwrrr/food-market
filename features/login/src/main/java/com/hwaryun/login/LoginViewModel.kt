@@ -81,6 +81,12 @@ class LoginViewModel @Inject constructor(
         _loginState.update { it.copy(isPasswordVisible = value) }
     }
 
+    fun resetErrorState() {
+        _loginState.update {
+            it.copy(error = "")
+        }
+    }
+
     private fun handleFieldError(exception: FieldErrorException) {
         exception.errorFields.forEach { errorField ->
             if (errorField.first == EMAIL_FIELD) {

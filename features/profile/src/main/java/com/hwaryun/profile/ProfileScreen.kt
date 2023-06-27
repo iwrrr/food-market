@@ -2,7 +2,6 @@ package com.hwaryun.profile
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,22 +31,34 @@ import com.hwaryun.profile.components.HeaderProfile
 
 @Composable
 internal fun ProfileRoute(
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val profileUiState by viewModel.profileUiState.collectAsStateWithLifecycle()
+    val profileState by viewModel.profileState.collectAsStateWithLifecycle()
 
     ProfileScreen(
-        profileUiState = profileUiState,
-        onLogoutClick = viewModel::logout
+        state = profileState,
+        onShowSnackbar = onShowSnackbar,
+        onLogoutClick = viewModel::logout,
+        resetErrorState = viewModel::resetErrorState
     )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(
-    profileUiState: ProfileUiState,
-    onLogoutClick: () -> Unit
+    state: ProfileState,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onLogoutClick: () -> Unit,
+    resetErrorState: () -> Unit,
 ) {
+    LaunchedEffect(state) {
+        if (state.error.isNotEmpty()) {
+            onShowSnackbar(state.error, null)
+            resetErrorState()
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = AsphaltTheme.colors.pure_white_500
@@ -66,11 +77,10 @@ fun ProfileScreen(
             ) {
                 HeaderProfile(
                     modifier = Modifier.fillMaxWidth(),
-                    uiState = profileUiState,
+                    uiState = state,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 FoodMarketTabSection(
-                    modifier = Modifier.background(AsphaltTheme.colors.pure_white_500),
                     tabItems = listOf(
                         TabItem(
                             title = "Akun",
@@ -98,7 +108,7 @@ fun ProfileScreen(
                 }
             }
 
-            if (profileUiState.isLoading) {
+            if (state.isLoading) {
                 DialogBoxLoading()
             }
         }
@@ -110,8 +120,10 @@ fun ProfileScreen(
 private fun DefaultPreview() {
     FoodMarketTheme {
         ProfileScreen(
-            profileUiState = ProfileUiState(),
-            onLogoutClick = {}
+            state = ProfileState(),
+            onShowSnackbar = { _, _ -> false },
+            onLogoutClick = {},
+            resetErrorState = {},
         )
     }
 }

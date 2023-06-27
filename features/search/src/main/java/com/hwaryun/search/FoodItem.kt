@@ -44,7 +44,7 @@ fun FoodItem(
     val context = LocalContext.current
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(AsphaltTheme.colors.pure_white_500)
             .singleClick { onFoodClick(food?.id.orZero()) }
             .padding(horizontal = 24.dp, vertical = 8.dp),

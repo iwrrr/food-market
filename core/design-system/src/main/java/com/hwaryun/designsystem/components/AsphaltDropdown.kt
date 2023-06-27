@@ -17,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -84,9 +85,9 @@ fun AsphaltDropdown(
                 value = text,
                 onValueChange = onValueChange,
                 maxLines = 1,
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
+                    cursorColor = Color.White,
                     focusedBorderColor = LightGreen,
-                    cursorColor = Color.White
                 ),
                 placeholder = {
                     AsphaltText(
@@ -155,7 +156,8 @@ private fun CustomTextFieldWithError(
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = MaterialTheme.shapes.small,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
+    ),
     errorMsg: String = ""
 ) {
     Column(
@@ -182,33 +184,35 @@ private fun CustomTextFieldWithError(
             maxLines = maxLines,
             visualTransformation = visualTransformation
         ) {
-            TextFieldDefaults.TextFieldDecorationBox(
-                enabled = enabled,
+            TextFieldDefaults.DecorationBox(
                 value = value,
+                innerTextField = it,
+                enabled = enabled,
                 singleLine = singleLine,
+                visualTransformation = visualTransformation,
+                interactionSource = interactionSource,
+                isError = isError,
                 label = label,
                 placeholder = placeholder,
                 leadingIcon = leadingIcon,
                 trailingIcon = trailingIcon,
-                isError = isError,
-                visualTransformation = visualTransformation,
-                interactionSource = interactionSource,
                 shape = shape,
                 colors = colors,
-                innerTextField = it,
-                contentPadding = TextFieldDefaults.outlinedTextFieldPadding(
+                contentPadding = OutlinedTextFieldDefaults.contentPadding(
                     top = 12.dp,
-                    bottom = 0.dp
+                    bottom = 0.dp,
                 ),
                 container = {
-                    TextFieldDefaults.OutlinedBorderContainerBox(
-                        enabled,
-                        isError,
-                        interactionSource,
-                        colors,
-                        shape
+                    OutlinedTextFieldDefaults.ContainerBox(
+                        enabled = enabled,
+                        isError = isError,
+                        interactionSource = interactionSource,
+                        colors = colors,
+                        shape = shape,
+                        focusedBorderThickness = OutlinedTextFieldDefaults.FocusedBorderThickness,
+                        unfocusedBorderThickness = OutlinedTextFieldDefaults.UnfocusedBorderThickness,
                     )
-                }
+                },
             )
         }
 

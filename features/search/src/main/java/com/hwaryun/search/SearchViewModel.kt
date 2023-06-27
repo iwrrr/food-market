@@ -9,6 +9,7 @@ import com.hwaryun.domain.mapper.toFood
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -32,13 +33,14 @@ class SearchViewModel @Inject constructor(
                 pagingData.map { it.toFood() }
             }
             .cachedIn(viewModelScope)
+    }.catch { e ->
+        _state.update {
+            it.copy(error = e.message.toString())
+        }
     }
 
     fun onQueryChange(query: String) {
         _query.value = query
-        //        _state.update {
-        //            it.copy(query = query)
-        //        }
     }
 
     fun onFocusChange(focused: Boolean) {
@@ -47,27 +49,9 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    //    val inProgressOrders = repository.getTransactions(IN_PROGRESS)
-    //        .map { pagingData ->
-    //            pagingData.map {
-    //                it.toTransaction()
-    //            }
-    //        }
-    //        .cachedIn(viewModelScope)
-    //
-    //    val postOrders = repository.getTransactions(POST_ORDERS)
-    //        .map { pagingData ->
-    //            pagingData.map {
-    //                it.toTransaction()
-    //            }
-    //        }
-    //        .cachedIn(viewModelScope)
-
-    //    companion object {
-    //        private const val ON_DELIVERY = "ON_DELIVERY"
-    //        private const val DELIVERED = "DELIVERED"
-    //        private const val CANCELLED = "CANCELLED"
-    //        private const val IN_PROGRESS = "ON_DELIVERY"
-    //        private const val POST_ORDERS = "DELIVERED,CANCELLED"
-    //    }
+    fun resetErrorState() {
+        _state.update {
+            it.copy(error = "")
+        }
+    }
 }
