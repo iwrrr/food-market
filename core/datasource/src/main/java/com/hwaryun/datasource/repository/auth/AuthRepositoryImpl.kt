@@ -1,4 +1,4 @@
-package com.hwaryun.datasource.repository
+package com.hwaryun.datasource.repository.auth
 
 import com.hwaryun.common.ext.execute
 import com.hwaryun.common.http.infrastructure.BaseResponse

@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,11 +47,13 @@ import com.gowtham.ratingbar.RatingBarConfig
 import com.hwaryun.common.ext.toNumberFormat
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.AsphaltAppBar
+import com.hwaryun.designsystem.components.FavoriteButton
 import com.hwaryun.designsystem.components.atoms.AsphaltButton
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.domain.model.Food
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun FoodDetailRoute(
@@ -59,12 +62,16 @@ internal fun FoodDetailRoute(
     viewModel: FoodDetailViewModel = hiltViewModel()
 ) {
     val foodDetailState by viewModel.foodDetailState.collectAsStateWithLifecycle()
-    val addToCartState by viewModel.addToCartState.collectAsStateWithLifecycle()
+    val wishlistState by viewModel.wishlistState.collectAsStateWithLifecycle()
+    val cartState by viewModel.cartState.collectAsStateWithLifecycle()
 
     FoodDetailScreen(
         foodDetailState = foodDetailState,
-        addToCartState = addToCartState,
+        wishlistState = wishlistState,
+        cartState = cartState,
         navigateToCart = navigateToCart,
+        addToWishlist = viewModel::addToWishlist,
+        removeWishlist = viewModel::removeWishlist,
         addToCart = viewModel::addToCart,
         resetErrorState = viewModel::resetErrorState,
         onShowSnackbar = onShowSnackbar
@@ -75,22 +82,26 @@ internal fun FoodDetailRoute(
 @Composable
 fun FoodDetailScreen(
     foodDetailState: FoodDetailState,
-    addToCartState: AddToCartState,
+    wishlistState: WishlistState,
+    cartState: CartState,
     navigateToCart: () -> Unit,
+    addToWishlist: (Food?) -> Unit,
+    removeWishlist: (Int?) -> Unit,
     addToCart: (Food) -> Unit,
     resetErrorState: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val scope = rememberCoroutineScope()
 
-    LaunchedEffect(addToCartState) {
-        if (addToCartState.addToCart != null) {
+    LaunchedEffect(cartState, wishlistState) {
+        if (cartState.addToCart != null) {
             navigateToCart()
         }
 
-        if (addToCartState.error.isNotEmpty()) {
-            onShowSnackbar(addToCartState.error, null)
+        if (cartState.error.isNotEmpty()) {
+            onShowSnackbar(cartState.error, null)
             resetErrorState()
         }
     }
@@ -149,18 +160,48 @@ fun FoodDetailScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                AsphaltText(
-                    text = "${foodDetailState.food?.name}",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .placeholder(
-                            visible = foodDetailState.isLoading,
-                            highlight = PlaceholderHighlight.shimmer(),
-                            color = PlaceholderDefaults.color(),
-                            shape = RoundedCornerShape(8.dp)
-                        ),
-                    style = AsphaltTheme.typography.titleLarge,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    AsphaltText(
+                        text = "${foodDetailState.food?.name}",
+                        modifier = Modifier
+                            .weight(1f)
+                            .placeholder(
+                                visible = foodDetailState.isLoading,
+                                highlight = PlaceholderHighlight.shimmer(),
+                                color = PlaceholderDefaults.color(),
+                                shape = RoundedCornerShape(8.dp)
+                            ),
+                        style = AsphaltTheme.typography.titleLarge,
+                    )
+
+                    FavoriteButton(
+                        isChecked = wishlistState.isWishlist,
+                        onClick = {
+                            if (wishlistState.isWishlist) {
+                                removeWishlist(foodDetailState.food?.id)
+                                scope.launch {
+                                    onShowSnackbar(
+                                        "Berhasil menghapus makanan dari wishlist",
+                                        null
+                                    )
+                                }
+
+                            } else {
+                                addToWishlist(foodDetailState.food)
+                                scope.launch {
+                                    onShowSnackbar(
+                                        "Berhasil menambahkan makanan ke wishlist",
+                                        null
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -215,13 +256,13 @@ fun FoodDetailScreen(
                     )
                     AsphaltButton(
                         modifier = Modifier.weight(1f),
-                        enabled = !addToCartState.isLoading,
-                        isLoading = addToCartState.isLoading,
+                        enabled = !cartState.isLoading,
+                        isLoading = cartState.isLoading,
                         onClick = {
                             foodDetailState.food?.let(addToCart)
                         }
                     ) {
-                        AsphaltText(text = "Tambah ke keranjang")
+                        AsphaltText(text = "Tambah ke Keranjang")
                     }
                 }
             }
@@ -235,11 +276,14 @@ fun FoodDetailScreenPreview() {
     FoodMarketTheme {
         FoodDetailScreen(
             foodDetailState = FoodDetailState(),
+            wishlistState = WishlistState(),
+            cartState = CartState(),
             navigateToCart = {},
+            addToWishlist = {},
+            removeWishlist = {},
             addToCart = {},
             resetErrorState = {},
-            onShowSnackbar = { _, _ -> false },
-            addToCartState = AddToCartState()
+            onShowSnackbar = { _, _ -> false }
         )
     }
 }

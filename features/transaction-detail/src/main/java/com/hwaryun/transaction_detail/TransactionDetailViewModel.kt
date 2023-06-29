@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.ext.subscribe
-import com.hwaryun.domain.usecase.payment.CancelOrderUseCase
-import com.hwaryun.domain.usecase.payment.GetTransactionDetailUseCase
+import com.hwaryun.domain.usecase.transaction.CancelOrderUseCase
+import com.hwaryun.domain.usecase.transaction.GetTransactionDetailUseCase
 import com.hwaryun.transaction_detail.navigation.TRANSACTION_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

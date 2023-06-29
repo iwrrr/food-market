@@ -5,7 +5,7 @@ import com.hwaryun.common.domain.FlowUseCase
 import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.common.result.UiResult
 import com.hwaryun.datasource.datastore.UserPreferenceManager
-import com.hwaryun.datasource.repository.AuthRepository
+import com.hwaryun.datasource.repository.auth.AuthRepository
 import com.hwaryun.domain.mapper.toUser
 import com.hwaryun.domain.model.User
 import kotlinx.coroutines.flow.Flow

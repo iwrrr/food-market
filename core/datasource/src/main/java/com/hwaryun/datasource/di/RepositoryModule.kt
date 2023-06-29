@@ -1,13 +1,15 @@
 package com.hwaryun.datasource.di
 
-import com.hwaryun.datasource.repository.AuthRepository
-import com.hwaryun.datasource.repository.AuthRepositoryImpl
-import com.hwaryun.datasource.repository.CartRepository
-import com.hwaryun.datasource.repository.CartRepositoryImpl
-import com.hwaryun.datasource.repository.FoodRepository
-import com.hwaryun.datasource.repository.FoodRepositoryImpl
-import com.hwaryun.datasource.repository.TransactionRepository
-import com.hwaryun.datasource.repository.TransactionRepositoryImpl
+import com.hwaryun.datasource.repository.auth.AuthRepository
+import com.hwaryun.datasource.repository.auth.AuthRepositoryImpl
+import com.hwaryun.datasource.repository.cart.CartRepository
+import com.hwaryun.datasource.repository.cart.CartRepositoryImpl
+import com.hwaryun.datasource.repository.food.FoodRepository
+import com.hwaryun.datasource.repository.food.FoodRepositoryImpl
+import com.hwaryun.datasource.repository.transaction.TransactionRepository
+import com.hwaryun.datasource.repository.transaction.TransactionRepositoryImpl
+import com.hwaryun.datasource.repository.wishlist.WishlistRepository
+import com.hwaryun.datasource.repository.wishlist.WishlistRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +35,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindCartRepository(cartRepositoryImpl: CartRepositoryImpl): CartRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindWishlistRepository(wishlistRepositoryImpl: WishlistRepositoryImpl): WishlistRepository
 }

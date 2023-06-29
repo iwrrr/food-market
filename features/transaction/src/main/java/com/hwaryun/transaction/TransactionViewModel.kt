@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.hwaryun.datasource.repository.TransactionRepository
+import com.hwaryun.datasource.repository.transaction.TransactionRepository
 import com.hwaryun.domain.mapper.toTransaction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

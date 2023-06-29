@@ -3,10 +3,14 @@ package com.hwaryun.food_detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hwaryun.common.ext.orFalse
 import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.domain.model.Food
 import com.hwaryun.domain.usecase.cart.AddToCartUseCase
 import com.hwaryun.domain.usecase.food.GetFoodDetailUseCase
+import com.hwaryun.domain.usecase.wishlist.AddToWishlistUseCase
+import com.hwaryun.domain.usecase.wishlist.CheckWishlistUseCase
+import com.hwaryun.domain.usecase.wishlist.RemoveWishlistUseCase
 import com.hwaryun.food_detail.navigation.FOOD_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class FoodDetailViewModel @Inject constructor(
     private val getFoodDetailUseCase: GetFoodDetailUseCase,
+    private val checkWishlistUseCase: CheckWishlistUseCase,
+    private val addToWishlistUseCase: AddToWishlistUseCase,
+    private val removeWishlistUseCase: RemoveWishlistUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -25,12 +32,16 @@ class FoodDetailViewModel @Inject constructor(
     private val _foodDetailState = MutableStateFlow(FoodDetailState())
     val foodDetailState = _foodDetailState.asStateFlow()
 
-    private val _addToCartState = MutableStateFlow(AddToCartState())
-    val addToCartState = _addToCartState.asStateFlow()
+    private val _wishlistState = MutableStateFlow(WishlistState())
+    val wishlistState = _wishlistState.asStateFlow()
+
+    private val _cartState = MutableStateFlow(CartState())
+    val cartState = _cartState.asStateFlow()
 
     init {
         val foodId = savedStateHandle.get<Int>(FOOD_ID) ?: 0
         getFoodDetail(foodId)
+        getWishlist(foodId)
     }
 
     private fun getFoodDetail(foodId: Int) {
@@ -65,19 +76,94 @@ class FoodDetailViewModel @Inject constructor(
         }
     }
 
+    private fun getWishlist(foodId: Int) {
+        viewModelScope.launch {
+            checkWishlistUseCase.invoke(foodId).collect { result ->
+                result.suspendSubscribe(
+                    doOnSuccess = {
+                        _wishlistState.update { state ->
+                            state.copy(
+                                isWishlist = it.value.orFalse(),
+                                isLoading = false,
+                            )
+                        }
+                    },
+                    doOnError = {
+                        _wishlistState.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                error = it.throwable?.message ?: "Unexpected error accrued"
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    fun addToWishlist(food: Food?) {
+        viewModelScope.launch {
+            addToWishlistUseCase.invoke(food).collect { result ->
+                result.suspendSubscribe(
+                    doOnSuccess = {
+                        _wishlistState.update { state ->
+                            state.copy(
+                                isWishlist = true,
+                                isLoading = false,
+                            )
+                        }
+                    },
+                    doOnError = {
+                        _wishlistState.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                error = it.throwable?.message ?: "Unexpected error accrued"
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    fun removeWishlist(foodId: Int?) {
+        viewModelScope.launch {
+            removeWishlistUseCase.invoke(foodId).collect { result ->
+                result.suspendSubscribe(
+                    doOnSuccess = {
+                        _wishlistState.update { state ->
+                            state.copy(
+                                isWishlist = false,
+                                isLoading = false,
+                            )
+                        }
+                    },
+                    doOnError = {
+                        _wishlistState.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                error = it.throwable?.message ?: "Unexpected error accrued"
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+
     fun addToCart(food: Food) {
         viewModelScope.launch {
             addToCartUseCase.invoke(food).collect { result ->
                 result.suspendSubscribe(
                     doOnLoading = {
-                        _addToCartState.update { state ->
+                        _cartState.update { state ->
                             state.copy(
                                 isLoading = true
                             )
                         }
                     },
                     doOnSuccess = {
-                        _addToCartState.update { state ->
+                        _cartState.update { state ->
                             state.copy(
                                 addToCart = it.value,
                                 isLoading = false,
@@ -85,7 +171,7 @@ class FoodDetailViewModel @Inject constructor(
                         }
                     },
                     doOnError = {
-                        _addToCartState.update { state ->
+                        _cartState.update { state ->
                             state.copy(
                                 isLoading = false,
                                 error = it.throwable?.message ?: "Unexpected error accrued"

@@ -8,7 +8,7 @@ import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.domain.mapper.toUser
 import com.hwaryun.domain.usecase.cart.ClearCartUseCase
 import com.hwaryun.domain.usecase.cart.GetCartItemUseCase
-import com.hwaryun.domain.usecase.payment.CheckoutUseCase
+import com.hwaryun.domain.usecase.transaction.CheckoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

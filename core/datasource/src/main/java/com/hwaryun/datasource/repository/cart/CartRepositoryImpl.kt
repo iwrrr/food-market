@@ -1,8 +1,8 @@
-package com.hwaryun.datasource.repository
+package com.hwaryun.datasource.repository.cart
 
 import com.hwaryun.common.ext.proceed
 import com.hwaryun.common.result.DataResult
-import com.hwaryun.database.CartDao
+import com.hwaryun.database.dao.CartDao
 import com.hwaryun.database.model.CartEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

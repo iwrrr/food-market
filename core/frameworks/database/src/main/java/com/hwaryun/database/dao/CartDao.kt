@@ -1,4 +1,4 @@
-package com.hwaryun.database
+package com.hwaryun.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

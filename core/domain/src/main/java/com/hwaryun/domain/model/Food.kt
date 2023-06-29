@@ -8,5 +8,6 @@ data class Food(
     val picturePath: String,
     val price: Int,
     val rate: Float,
-    val types: String
+    val types: String,
+    var isWishlist: Boolean = false,
 )

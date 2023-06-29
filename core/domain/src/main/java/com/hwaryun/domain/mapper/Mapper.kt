@@ -3,6 +3,7 @@ package com.hwaryun.domain.mapper
 import com.hwaryun.common.ext.orDash
 import com.hwaryun.common.ext.orZero
 import com.hwaryun.database.model.CartEntity
+import com.hwaryun.database.model.WishlistEntity
 import com.hwaryun.domain.model.Cart
 import com.hwaryun.domain.model.Food
 import com.hwaryun.domain.model.Transaction
@@ -68,6 +69,33 @@ fun Food.toCartEntity(): CartEntity {
         name = name,
         picturePath = picturePath,
         price = price
+    )
+}
+
+fun Food.toWishlistEntity(userId: Int): WishlistEntity {
+    return WishlistEntity(
+        userId = userId,
+        foodId = id,
+        description = description,
+        ingredients = ingredients,
+        name = name,
+        picturePath = picturePath,
+        price = price,
+        rate = rate,
+        types = types,
+    )
+}
+
+fun WishlistEntity.toFood(): Food {
+    return Food(
+        id = id,
+        description = description,
+        ingredients = ingredients,
+        name = name,
+        picturePath = picturePath,
+        price = price,
+        rate = rate,
+        types = types,
     )
 }
 

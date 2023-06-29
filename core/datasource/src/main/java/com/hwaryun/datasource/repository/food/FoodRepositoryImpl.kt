@@ -1,4 +1,4 @@
-package com.hwaryun.datasource.repository
+package com.hwaryun.datasource.repository.food
 
 import androidx.paging.PagingData
 import com.hwaryun.common.ext.execute

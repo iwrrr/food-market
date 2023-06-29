@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.hwaryun.datasource.repository.FoodRepository
+import com.hwaryun.datasource.repository.food.FoodRepository
 import com.hwaryun.domain.mapper.toFood
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -4,7 +4,7 @@ import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.common.domain.FlowUseCase
 import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.common.result.UiResult
-import com.hwaryun.datasource.repository.FoodRepository
+import com.hwaryun.datasource.repository.food.FoodRepository
 import com.hwaryun.domain.mapper.toFood
 import com.hwaryun.domain.model.Food
 import com.hwaryun.network.model.response.FoodDto

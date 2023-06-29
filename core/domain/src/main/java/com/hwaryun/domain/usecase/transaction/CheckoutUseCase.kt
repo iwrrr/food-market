@@ -1,11 +1,11 @@
-package com.hwaryun.domain.usecase.payment
+package com.hwaryun.domain.usecase.transaction
 
 import com.hwaryun.common.di.DispatcherProvider
 import com.hwaryun.common.domain.FlowUseCase
 import com.hwaryun.common.ext.suspendSubscribe
 import com.hwaryun.common.result.UiResult
-import com.hwaryun.datasource.repository.CartRepository
-import com.hwaryun.datasource.repository.TransactionRepository
+import com.hwaryun.datasource.repository.cart.CartRepository
+import com.hwaryun.datasource.repository.transaction.TransactionRepository
 import com.hwaryun.domain.mapper.toTransaction
 import com.hwaryun.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
