@@ -1,6 +1,7 @@
 package com.hwaryun.signup
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,13 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,11 +40,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.AsphaltAppBar
 import com.hwaryun.designsystem.components.AsphaltDropdown
-import com.hwaryun.designsystem.components.DialogBoxLoading
 import com.hwaryun.designsystem.components.atoms.AsphaltButton
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.molecules.AsphaltInputGroup
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.signup.state.RegisterState
 
 @Composable
@@ -96,15 +97,24 @@ fun AddressScreen(
         }
     }
 
+    BackHandler(registerState.isLoading) {
+        return@BackHandler
+    }
+
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
+        containerColor = AsphaltTheme.colors.cool_gray_1cCp_50,
         topBar = {
             AsphaltAppBar(
                 title = "Alamat",
-                showNavigateBack = true
-            ) {
-                popBackStack()
-            }
+                showNavigateBack = true,
+                onNavigateBack = {
+                    if (registerState.isLoading) return@AsphaltAppBar
+                    popBackStack()
+                }
+            )
         },
         content = { innerPadding ->
 
@@ -115,7 +125,7 @@ fun AddressScreen(
             ) {
                 Column(
                     modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(AsphaltTheme.colors.pure_white_500)
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                         .padding(24.dp),
@@ -261,13 +271,11 @@ fun AddressScreen(
                     Spacer(modifier = Modifier.weight(1f))
                     AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),
+                        enabled = !registerState.isLoading,
+                        isLoading = registerState.isLoading,
                         onClick = { doSignUp() }
                     ) {
                         AsphaltText(text = "Daftar Sekarang")
-                    }
-
-                    if (registerState.isLoading) {
-                        DialogBoxLoading()
                     }
                 }
             }

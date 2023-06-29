@@ -28,11 +28,9 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        splashScreen.setKeepOnScreenCondition {
-            viewModel.isLoading.value
-        }
-
+        splashScreen.setKeepOnScreenCondition(viewModel.isLoading::value)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
             FoodMarketTheme {
                 // A surface container using the 'background' color from the theme

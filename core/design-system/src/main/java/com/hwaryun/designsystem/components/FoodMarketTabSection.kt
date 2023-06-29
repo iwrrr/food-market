@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.ui.Black
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -35,7 +36,8 @@ fun FoodMarketTabSection(
         ScrollableTabRow(
             selectedTabIndex = tabIndex,
             edgePadding = 8.dp,
-            contentColor = Black,
+            containerColor = AsphaltTheme.colors.pure_white_500,
+            contentColor = AsphaltTheme.colors.black_500,
             indicator = { tabPositions ->
                 Box(
                     modifier = Modifier

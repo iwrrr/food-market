@@ -5,7 +5,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserPreferenceManager {
 
-    val user: Flow<AuthDto.UserDto>
+    val readOnBoardingState: Flow<Boolean>
+
+    val user: Flow<AuthDto.UserDto?>
+
+    suspend fun saveOnBoardingState(completed: Boolean)
 
     suspend fun saveUserToken(token: String?)
 

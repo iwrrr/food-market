@@ -10,13 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,6 +46,7 @@ import com.hwaryun.designsystem.components.atoms.AsphaltButton
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.molecules.AsphaltInputGroup
 import com.hwaryun.designsystem.ui.FoodMarketTheme
+import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.signup.state.RegisterState
 
 @Composable
@@ -91,12 +92,12 @@ fun RegisterScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
+        containerColor = AsphaltTheme.colors.cool_gray_1cCp_50,
         topBar = {
-            AsphaltAppBar(
-                title = "Daftar",
-                showNavigateBack = true
-            ) { popBackStack() }
+            AsphaltAppBar(title = "Daftar", showNavigateBack = true, onNavigateBack = popBackStack)
         },
         content = { innerPadding ->
             Box(
@@ -107,7 +108,7 @@ fun RegisterScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(AsphaltTheme.colors.pure_white_500)
                         .verticalScroll(rememberScrollState())
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally

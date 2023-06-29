@@ -37,6 +37,7 @@
             <option value="$PROJECT_DIR$/features/food-detail" />
             <option value="$PROJECT_DIR$/features/home" />
             <option value="$PROJECT_DIR$/features/login" />
+            <option value="$PROJECT_DIR$/features/onboarding" />
             <option value="$PROJECT_DIR$/features/profile" />
             <option value="$PROJECT_DIR$/features/register" />
             <option value="$PROJECT_DIR$/features/search" />

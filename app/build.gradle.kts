@@ -10,6 +10,8 @@ android {
 dependencies {
     implementation(project(":core:design-system"))
     implementation(project(":core:datasource"))
+
+    implementation(project(":features:onboarding"))
     implementation(project(":features:login"))
     implementation(project(":features:register"))
     implementation(project(":features:home"))

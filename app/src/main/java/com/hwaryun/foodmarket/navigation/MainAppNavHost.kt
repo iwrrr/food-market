@@ -17,6 +17,7 @@ import com.hwaryun.home.navigation.homeGraph
 import com.hwaryun.home.navigation.navigateToHomeGraph
 import com.hwaryun.login.navigation.loginGraph
 import com.hwaryun.login.navigation.loginGraphRoute
+import com.hwaryun.onboarding.navigation.onBoardingScreen
 import com.hwaryun.profile.navigation.profileGraph
 import com.hwaryun.search.navigation.searchGraph
 import com.hwaryun.signup.navigation.addressScreen
@@ -41,6 +42,7 @@ fun MainAppNavHost(
         modifier = modifier,
         startDestination = startDestination
     ) {
+        onBoardingScreen()
         loginGraph(
             navigateToSignUpScreen = navController::navigateToRegisterGraph,
             onShowSnackbar = onShowSnackbar,

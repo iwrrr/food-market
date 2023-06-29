@@ -24,6 +24,7 @@ dependencies {
     debugApi(libs.ui.test.manifest)
 
     api(libs.placeholder.material)
+    api(libs.systemuicontroller)
     api(libs.material.icons)
     api(libs.coil)
     api(libs.ratingbar)
