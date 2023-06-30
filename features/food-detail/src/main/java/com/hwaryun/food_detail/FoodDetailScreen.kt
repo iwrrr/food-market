@@ -57,6 +57,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun FoodDetailRoute(
+    popBackStack: () -> Unit,
     navigateToCart: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: FoodDetailViewModel = hiltViewModel()
@@ -69,6 +70,7 @@ internal fun FoodDetailRoute(
         foodDetailState = foodDetailState,
         wishlistState = wishlistState,
         cartState = cartState,
+        popBackStack = popBackStack,
         navigateToCart = navigateToCart,
         addToWishlist = viewModel::addToWishlist,
         removeWishlist = viewModel::removeWishlist,
@@ -84,6 +86,7 @@ fun FoodDetailScreen(
     foodDetailState: FoodDetailState,
     wishlistState: WishlistState,
     cartState: CartState,
+    popBackStack: () -> Unit,
     navigateToCart: () -> Unit,
     addToWishlist: (Food?) -> Unit,
     removeWishlist: (Int?) -> Unit,
@@ -112,7 +115,7 @@ fun FoodDetailScreen(
             .statusBarsPadding(),
         containerColor = AsphaltTheme.colors.pure_white_500,
         topBar = {
-            AsphaltAppBar(title = "Detail", showNavigateBack = true)
+            AsphaltAppBar(title = "Detail", showNavigateBack = true, onNavigateBack = popBackStack)
         },
         content = {
             Column(
@@ -278,6 +281,7 @@ fun FoodDetailScreenPreview() {
             foodDetailState = FoodDetailState(),
             wishlistState = WishlistState(),
             cartState = CartState(),
+            popBackStack = {},
             navigateToCart = {},
             addToWishlist = {},
             removeWishlist = {},

@@ -8,8 +8,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -73,8 +71,7 @@ fun OnBoardingScreen(
                     modifier = Modifier
                         .background(AsphaltTheme.colors.gojek_green_500)
                         .fillMaxWidth()
-                        .defaultMinSize(minHeight = 100.dp)
-                        .aspectRatio(12f / 16f),
+                        .weight(3f),
                     contentAlignment = Alignment.Center,
                 ) {
                     Image(
@@ -98,7 +95,7 @@ fun OnBoardingScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Column(
-                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
+                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 32.dp)
                 ) {
                     AsphaltButton(onClick = { saveOnBoardingState(true) }) {
                         AsphaltText(text = "Ayo Mulai")

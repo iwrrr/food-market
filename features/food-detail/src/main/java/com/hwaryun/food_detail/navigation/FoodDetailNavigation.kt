@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.hwaryun.food_detail.FoodDetailRoute
 
 const val FOOD_ID = "foodId"
+
 const val foodDetailsRoute = "food_details_route/{$FOOD_ID}"
 
 fun NavController.navigateToFoodDetails(foodId: Int, navOptions: NavOptions? = null) {
@@ -16,6 +17,7 @@ fun NavController.navigateToFoodDetails(foodId: Int, navOptions: NavOptions? = n
 }
 
 fun NavGraphBuilder.foodDetailsScreen(
+    popBackStack: () -> Unit,
     navigateToCart: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
@@ -26,6 +28,7 @@ fun NavGraphBuilder.foodDetailsScreen(
         )
     ) {
         FoodDetailRoute(
+            popBackStack = popBackStack,
             navigateToCart = navigateToCart,
             onShowSnackbar = onShowSnackbar
         )

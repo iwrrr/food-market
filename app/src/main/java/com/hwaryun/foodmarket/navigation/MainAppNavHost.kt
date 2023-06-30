@@ -73,6 +73,7 @@ fun MainAppNavHost(
             onSearchClick = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.SEARCH) },
         ) {
             foodDetailsScreen(
+                popBackStack = navController::popBackStack,
                 navigateToCart = {
                     navController.navigateToCartGraph(
                         navOptions = navOptions {
@@ -87,8 +88,10 @@ fun MainAppNavHost(
             cartGraph(
                 popBackStack = navController::popBackStack,
                 navigateToOrder = navController::navigateToTransactionGraph,
-                navigateToSuccessOrder = {
+                navigateToSuccessOrder = { foodName, totalPrice ->
                     navController.navigateToSuccessOrder(
+                        foodName = foodName,
+                        totalPrice = totalPrice,
                         navOptions = navOptions {
                             popUpTo(cartGraphRoute) {
                                 inclusive = true

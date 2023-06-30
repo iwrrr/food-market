@@ -3,9 +3,9 @@
 
     <style name="Theme.FoodMarket" parent="android:Theme.Material.Light.NoActionBar" />
     <style name="Theme.FoodMarket.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#FFC700</item>
+        <item name="windowSplashScreenBackground">#FFFFFF</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
-        <item name="windowSplashScreenAnimationDuration">600</item>
+        <item name="windowSplashScreenAnimationDuration">500</item>
         <item name="postSplashScreenTheme">@style/Theme.FoodMarket</item>
     </style>
 </resources>

@@ -58,7 +58,7 @@ import com.hwaryun.domain.model.Cart
 internal fun CartRoute(
     popBackStack: () -> Unit,
     navigateToOrder: () -> Unit,
-    navigateToSuccessOrder: () -> Unit,
+    navigateToSuccessOrder: (foodName: String, totalPrice: Int) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: CartViewModel = hiltViewModel()
 ) {
@@ -85,7 +85,7 @@ fun CartScreen(
     transactionState: TransactionState,
     popBackStack: () -> Unit,
     navigateToOrder: () -> Unit,
-    navigateToSuccessOrder: () -> Unit,
+    navigateToSuccessOrder: (foodName: String, totalPrice: Int) -> Unit,
     clearCart: () -> Unit,
     addQuantity: (Int) -> Unit,
     reduceQuantity: (Int) -> Unit,
@@ -101,7 +101,10 @@ fun CartScreen(
                 .setData(Uri.parse(transactionState.transaction.paymentUrl))
 
             context.startActivity(intent)
-            navigateToSuccessOrder()
+            navigateToSuccessOrder(
+                transactionState.transaction.food.name,
+                transactionState.transaction.total
+            )
         }
 
         if (transactionState.isCancelled) {
@@ -125,11 +128,7 @@ fun CartScreen(
         bottomBar = {
             cartState.cart?.let {
                 Column(
-                    modifier = Modifier.padding(
-                        start = 24.dp,
-                        end = 24.dp,
-                        bottom = 24.dp
-                    )
+                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 32.dp)
                 ) {
                     AsphaltButton(
                         enabled = !transactionState.isLoading,
@@ -311,88 +310,6 @@ private fun FoodItemSection(
 }
 
 @Composable
-private fun PaymentSummarySection(
-    totalFoodPrice: Int,
-    shippingCost: Int,
-    serviceFee: Int,
-    totalPrice: Int,
-) {
-    Column {
-        AsphaltText(
-            text = "Ringkasan pembayaran",
-            modifier = Modifier.fillMaxWidth(),
-            style = AsphaltTheme.typography.titleSmallBold
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            AsphaltText(
-                text = "Harga",
-                modifier = Modifier.weight(1f),
-                style = AsphaltTheme.typography.bodySmall
-            )
-            AsphaltText(
-                text = totalFoodPrice.toNumberFormat(),
-                modifier = Modifier.weight(1f),
-                style = AsphaltTheme.typography.bodySmall,
-                textAlign = TextAlign.End
-            )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            AsphaltText(
-                text = "Ongkir",
-                modifier = Modifier.weight(1f),
-                style = AsphaltTheme.typography.bodySmall
-            )
-            AsphaltText(
-                text = shippingCost.toNumberFormat(),
-                modifier = Modifier.weight(1f),
-                style = AsphaltTheme.typography.bodySmall,
-                textAlign = TextAlign.End
-            )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            AsphaltText(
-                text = "Biaya layanan & lainnya",
-                modifier = Modifier.weight(1f),
-                style = AsphaltTheme.typography.bodySmall
-            )
-            AsphaltText(
-                text = serviceFee.toNumberFormat(),
-                modifier = Modifier.weight(1f),
-                style = AsphaltTheme.typography.bodySmall,
-                textAlign = TextAlign.End
-            )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        Divider(color = AsphaltTheme.colors.cool_gray_1cCp_100)
-        Spacer(modifier = Modifier.height(12.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            AsphaltText(
-                text = "Total pembayaran",
-                modifier = Modifier.weight(1f),
-                style = AsphaltTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold)
-            )
-            AsphaltText(
-                text = totalPrice.toNumberFormat(),
-                modifier = Modifier.weight(1f),
-                style = AsphaltTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                textAlign = TextAlign.End
-            )
-        }
-    }
-}
-
-@Composable
 private fun DividerSection() {
     Spacer(modifier = Modifier.height(16.dp))
     Divider(color = AsphaltTheme.colors.cool_gray_1cCp_100)
@@ -408,7 +325,7 @@ private fun DefaultPreview() {
             transactionState = TransactionState(),
             popBackStack = {},
             navigateToOrder = {},
-            navigateToSuccessOrder = {},
+            navigateToSuccessOrder = { _, _ -> },
             clearCart = {},
             addQuantity = {},
             reduceQuantity = {},

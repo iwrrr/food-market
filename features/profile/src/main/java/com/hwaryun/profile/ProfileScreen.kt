@@ -99,7 +99,7 @@ fun ProfileScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(24.dp)
+                        .padding(start = 24.dp, end = 24.dp, bottom = 32.dp)
                 ) {
                     AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),

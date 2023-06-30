@@ -49,7 +49,7 @@ fun AsphaltBottomNavigation(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(BottomNavigationHeight)
-                .padding(bottom = 8.dp)
+                .padding(bottom = NavigationBarItemVerticalPadding)
                 .selectableGroup(),
             horizontalArrangement = Arrangement.SpaceBetween,
             content = content
@@ -108,7 +108,6 @@ fun RowScope.AsphaltNavigationItem(
         BottomNavigationItemBaselineLayout(
             icon = styledIcon,
             label = styledLabel,
-            selected = selected,
             alwaysShowLabel = alwaysShowLabel,
             animationProgress = animationProgress
         )
@@ -122,8 +121,7 @@ object BottomNavigationDefaults {
 @Composable
 private fun BottomNavigationItemBaselineLayout(
     icon: @Composable () -> Unit,
-    label: @Composable (() -> Unit)?,
-    selected: Boolean,
+    label: @Composable() (() -> Unit)?,
     alwaysShowLabel: Boolean,
     animationProgress: Float
 ) {
@@ -310,6 +308,4 @@ object NavigationBarItemDefaults {
 }
 
 private val NavigationBarItemVerticalPadding: Dp = 12.dp
-private val BottomNavigationHeight = 78.dp
-
-private enum class BounceState { Pressed, Released }
+private val BottomNavigationHeight = 84.dp
