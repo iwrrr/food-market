@@ -1,5 +1,6 @@
 package com.hwaryun.transaction.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -30,9 +31,10 @@ fun FilterStatus(
 ) {
     Row(
         modifier = Modifier
+            .background(AsphaltTheme.colors.pure_white_500)
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         FilterChip(

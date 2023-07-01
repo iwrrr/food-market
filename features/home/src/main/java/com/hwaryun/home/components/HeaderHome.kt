@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.R
@@ -26,13 +27,14 @@ import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 @Composable
 fun HeaderHome(
     modifier: Modifier = Modifier,
+    city: String = "",
     onCartClick: () -> Unit
 ) {
     Column(
         modifier = modifier
             .background(AsphaltTheme.colors.pure_white_500)
             .height(100.dp)
-            .padding(24.dp),
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -47,14 +49,14 @@ fun HeaderHome(
                 verticalArrangement = Arrangement.Center
             ) {
                 AsphaltText(
-                    text = "Your Location",
+                    text = stringResource(id = R.string.your_location),
                     modifier = Modifier.fillMaxWidth(),
                     color = AsphaltTheme.colors.cool_gray_500,
                     style = AsphaltTheme.typography.bodySmall,
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 AsphaltText(
-                    text = "Mars",
+                    text = city,
                     modifier = Modifier.fillMaxWidth(),
                     style = AsphaltTheme.typography.titleLarge,
                 )

@@ -121,6 +121,7 @@ fun AddressScreen(
         topBar = {
             AsphaltAppBar(
                 title = stringResource(id = R.string.title_address),
+                subtitle = stringResource(id = R.string.subtitle_address),
                 showNavigateBack = true,
                 onNavigateBack = {
                     if (!state.isLoading) popBackStack()

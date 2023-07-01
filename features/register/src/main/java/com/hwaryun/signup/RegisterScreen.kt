@@ -99,6 +99,7 @@ fun RegisterScreen(
         topBar = {
             AsphaltAppBar(
                 title = stringResource(id = R.string.title_register),
+                subtitle = stringResource(id = R.string.subtitle_register),
                 showNavigateBack = true,
                 onNavigateBack = popBackStack
             )

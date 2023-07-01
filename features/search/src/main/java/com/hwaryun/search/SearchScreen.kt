@@ -102,7 +102,7 @@ fun SearchScreen(
         containerColor = AsphaltTheme.colors.pure_white_500,
         topBar = {
             Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
             ) {
                 AsphaltSearchBar(
                     query = query,

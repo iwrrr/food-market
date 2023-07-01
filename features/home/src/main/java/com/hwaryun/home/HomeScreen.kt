@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hwaryun.common.ext.orDash
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.molecules.AsphaltSearchBar
@@ -76,7 +77,10 @@ fun HomeScreen(
         Scaffold(
             modifier = Modifier.statusBarsPadding(),
             topBar = {
-                HeaderHome(onCartClick = onCartClick)
+                HeaderHome(
+                    city = state.user?.city.orDash(),
+                    onCartClick = onCartClick
+                )
             },
             containerColor = AsphaltTheme.colors.pure_white_500,
             content = { innerPadding ->
@@ -84,7 +88,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(top = innerPadding.calculateTopPadding())
                 ) {
-                    Row(modifier = Modifier.padding(horizontal = 24.dp)) {
+                    Row(modifier = Modifier.padding(horizontal = 16.dp)) {
                         AsphaltSearchBar(
                             query = "",
                             modifier = Modifier.singleClick { onSearchClick() },
@@ -92,7 +96,7 @@ fun HomeScreen(
                             onSearchFocusChange = {},
                             onClearQuery = {},
                             onBack = {},
-                            placeholder = "Mau makan apa nih?",
+                            placeholder = "Lagi mau mamam apa?",
                             enabled = false
                         )
                     }
@@ -125,7 +129,7 @@ private fun TrendingSection() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -162,7 +166,7 @@ private fun TrendingContent(
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.height(200.dp),
-        contentPadding = PaddingValues(horizontal = 24.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -181,7 +185,7 @@ private fun PromoSection() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -215,8 +219,8 @@ private fun PromoContent() {
     Spacer(modifier = Modifier.height(16.dp))
     LazyRow(
         contentPadding = PaddingValues(
-            start = 24.dp,
-            end = 24.dp,
+            start = 16.dp,
+            end = 16.dp,
             bottom = 100.dp
         ),
         horizontalArrangement = Arrangement.spacedBy(16.dp),

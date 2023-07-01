@@ -31,8 +31,22 @@
     <string name="title_detail">Detail</string>
     <string name="title_history">Riwayat</string>
 
+    <string name="subtitle_login">Kalo udah punya akun langsung masuk aja gan.</string>
+    <string name="subtitle_register">Buat akun dulu baru cekot makanan.</string>
+    <string name="subtitle_address">Lengkapin alamat kamu buat lanjut daftar akunnya.</string>
+    <string name="subtitle_detail">Detail</string>
+    <string name="subtitle_history">Cek riwayat pembelian kamu.</string>
+
     <string name="btn_login">Login</string>
-    <string name="btn_create_account">Buat Akun</string>
+    <string name="btn_create_account">Buat akun</string>
     <string name="btn_next">Lanjut</string>
-    <string name="btn_register">Daftar Sekarang</string>
+    <string name="btn_register">Daftar sekarang</string>
+    <string name="btn_add_to_cart">Tambah ke keranjang</string>
+    <string name="btn_cancel">Batalkan pesanan</string>
+    <string name="btn_cancelled">Pesanan dibatalkan</string>
+
+    <string name="your_location">Lokasi Kamu</string>
+    <string name="currency">Rp %s</string>
+    <string name="delivered_time">Diantar dalam %s min</string>
+    <string name="shipping_address">Alamat pengiriman</string>
 </resources>

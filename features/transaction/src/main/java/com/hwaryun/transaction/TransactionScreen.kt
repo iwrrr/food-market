@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -88,10 +89,13 @@ fun OrderScreen(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding(),
-        containerColor = AsphaltTheme.colors.pure_white_500,
+        containerColor = AsphaltTheme.colors.cool_gray_1cCp_100,
         topBar = {
             Column {
-                AsphaltAppBar(title = "Riwayat")
+                AsphaltAppBar(
+                    title = stringResource(id = R.string.title_history),
+                    subtitle = stringResource(id = R.string.subtitle_history)
+                )
                 FilterStatus(
                     filterAllSelected = state.filterAllSelected,
                     filterOnDeliverySelected = state.filterOnDeliverySelected,
@@ -102,14 +106,22 @@ fun OrderScreen(
                     filterDelivered = filterDelivered,
                     filterCancelled = filterCancelled,
                 )
-                Divider(thickness = 1.dp, color = AsphaltTheme.colors.cool_gray_1cCp_500)
+                Divider(thickness = 1.dp, color = AsphaltTheme.colors.cool_gray_1cCp_100)
             }
         },
         content = { innerPadding ->
             LazyColumn(
                 modifier = Modifier.padding(innerPadding),
-                contentPadding = PaddingValues(bottom = 64.dp)
+                contentPadding = PaddingValues(top = 12.dp, bottom = 80.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                //                val list = (0..5).toList()
+                //                items(list) { transaction ->
+                //                    TransactionItem(
+                //                        transaction = null,
+                //                        onTransactionClick = onTransactionClick
+                //                    )
+                //                }
                 transactions.loadState.refresh.subscribe(
                     doOnLoading = {
                         item {

@@ -128,9 +128,10 @@ fun CartScreen(
         bottomBar = {
             cartState.cart?.let {
                 Column(
-                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 32.dp)
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 28.dp)
                 ) {
                     AsphaltButton(
+                        modifier = Modifier.fillMaxWidth(),
                         enabled = !transactionState.isLoading,
                         isLoading = transactionState.isLoading,
                         onClick = { onCheckoutClick() }
@@ -149,9 +150,9 @@ fun CartScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(
-                        top = innerPadding.calculateTopPadding() + 24.dp,
-                        start = 24.dp,
-                        end = 24.dp,
+                        top = innerPadding.calculateTopPadding() + 16.dp,
+                        start = 16.dp,
+                        end = 16.dp,
                         bottom = innerPadding.calculateTopPadding() + 16.dp
                     )
             ) {
@@ -185,7 +186,7 @@ private fun EmptyState() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -194,7 +195,7 @@ private fun EmptyState() {
             contentDescription = null,
             modifier = Modifier.size(180.dp)
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         AsphaltText(
             text = "Kamu belum menambahkan apapun ke keranjang",
             modifier = Modifier.fillMaxWidth(),

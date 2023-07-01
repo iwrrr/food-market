@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,8 +44,6 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.color
 import com.google.accompanist.placeholder.material.shimmer
 import com.google.accompanist.placeholder.placeholder
-import com.gowtham.ratingbar.RatingBar
-import com.gowtham.ratingbar.RatingBarConfig
 import com.hwaryun.common.ext.orDash
 import com.hwaryun.common.ext.orZero
 import com.hwaryun.common.ext.toNumberFormat
@@ -148,9 +148,9 @@ fun FoodDetailScreen(
                         .verticalScroll(scrollState)
                         .padding(
                             top = it.calculateTopPadding() + 16.dp,
-                            start = 24.dp,
-                            end = 24.dp,
-                            bottom = it.calculateBottomPadding() + 16.dp,
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = it.calculateBottomPadding() + 12.dp,
                         ),
                 ) {
                     Box {
@@ -181,8 +181,8 @@ fun FoodDetailScreen(
                                     .offset(x = 12.dp, y = 12.dp)
                                     .clip(AsphaltTheme.shapes.small)
                                     .background(AsphaltTheme.colors.pure_white_500)
-                                    .padding(6.dp),
-                                style = AsphaltTheme.typography.captionSmallBook
+                                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                                style = AsphaltTheme.typography.captionSmallDemi
                             )
                         }
                     }
@@ -233,14 +233,11 @@ fun FoodDetailScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        RatingBar(
-                            value = 1f,
-                            config = RatingBarConfig()
-                                .isIndicator(true)
-                                .size(12.dp)
-                                .numStars(1),
-                            onValueChange = {},
-                            onRatingChanged = {}
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_star),
+                            contentDescription = null,
+                            modifier = Modifier.size(12.dp),
+                            tint = AsphaltTheme.colors.odd_job_orange_500
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         AsphaltText(
@@ -252,7 +249,7 @@ fun FoodDetailScreen(
                                     color = PlaceholderDefaults.color(),
                                     shape = RoundedCornerShape(8.dp)
                                 ),
-                            style = AsphaltTheme.typography.captionSmallDemi
+                            style = AsphaltTheme.typography.captionModerateDemi.copy(fontWeight = FontWeight.Bold),
                         )
                     }
                     Spacer(modifier = Modifier.height(24.dp))
@@ -274,7 +271,10 @@ fun FoodDetailScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         AsphaltText(
-                            text = "Rp ${foodDetailState.food?.price.toNumberFormat()}",
+                            text = stringResource(
+                                id = R.string.currency,
+                                foodDetailState.food?.price.toNumberFormat()
+                            ),
                             modifier = Modifier.weight(1f),
                             style = AsphaltTheme.typography.titleExtraLarge.copy(
                                 fontWeight = FontWeight.Medium
@@ -283,13 +283,13 @@ fun FoodDetailScreen(
                         )
                         AsphaltButton(
                             modifier = Modifier.weight(1f),
-                            enabled = !cartState.isLoading,
-                            isLoading = cartState.isLoading,
+                            enabled = !foodDetailState.isLoading && !cartState.isLoading,
+                            isLoading = foodDetailState.isLoading && cartState.isLoading,
                             onClick = {
                                 foodDetailState.food?.let(addToCart)
                             }
                         ) {
-                            AsphaltText(text = "Tambah ke Keranjang")
+                            AsphaltText(text = stringResource(id = R.string.btn_add_to_cart))
                         }
                     }
                 }

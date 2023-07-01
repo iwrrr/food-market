@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -101,7 +102,7 @@ fun TransactionDetailScreen(
         modifier = Modifier.statusBarsPadding(),
         topBar = {
             AsphaltAppBar(
-                title = "Keranjang",
+                title = stringResource(id = R.string.title_history),
                 showNavigateBack = true,
                 onNavigateBack = { popBackStack() }
             )
@@ -109,16 +110,23 @@ fun TransactionDetailScreen(
         bottomBar = {
             transactionState.transaction?.let {
                 val isCancelled = it.status == CANCELLED
-                val textButton = if (isCancelled) "Pesanan dibatalkan" else "Batalkan pesanan"
+                val textButton = if (isCancelled) {
+                    stringResource(id = R.string.btn_cancelled)
+                } else {
+                    stringResource(
+                        id = R.string.btn_cancel
+                    )
+                }
 
                 Column(
                     modifier = Modifier.padding(
                         start = 24.dp,
                         end = 24.dp,
-                        bottom = 32.dp
+                        bottom = 28.dp
                     )
                 ) {
                     AsphaltButton(
+                        modifier = Modifier.fillMaxWidth(),
                         enabled = !cancelOrderState.isLoading && !isCancelled,
                         isLoading = cancelOrderState.isLoading,
                         type = ButtonType.Outline,
@@ -172,7 +180,7 @@ private fun AddressSection(
 ) {
     Column {
         AsphaltText(
-            text = "Alamat pengiriman",
+            text = stringResource(id = R.string.shipping_address),
             style = AsphaltTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
             color = AsphaltTheme.colors.sub_black_500
         )

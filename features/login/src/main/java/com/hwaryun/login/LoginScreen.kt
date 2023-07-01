@@ -109,7 +109,10 @@ fun LoginScreen(
             .statusBarsPadding(),
         containerColor = AsphaltTheme.colors.cool_gray_1cCp_50,
         topBar = {
-            AsphaltAppBar(title = stringResource(id = R.string.title_login))
+            AsphaltAppBar(
+                title = stringResource(id = R.string.title_login),
+                subtitle = stringResource(id = R.string.subtitle_login)
+            )
         },
         content = { innerPadding ->
             Box(
