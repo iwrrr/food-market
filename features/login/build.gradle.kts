@@ -4,10 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.hwaryun.signin"
+    namespace = "com.hwaryun.login"
 }
 
 dependencies {
     implementation(project(":core:design-system"))
+    implementation(project(":core:datasource"))
     implementation(project(":core:domain"))
 }

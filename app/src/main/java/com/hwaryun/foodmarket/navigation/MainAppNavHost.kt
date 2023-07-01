@@ -31,10 +31,10 @@ import com.hwaryun.transaction_detail.navigation.transactionDetailsScreen
 
 @Composable
 fun MainAppNavHost(
-    mainAppState: MainAppState,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
-    startDestination: String
+    mainAppState: MainAppState,
+    startDestination: String,
+    onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     val navController = mainAppState.navHostController
     NavHost(
@@ -108,7 +108,7 @@ fun MainAppNavHost(
         searchGraph(
             onFoodClick = navController::navigateToFoodDetails,
             onShowSnackbar = onShowSnackbar
-        ) {}
+        )
         transactionGraph(
             onTransactionClick = navController::navigateToTransactionDetailGraph,
             onShowSnackbar = onShowSnackbar

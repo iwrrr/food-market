@@ -7,4 +7,31 @@
     <string name="error_field_password_length_below_min">Kata sandi minimal 8 karakter.</string>
     <string name="error_field_empty">Isian tidak boleh kosong.</string>
 
+    <string name="not_connected_message">Tidak ada koneksi</string>
+
+    <string name="label_full_name">Nama Lengkap</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Kata Sandi</string>
+    <string name="label_phone_number">No. Telepon</string>
+    <string name="label_address">Alamat</string>
+    <string name="label_house_number">No. Rumah</string>
+    <string name="label_city">Kota</string>
+
+    <string name="placeholder_full_name">Masukkan nama lengkap</string>
+    <string name="placeholder_email">Masukkan email</string>
+    <string name="placeholder_password">Masukkan kata sandi</string>
+    <string name="placeholder_phone_number">Masukkan nomor telepon</string>
+    <string name="placeholder_address">Masukkan alamat</string>
+    <string name="placeholder_house_number">Masukkan nomor rumah</string>
+    <string name="placeholder_city">Pilih kota</string>
+
+    <string name="title_login">Login</string>
+    <string name="title_register">Daftar</string>
+    <string name="title_address">Daftar</string>
+    <string name="title_history">Riwayat</string>
+
+    <string name="btn_login">Login</string>
+    <string name="btn_create_account">Buat Akun</string>
+    <string name="btn_next">Lanjut</string>
+    <string name="btn_register">Daftar Sekarang</string>
 </resources>

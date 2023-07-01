@@ -6,21 +6,23 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hwaryun.datasource.util.NetworkMonitor
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.foodmarket.ui.MainApp
-import com.hwaryun.home.navigation.homeGraphRoute
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -39,17 +41,12 @@ class MainActivity : ComponentActivity() {
                     color = AsphaltTheme.colors.pure_white_500
                 ) {
                     val startDestination by viewModel.startDestination.collectAsStateWithLifecycle()
-                    MainApp(startDestination = startDestination)
+                    MainApp(
+                        networkMonitor = networkMonitor,
+                        startDestination = startDestination
+                    )
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FoodMarketTheme {
-        MainApp(startDestination = homeGraphRoute)
     }
 }

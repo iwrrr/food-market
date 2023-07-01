@@ -55,10 +55,10 @@ internal fun RegisterRoute(
     navigateToAddressScreen: () -> Unit,
     viewModel: RegisterViewModel
 ) {
-    val registerState by viewModel.registerState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     RegisterScreen(
-        registerState = registerState,
+        state = state,
         popBackStack = popBackStack,
         navigateToAddressScreen = navigateToAddressScreen,
         updateNameState = viewModel::updateNameState,
@@ -71,7 +71,7 @@ internal fun RegisterRoute(
 
 @Composable
 fun RegisterScreen(
-    registerState: RegisterState,
+    state: RegisterState,
     popBackStack: () -> Unit,
     navigateToAddressScreen: () -> Unit,
     updateNameState: (String) -> Unit,
@@ -84,7 +84,7 @@ fun RegisterScreen(
     var shouldShowTrailingIcon by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
-    if (registerState.firstStep != null && isFirstStepCompleted) {
+    if (state.firstStep != null && isFirstStepCompleted) {
         LaunchedEffect(Unit) {
             navigateToAddressScreen()
             isFirstStepCompleted = false
@@ -97,7 +97,11 @@ fun RegisterScreen(
             .statusBarsPadding(),
         containerColor = AsphaltTheme.colors.cool_gray_1cCp_50,
         topBar = {
-            AsphaltAppBar(title = "Daftar", showNavigateBack = true, onNavigateBack = popBackStack)
+            AsphaltAppBar(
+                title = stringResource(id = R.string.title_register),
+                showNavigateBack = true,
+                onNavigateBack = popBackStack
+            )
         },
         content = { innerPadding ->
             Box(
@@ -116,18 +120,18 @@ fun RegisterScreen(
                     FoodMarketCircleImage(width = 110.dp, height = 110.dp, borderEnabled = true)
                     Spacer(modifier = Modifier.height(24.dp))
                     AsphaltInputGroup(
-                        value = registerState.name,
+                        value = state.name,
                         modifier = Modifier
                             .fillMaxWidth()
                             .onFocusChanged { shouldShowTrailingIcon = it.isFocused },
                         onValueChange = { updateNameState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Nama Lengkap",
-                        placeholder = "Masukkan nama lengkap kamu",
+                        label = stringResource(id = R.string.label_full_name),
+                        placeholder = stringResource(id = R.string.placeholder_full_name),
                         singleLine = true,
-                        isError = registerState.isNameError,
-                        errorMsg = if (registerState.isNameError) stringResource(id = registerState.errorNameMsg) else "",
+                        isError = state.isNameError,
+                        errorMsg = if (state.isNameError) stringResource(id = state.errorNameMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
@@ -138,7 +142,7 @@ fun RegisterScreen(
                             }
                         ),
                         trailingIcon = {
-                            if (registerState.name.isNotEmpty() && shouldShowTrailingIcon) {
+                            if (state.name.isNotEmpty() && shouldShowTrailingIcon) {
                                 IconButton(
                                     modifier = Modifier.size(20.dp),
                                     onClick = { updateEmailState("") }
@@ -153,18 +157,18 @@ fun RegisterScreen(
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     AsphaltInputGroup(
-                        value = registerState.email,
+                        value = state.email,
                         modifier = Modifier
                             .fillMaxWidth()
                             .onFocusChanged { shouldShowTrailingIcon = it.isFocused },
                         onValueChange = { updateEmailState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Email",
-                        placeholder = "Masukkan email kamu",
+                        label = stringResource(id = R.string.label_email),
+                        placeholder = stringResource(id = R.string.placeholder_email),
                         singleLine = true,
-                        isError = registerState.isEmailError,
-                        errorMsg = if (registerState.isEmailError) stringResource(id = registerState.errorEmailMsg) else "",
+                        isError = state.isEmailError,
+                        errorMsg = if (state.isEmailError) stringResource(id = state.errorEmailMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next
@@ -175,7 +179,7 @@ fun RegisterScreen(
                             }
                         ),
                         trailingIcon = {
-                            if (registerState.email.isNotEmpty() && shouldShowTrailingIcon) {
+                            if (state.email.isNotEmpty() && shouldShowTrailingIcon) {
                                 IconButton(
                                     modifier = Modifier.size(20.dp),
                                     onClick = { updateEmailState("") }
@@ -190,17 +194,17 @@ fun RegisterScreen(
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     AsphaltInputGroup(
-                        value = registerState.password,
+                        value = state.password,
                         modifier = Modifier.fillMaxWidth(),
                         onValueChange = { updatePasswordState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Kata Sandi",
-                        placeholder = "Masukkan kata sandi kamu",
+                        label = stringResource(id = R.string.label_password),
+                        placeholder = stringResource(id = R.string.placeholder_password),
                         singleLine = true,
-                        visualTransformation = if (!registerState.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
-                        isError = registerState.isPasswordError,
-                        errorMsg = if (registerState.isPasswordError) stringResource(id = registerState.errorPasswordMsg) else "",
+                        visualTransformation = if (!state.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+                        isError = state.isPasswordError,
+                        errorMsg = if (state.isPasswordError) stringResource(id = state.errorPasswordMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Password,
                             imeAction = ImeAction.Done
@@ -208,9 +212,9 @@ fun RegisterScreen(
                         trailingIcon = {
                             IconButton(
                                 modifier = Modifier.size(20.dp),
-                                onClick = { updateIsPasswordVisible(!registerState.isPasswordVisible) }
+                                onClick = { updateIsPasswordVisible(!state.isPasswordVisible) }
                             ) {
-                                val icon = if (registerState.isPasswordVisible) {
+                                val icon = if (state.isPasswordVisible) {
                                     painterResource(id = R.drawable.ic_eye_slash_bold)
                                 } else {
                                     painterResource(id = R.drawable.ic_eye_bold)
@@ -228,14 +232,14 @@ fun RegisterScreen(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             validateFirstStep(
-                                registerState.name,
-                                registerState.email,
-                                registerState.password
+                                state.name,
+                                state.email,
+                                state.password
                             )
                             isFirstStepCompleted = true
                         }
                     ) {
-                        AsphaltText(text = "Lanjut")
+                        AsphaltText(text = stringResource(id = R.string.btn_next))
                     }
                 }
             }
@@ -250,7 +254,7 @@ private fun DefaultPreview() {
         RegisterScreen(
             popBackStack = {},
             navigateToAddressScreen = {},
-            registerState = RegisterState(),
+            state = RegisterState(),
             updateNameState = {},
             updateEmailState = {},
             updatePasswordState = {},

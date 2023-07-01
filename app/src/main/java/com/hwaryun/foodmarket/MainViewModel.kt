@@ -11,7 +11,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +31,6 @@ class MainViewModel @Inject constructor(
     private fun getOnBoardingState() {
         viewModelScope.launch {
             userPreferenceManager.readOnBoardingState.collect { completed ->
-                Timber.d("DEBUG ====> $completed")
                 if (completed) {
                     checkUserIsExist()
                 } else {

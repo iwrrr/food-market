@@ -56,10 +56,12 @@ internal fun LoginRoute(
     onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    val loginState by viewModel.loginState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val isOffline by viewModel.isOffline.collectAsStateWithLifecycle()
 
     LoginScreen(
-        loginState = loginState,
+        state = state,
+        isOffline = isOffline,
         navigateToSignUpScreen = navigateToSignUpScreen,
         onShowSnackbar = onShowSnackbar,
         updateEmailState = viewModel::updateEmailState,
@@ -71,7 +73,8 @@ internal fun LoginRoute(
 
 @Composable
 fun LoginScreen(
-    loginState: LoginState,
+    state: LoginState,
+    isOffline: Boolean,
     navigateToSignUpScreen: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     updateEmailState: (String) -> Unit,
@@ -82,13 +85,21 @@ fun LoginScreen(
     var shouldShowTrailingIcon by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(loginState) {
-        if (loginState.error.isNotEmpty()) {
-            onShowSnackbar(loginState.error, null)
+    LaunchedEffect(state) {
+        if (state.error.isNotEmpty()) {
+            onShowSnackbar(state.error, null)
         }
     }
 
-    BackHandler(loginState.isLoading) {
+    val notConnectedMessage = stringResource(id = R.string.not_connected_message)
+
+    LaunchedEffect(isOffline) {
+        if (isOffline) {
+            onShowSnackbar(notConnectedMessage, null)
+        }
+    }
+
+    BackHandler(state.isLoading) {
         return@BackHandler
     }
 
@@ -98,7 +109,7 @@ fun LoginScreen(
             .statusBarsPadding(),
         containerColor = AsphaltTheme.colors.cool_gray_1cCp_50,
         topBar = {
-            AsphaltAppBar(title = "Sign In")
+            AsphaltAppBar(title = stringResource(id = R.string.title_login))
         },
         content = { innerPadding ->
             Box(
@@ -115,18 +126,18 @@ fun LoginScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AsphaltInputGroup(
-                        value = loginState.email,
+                        value = state.email,
                         modifier = Modifier
                             .fillMaxWidth()
                             .onFocusChanged { shouldShowTrailingIcon = it.isFocused },
                         onValueChange = { updateEmailState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Email",
-                        placeholder = "Masukkan email kamu",
+                        label = stringResource(id = R.string.label_email),
+                        placeholder = stringResource(id = R.string.placeholder_email),
                         singleLine = true,
-                        isError = loginState.isEmailError,
-                        errorMsg = if (loginState.isEmailError) stringResource(id = loginState.errorEmailMsg) else "",
+                        isError = state.isEmailError,
+                        errorMsg = if (state.isEmailError) stringResource(id = state.errorEmailMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next
@@ -137,7 +148,7 @@ fun LoginScreen(
                             }
                         ),
                         trailingIcon = {
-                            if (loginState.email.isNotEmpty() && shouldShowTrailingIcon) {
+                            if (state.email.isNotEmpty() && shouldShowTrailingIcon) {
                                 IconButton(
                                     modifier = Modifier.size(20.dp),
                                     onClick = { updateEmailState("") }
@@ -152,17 +163,17 @@ fun LoginScreen(
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     AsphaltInputGroup(
-                        value = loginState.password,
+                        value = state.password,
                         modifier = Modifier.fillMaxWidth(),
                         onValueChange = { updatePasswordState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Kata Sandi",
-                        placeholder = "Masukkan kata sandi kamu",
+                        label = stringResource(id = R.string.label_password),
+                        placeholder = stringResource(id = R.string.placeholder_password),
                         singleLine = true,
-                        visualTransformation = if (!loginState.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
-                        isError = loginState.isPasswordError,
-                        errorMsg = if (loginState.isPasswordError) stringResource(id = loginState.errorPasswordMsg) else "",
+                        visualTransformation = if (!state.isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+                        isError = state.isPasswordError,
+                        errorMsg = if (state.isPasswordError) stringResource(id = state.errorPasswordMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Password,
                             imeAction = ImeAction.Done
@@ -170,9 +181,9 @@ fun LoginScreen(
                         trailingIcon = {
                             IconButton(
                                 modifier = Modifier.size(20.dp),
-                                onClick = { updateIsPasswordVisible(!loginState.isPasswordVisible) }
+                                onClick = { updateIsPasswordVisible(!state.isPasswordVisible) }
                             ) {
-                                val icon = if (loginState.isPasswordVisible) {
+                                val icon = if (state.isPasswordVisible) {
                                     painterResource(id = R.drawable.ic_eye_slash_bold)
                                 } else {
                                     painterResource(id = R.drawable.ic_eye_bold)
@@ -188,25 +199,22 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.weight(1f))
                     AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),
-                        isLoading = loginState.isLoading,
-                        onClick = { doSignIn(loginState.email, loginState.password) }
+                        enabled = !state.isLoading && !isOffline,
+                        isLoading = state.isLoading,
+                        onClick = { doSignIn(state.email, state.password) }
                     ) {
-                        AsphaltText(text = "Sign In")
+                        AsphaltText(text = stringResource(id = R.string.btn_login))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = !loginState.isLoading,
+                        enabled = !state.isLoading && !isOffline,
                         type = ButtonType.Outline,
                         onClick = { navigateToSignUpScreen() }
                     ) {
-                        AsphaltText(text = "Buat Akun")
+                        AsphaltText(text = stringResource(id = R.string.btn_create_account))
                     }
                 }
-
-                //                if (loginState.isLoading) {
-                //                    DialogBoxLoading()
-                //                }
             }
         }
     )
@@ -217,7 +225,8 @@ fun LoginScreen(
 private fun DefaultPreview() {
     FoodMarketTheme {
         LoginScreen(
-            loginState = LoginState(),
+            state = LoginState(),
+            isOffline = false,
             navigateToSignUpScreen = {},
             updateEmailState = {},
             updatePasswordState = {},

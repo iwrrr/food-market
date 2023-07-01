@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.FieldErrorException
 import com.hwaryun.common.ext.suspendSubscribe
+import com.hwaryun.datasource.util.NetworkMonitor
 import com.hwaryun.domain.usecase.auth.CheckRegisterFieldUseCase
 import com.hwaryun.domain.usecase.auth.RegisterUpUseCase
 import com.hwaryun.domain.utils.ADDRESS_FIELD
@@ -16,7 +17,10 @@ import com.hwaryun.domain.utils.PHONE_NUMBER_FIELD
 import com.hwaryun.signup.state.RegisterState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,11 +28,20 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val checkRegisterFieldUseCase: CheckRegisterFieldUseCase,
-    private val registerUpUseCase: RegisterUpUseCase
+    private val registerUpUseCase: RegisterUpUseCase,
+    networkMonitor: NetworkMonitor
 ) : ViewModel() {
 
     private val _registerState = MutableStateFlow(RegisterState())
-    val registerState = _registerState.asStateFlow()
+    val state = _registerState.asStateFlow()
+
+    val isOffline = networkMonitor.isOnline
+        .map(Boolean::not)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = false
+        )
 
     fun validateFirstStep(
         name: String,

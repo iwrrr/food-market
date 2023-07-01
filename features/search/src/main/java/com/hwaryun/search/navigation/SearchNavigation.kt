@@ -17,7 +17,6 @@ fun NavController.navigateToSearchGraph(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.searchGraph(
     onFoodClick: (Int) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
-    nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
     navigation(
         route = searchGraphRoute,
@@ -29,6 +28,5 @@ fun NavGraphBuilder.searchGraph(
                 onShowSnackbar = onShowSnackbar,
             )
         }
-        nestedGraphs()
     }
 }

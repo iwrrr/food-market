@@ -31,6 +31,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -54,10 +55,12 @@ internal fun AddressRoute(
     onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: RegisterViewModel
 ) {
-    val signUpState by viewModel.registerState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val isOffline by viewModel.isOffline.collectAsStateWithLifecycle()
 
     AddressScreen(
-        registerState = signUpState,
+        state = state,
+        isOffline = isOffline,
         popBackStack = popBackStack,
         navigateToHomeScreen = navigateToHomeScreen,
         onShowSnackbar = onShowSnackbar,
@@ -72,7 +75,8 @@ internal fun AddressRoute(
 
 @Composable
 fun AddressScreen(
-    registerState: RegisterState,
+    state: RegisterState,
+    isOffline: Boolean,
     navigateToHomeScreen: () -> Unit,
     popBackStack: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
@@ -86,18 +90,26 @@ fun AddressScreen(
     var shouldShowTrailingIcon by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(registerState) {
-        if (registerState.signUp != null) {
+    LaunchedEffect(state) {
+        if (state.signUp != null) {
             navigateToHomeScreen()
         }
 
-        if (registerState.error.isNotEmpty()) {
-            onShowSnackbar(registerState.error, null)
+        if (state.error.isNotEmpty()) {
+            onShowSnackbar(state.error, null)
             resetErrorState()
         }
     }
 
-    BackHandler(registerState.isLoading) {
+    val notConnectedMessage = stringResource(id = R.string.not_connected_message)
+
+    LaunchedEffect(isOffline) {
+        if (isOffline) {
+            onShowSnackbar(notConnectedMessage, null)
+        }
+    }
+
+    BackHandler(state.isLoading) {
         return@BackHandler
     }
 
@@ -108,16 +120,14 @@ fun AddressScreen(
         containerColor = AsphaltTheme.colors.cool_gray_1cCp_50,
         topBar = {
             AsphaltAppBar(
-                title = "Alamat",
+                title = stringResource(id = R.string.title_address),
                 showNavigateBack = true,
                 onNavigateBack = {
-                    if (registerState.isLoading) return@AsphaltAppBar
-                    popBackStack()
+                    if (!state.isLoading) popBackStack()
                 }
             )
         },
         content = { innerPadding ->
-
             Box(
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding() + 24.dp)
@@ -132,18 +142,18 @@ fun AddressScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AsphaltInputGroup(
-                        value = registerState.phoneNumber,
+                        value = state.phoneNumber,
                         modifier = Modifier
                             .fillMaxWidth()
                             .onFocusChanged { shouldShowTrailingIcon = it.isFocused },
                         onValueChange = { updatePhoneNumberState(it) },
                         showLabel = true,
                         required = true,
-                        label = "No. Telepon",
-                        placeholder = "Masukkan nomor telepon kamu",
+                        label = stringResource(id = R.string.label_phone_number),
+                        placeholder = stringResource(id = R.string.placeholder_phone_number),
                         singleLine = true,
-                        isError = registerState.isPhoneNumberError,
-                        errorMsg = if (registerState.isPhoneNumberError) stringResource(id = registerState.errorPhoneNumberMsg) else "",
+                        isError = state.isPhoneNumberError,
+                        errorMsg = if (state.isPhoneNumberError) stringResource(id = state.errorPhoneNumberMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Phone,
                             imeAction = ImeAction.Next
@@ -154,7 +164,7 @@ fun AddressScreen(
                             }
                         ),
                         trailingIcon = {
-                            if (registerState.phoneNumber.isNotEmpty() && shouldShowTrailingIcon) {
+                            if (state.phoneNumber.isNotEmpty() && shouldShowTrailingIcon) {
                                 IconButton(
                                     modifier = Modifier.size(20.dp),
                                     onClick = { updatePhoneNumberState("") }
@@ -169,18 +179,18 @@ fun AddressScreen(
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     AsphaltInputGroup(
-                        value = registerState.address,
+                        value = state.address,
                         modifier = Modifier
                             .fillMaxWidth()
                             .onFocusChanged { shouldShowTrailingIcon = it.isFocused },
                         onValueChange = { updateAddressState(it) },
                         showLabel = true,
                         required = true,
-                        label = "Alamat",
-                        placeholder = "Masukkan alamat kamu",
+                        label = stringResource(id = R.string.label_address),
+                        placeholder = stringResource(id = R.string.placeholder_address),
                         singleLine = true,
-                        isError = registerState.isAddressError,
-                        errorMsg = if (registerState.isAddressError) stringResource(id = registerState.errorAddressMsg) else "",
+                        isError = state.isAddressError,
+                        errorMsg = if (state.isAddressError) stringResource(id = state.errorAddressMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
@@ -191,7 +201,7 @@ fun AddressScreen(
                             }
                         ),
                         trailingIcon = {
-                            if (registerState.address.isNotEmpty() && shouldShowTrailingIcon) {
+                            if (state.address.isNotEmpty() && shouldShowTrailingIcon) {
                                 IconButton(
                                     modifier = Modifier.size(20.dp),
                                     onClick = { updateAddressState("") }
@@ -206,18 +216,18 @@ fun AddressScreen(
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     AsphaltInputGroup(
-                        value = registerState.houseNumber,
+                        value = state.houseNumber,
                         modifier = Modifier
                             .fillMaxWidth()
                             .onFocusChanged { shouldShowTrailingIcon = it.isFocused },
                         onValueChange = { updateHouseNumberState(it) },
                         showLabel = true,
                         required = true,
-                        label = "No. Rumah",
-                        placeholder = "Masukkan nomor rumah kamu",
+                        label = stringResource(id = R.string.label_house_number),
+                        placeholder = stringResource(id = R.string.placeholder_house_number),
                         singleLine = true,
-                        isError = registerState.isHouseNumberError,
-                        errorMsg = if (registerState.isHouseNumberError) stringResource(id = registerState.errorHouseNumberMsg) else "",
+                        isError = state.isHouseNumberError,
+                        errorMsg = if (state.isHouseNumberError) stringResource(id = state.errorHouseNumberMsg) else "",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
@@ -228,7 +238,7 @@ fun AddressScreen(
                             }
                         ),
                         trailingIcon = {
-                            if (registerState.houseNumber.isNotEmpty() && shouldShowTrailingIcon) {
+                            if (state.houseNumber.isNotEmpty() && shouldShowTrailingIcon) {
                                 IconButton(
                                     modifier = Modifier.size(20.dp),
                                     onClick = { updateHouseNumberState("") }
@@ -243,39 +253,34 @@ fun AddressScreen(
                     )
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    val options =
-                        listOf("Jakarta", "Bogor", "Depok", "Tangerang", "Bekasi", "Bandung")
+                    val cities = stringArrayResource(id = R.array.cities).toList()
                     var expanded by remember { mutableStateOf(false) }
                     AsphaltDropdown(
-                        text = registerState.city,
+                        text = state.city,
                         showLabel = true,
-                        textLabel = "Kota",
-                        placeholder = "Pilih kota",
+                        label = stringResource(id = R.string.label_city),
+                        placeholder = stringResource(id = R.string.placeholder_city),
                         expanded = expanded,
-                        onExpandedChange = {
-                            expanded = !expanded
-                        },
-                        onDismissRequest = {
-                            expanded = false
-                        },
+                        onExpandedChange = { expanded = !expanded },
+                        onDismissRequest = { expanded = false },
                         onClickExpanded = {
                             updateCityState(it)
                             expanded = false
                         },
-                        options = options,
-                        isError = registerState.isCityError,
+                        options = cities,
+                        isError = state.isCityError,
                         readOnly = true,
                         onValueChange = { updateCityState(it) },
-                        errorMsg = if (registerState.isCityError) stringResource(id = registerState.errorCityMsg) else "",
+                        errorMsg = if (state.isCityError) stringResource(id = state.errorCityMsg) else "",
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = !registerState.isLoading,
-                        isLoading = registerState.isLoading,
+                        enabled = !state.isLoading && !isOffline,
+                        isLoading = state.isLoading,
                         onClick = { doSignUp() }
                     ) {
-                        AsphaltText(text = "Daftar Sekarang")
+                        AsphaltText(text = stringResource(id = R.string.btn_register))
                     }
                 }
             }
@@ -288,9 +293,10 @@ fun AddressScreen(
 private fun DefaultPreview() {
     FoodMarketTheme {
         AddressScreen(
+            state = RegisterState(),
+            isOffline = false,
             navigateToHomeScreen = {},
             popBackStack = {},
-            registerState = RegisterState(),
             updatePhoneNumberState = {},
             updateAddressState = {},
             updateHouseNumberState = {},

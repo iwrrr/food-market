@@ -10,6 +10,8 @@ import com.hwaryun.datasource.repository.transaction.TransactionRepository
 import com.hwaryun.datasource.repository.transaction.TransactionRepositoryImpl
 import com.hwaryun.datasource.repository.wishlist.WishlistRepository
 import com.hwaryun.datasource.repository.wishlist.WishlistRepositoryImpl
+import com.hwaryun.datasource.util.ConnectivityManagerNetworkMonitor
+import com.hwaryun.datasource.util.NetworkMonitor
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -39,4 +41,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindWishlistRepository(wishlistRepositoryImpl: WishlistRepositoryImpl): WishlistRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindNetworkMonitor(networkMonitor: ConnectivityManagerNetworkMonitor): NetworkMonitor
 }

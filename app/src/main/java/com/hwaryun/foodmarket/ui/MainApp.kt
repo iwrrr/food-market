@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import com.hwaryun.datasource.util.NetworkMonitor
 import com.hwaryun.designsystem.components.AsphaltBottomNavigation
 import com.hwaryun.designsystem.components.AsphaltNavigationItem
 import com.hwaryun.designsystem.components.atoms.AsphaltText
@@ -36,10 +37,12 @@ import com.hwaryun.foodmarket.navigation.TopLevelDestination
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainApp(
-    mainAppState: MainAppState = rememberMainAppState(),
+    networkMonitor: NetworkMonitor,
+    mainAppState: MainAppState = rememberMainAppState(networkMonitor = networkMonitor),
     startDestination: String
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
         containerColor = AsphaltTheme.colors.pure_white_500,
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -54,15 +57,14 @@ fun MainApp(
     ) {
         MainAppNavHost(
             mainAppState = mainAppState,
-            startDestination = startDestination,
-            onShowSnackbar = { message, actionLabel ->
-                snackbarHostState.showSnackbar(
-                    message = message,
-                    actionLabel = actionLabel,
-                    duration = SnackbarDuration.Short,
-                ) == SnackbarResult.ActionPerformed
-            }
-        )
+            startDestination = startDestination
+        ) { message, actionLabel ->
+            snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = actionLabel,
+                duration = SnackbarDuration.Short,
+            ) == SnackbarResult.ActionPerformed
+        }
     }
 }
 

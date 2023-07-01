@@ -3,29 +3,45 @@ package com.hwaryun.foodmarket.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.hwaryun.datasource.util.NetworkMonitor
 import com.hwaryun.foodmarket.navigation.TopLevelDestination
 import com.hwaryun.home.navigation.navigateToHomeGraph
 import com.hwaryun.profile.navigation.navigateToProfileGraph
 import com.hwaryun.search.navigation.navigateToSearchGraph
 import com.hwaryun.transaction.navigation.navigateToTransactionGraph
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 @Composable
 fun rememberMainAppState(
-    navHostController: NavHostController = rememberNavController()
+    navHostController: NavHostController = rememberNavController(),
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    networkMonitor: NetworkMonitor,
 ): MainAppState {
-    return remember(navHostController) {
-        MainAppState(navHostController)
+    return remember(navHostController, coroutineScope, networkMonitor) {
+        MainAppState(navHostController, coroutineScope, networkMonitor)
     }
 }
 
 @Stable
-class MainAppState(val navHostController: NavHostController) {
+class MainAppState(
+    val navHostController: NavHostController,
+    coroutineScope: CoroutineScope,
+    networkMonitor: NetworkMonitor
+) {
+    val currentDestination: NavDestination?
+        @Composable get() = navHostController
+            .currentBackStackEntryAsState().value?.destination
+
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.values().asList()
     private val topLevelRoutes = topLevelDestinations.map { it.route }
 
@@ -33,9 +49,13 @@ class MainAppState(val navHostController: NavHostController) {
         @Composable get() = navHostController
             .currentBackStackEntryAsState().value?.destination?.route in topLevelRoutes
 
-    val currentDestination: NavDestination?
-        @Composable get() = navHostController
-            .currentBackStackEntryAsState().value?.destination
+    val isOffline = networkMonitor.isOnline
+        .map(Boolean::not)
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = false
+        )
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         val topLevelNavOptions = navOptions {

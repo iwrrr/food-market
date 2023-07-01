@@ -44,7 +44,7 @@ fun AsphaltDropdown(
     text: String,
     modifier: Modifier = Modifier,
     showLabel: Boolean = false,
-    textLabel: String = "",
+    label: String = "",
     placeholder: String,
     expanded: Boolean = false,
     onExpandedChange: (Boolean) -> Unit = {},
@@ -62,7 +62,7 @@ fun AsphaltDropdown(
     ) {
         if (showLabel) {
             val annotatedString = buildAnnotatedString {
-                append(textLabel)
+                append(label)
                 withStyle(style = SpanStyle(AsphaltTheme.colors.retail_red_500)) {
                     append(" *")
                 }
