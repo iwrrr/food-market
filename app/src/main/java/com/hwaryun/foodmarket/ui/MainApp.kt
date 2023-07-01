@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.hwaryun.datasource.util.NetworkMonitor
-import com.hwaryun.designsystem.components.AsphaltBottomNavigation
-import com.hwaryun.designsystem.components.AsphaltNavigationItem
+import com.hwaryun.designsystem.components.atoms.AsphaltBottomNavigation
+import com.hwaryun.designsystem.components.atoms.AsphaltNavigationItem
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.designsystem.ui.asphalt.LocalContentColor

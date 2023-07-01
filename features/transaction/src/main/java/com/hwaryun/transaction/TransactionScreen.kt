@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,8 +30,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hwaryun.datasource.paging.subscribe
 import com.hwaryun.designsystem.R
-import com.hwaryun.designsystem.components.AsphaltAppBar
 import com.hwaryun.designsystem.components.atoms.AsphaltText
+import com.hwaryun.designsystem.components.molecules.AsphaltAppBar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.domain.model.Transaction
@@ -101,6 +102,7 @@ fun OrderScreen(
                     filterDelivered = filterDelivered,
                     filterCancelled = filterCancelled,
                 )
+                Divider(thickness = 1.dp, color = AsphaltTheme.colors.cool_gray_1cCp_500)
             }
         },
         content = { innerPadding ->

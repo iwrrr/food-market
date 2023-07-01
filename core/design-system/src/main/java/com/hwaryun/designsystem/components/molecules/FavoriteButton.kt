@@ -1,4 +1,4 @@
-package com.hwaryun.designsystem.components
+package com.hwaryun.designsystem.components.molecules
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColor

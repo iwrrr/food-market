@@ -15,8 +15,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.common.ext.orDash
-import com.hwaryun.designsystem.components.FoodMarketCircleImage
 import com.hwaryun.designsystem.components.atoms.AsphaltText
+import com.hwaryun.designsystem.components.atoms.Avatar
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.profile.ProfileState
@@ -33,7 +33,7 @@ fun HeaderProfile(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        FoodMarketCircleImage(
+        Avatar(
             image = uiState.user?.profilePhotoUrl,
             isLoading = uiState.isLoading,
             width = 110.dp,

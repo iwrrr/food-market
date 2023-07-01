@@ -1,4 +1,4 @@
-package com.hwaryun.designsystem.components
+package com.hwaryun.designsystem.components.molecules
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
-fun FoodMarketTabSection(
+fun Tabs(
     modifier: Modifier = Modifier,
     tabItems: List<TabItem>
 ) {

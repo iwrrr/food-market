@@ -27,7 +27,8 @@
 
     <string name="title_login">Login</string>
     <string name="title_register">Daftar</string>
-    <string name="title_address">Daftar</string>
+    <string name="title_address">Alamat</string>
+    <string name="title_detail">Detail</string>
     <string name="title_history">Riwayat</string>
 
     <string name="btn_login">Login</string>

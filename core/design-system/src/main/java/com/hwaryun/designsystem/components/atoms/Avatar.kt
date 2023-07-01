@@ -1,4 +1,4 @@
-package com.hwaryun.designsystem.components
+package com.hwaryun.designsystem.components.atoms
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -36,7 +36,7 @@ import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 
 @Composable
-fun FoodMarketCircleImage(
+fun Avatar(
     image: String? = null,
     isLoading: Boolean = false,
     width: Dp,
@@ -86,7 +86,7 @@ fun FoodMarketCircleImage(
 @Composable
 fun FoodMarketCircleImagePreview() {
     FoodMarketTheme {
-        FoodMarketCircleImage(width = 60.dp, height = 60.dp, borderEnabled = true)
+        Avatar(width = 60.dp, height = 60.dp, borderEnabled = true)
     }
 }
 

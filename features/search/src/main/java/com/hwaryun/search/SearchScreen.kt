@@ -129,36 +129,6 @@ fun SearchScreen(
             onFoodClick = onFoodClick
         )
     }
-
-    //    Scaffold(
-    //        modifier = Modifier.fillMaxSize(),
-    //        topBar = {
-    //            if (!shouldShowLoading) {
-    //                if (!shouldShowEmptyScreen) {
-    //                    AsphaltAppBar(title = "Your Orders")
-    //                }
-    //            }
-    //        },
-    //        content = { innerPadding ->
-    //            Column(
-    //                modifier = Modifier
-    //                    .padding(innerPadding)
-    //                    .fillMaxSize(),
-    //                horizontalAlignment = Alignment.CenterHorizontally,
-    //                verticalArrangement = if (shouldShowEmptyScreen) Arrangement.Center else Arrangement.Top
-    //            ) {
-    //                when {
-    //                    shouldShowLoading -> LoadingContent()
-    //                    shouldShowEmptyScreen -> EmptyContent(navigateToHome)
-    //                    else -> OrderContent(
-    //                        onOrderClick = onOrderClick,
-    //                        inProgressOrders = inProgressOrders,
-    //                        postOrders = postOrders
-    //                    )
-    //                }
-    //            }
-    //        }
-    //    )
 }
 
 @Composable

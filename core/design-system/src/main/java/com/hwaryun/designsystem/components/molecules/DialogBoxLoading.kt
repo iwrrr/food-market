@@ -1,4 +1,4 @@
-package com.hwaryun.designsystem.components
+package com.hwaryun.designsystem.components.molecules
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -55,8 +55,7 @@ fun DialogBoxLoading(
 
                 // Please wait text
                 Text(
-                    modifier = Modifier
-                        .padding(bottom = paddingBottom),
+                    modifier = Modifier.padding(bottom = paddingBottom),
                     text = "Please wait...",
                     style = TextStyle(
                         color = Color.Black,

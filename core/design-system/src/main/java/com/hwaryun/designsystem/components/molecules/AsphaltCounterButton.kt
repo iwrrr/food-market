@@ -1,4 +1,4 @@
-package com.hwaryun.designsystem.components
+package com.hwaryun.designsystem.components.molecules
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Row

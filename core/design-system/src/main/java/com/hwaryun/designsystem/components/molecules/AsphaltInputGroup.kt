@@ -125,7 +125,7 @@ fun AsphaltInputGroup(
     backgroundColor = 0xFFFFFFFF
 )
 @Composable
-fun FoodMarketTextFieldPreview() {
+private fun DefaultPreview() {
     FoodMarketTheme {
         AsphaltInputGroup(
             value = "aaa",

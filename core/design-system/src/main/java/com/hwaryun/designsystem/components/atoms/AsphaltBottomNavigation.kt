@@ -1,4 +1,4 @@
-package com.hwaryun.designsystem.components
+package com.hwaryun.designsystem.components.atoms
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -23,7 +23,6 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.hwaryun.designsystem.components.atoms.ProvideTextStyle
 import com.hwaryun.designsystem.components.atoms.basic.Surface
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.designsystem.ui.asphalt.LocalContentColor

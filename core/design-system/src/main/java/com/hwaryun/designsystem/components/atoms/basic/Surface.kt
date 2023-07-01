@@ -55,6 +55,7 @@ fun Surface(
                     role = Role.Button,
                     onClick = onClick
                 ),
+            propagateMinConstraints = true
         ) {
             content()
         }

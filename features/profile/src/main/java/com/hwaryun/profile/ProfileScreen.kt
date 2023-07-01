@@ -20,12 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hwaryun.designsystem.components.DialogBoxLoading
-import com.hwaryun.designsystem.components.FoodMarketTabSection
-import com.hwaryun.designsystem.components.TabItem
 import com.hwaryun.designsystem.components.atoms.AsphaltButton
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.atoms.ButtonType
+import com.hwaryun.designsystem.components.molecules.DialogBoxLoading
+import com.hwaryun.designsystem.components.molecules.TabItem
+import com.hwaryun.designsystem.components.molecules.Tabs
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.profile.components.HeaderProfile
@@ -83,7 +83,7 @@ fun ProfileScreen(
                     uiState = state,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                FoodMarketTabSection(
+                Tabs(
                     tabItems = listOf(
                         TabItem(
                             title = "Akun",

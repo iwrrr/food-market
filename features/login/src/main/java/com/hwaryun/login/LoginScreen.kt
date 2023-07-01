@@ -41,10 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.R
-import com.hwaryun.designsystem.components.AsphaltAppBar
 import com.hwaryun.designsystem.components.atoms.AsphaltButton
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.atoms.ButtonType
+import com.hwaryun.designsystem.components.molecules.AsphaltAppBar
 import com.hwaryun.designsystem.components.molecules.AsphaltInputGroup
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
@@ -63,11 +63,11 @@ internal fun LoginRoute(
         state = state,
         isOffline = isOffline,
         navigateToSignUpScreen = navigateToSignUpScreen,
-        onShowSnackbar = onShowSnackbar,
         updateEmailState = viewModel::updateEmailState,
         updatePasswordState = viewModel::updatePasswordState,
         updateIsPasswordVisible = viewModel::updateIsPasswordVisible,
-        doSignIn = viewModel::signIn
+        doSignIn = viewModel::signIn,
+        onShowSnackbar = onShowSnackbar
     )
 }
 
@@ -76,11 +76,11 @@ fun LoginScreen(
     state: LoginState,
     isOffline: Boolean,
     navigateToSignUpScreen: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
     updateEmailState: (String) -> Unit,
     updatePasswordState: (String) -> Unit,
     updateIsPasswordVisible: (Boolean) -> Unit,
     doSignIn: (String, String) -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     var shouldShowTrailingIcon by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current

@@ -11,7 +11,7 @@ import com.hwaryun.designsystem.ui.asphalt.LocalContentColor
 
 object ButtonDefaults {
 
-    private val ButtonHorizontalPadding = 24.dp
+    private val ButtonHorizontalPadding = 12.dp
     private val ButtonVerticalPadding = 8.dp
 
     val ContentPadding =

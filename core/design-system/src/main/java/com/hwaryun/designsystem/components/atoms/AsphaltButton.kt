@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -21,6 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hwaryun.designsystem.components.atoms.basic.Surface
@@ -50,6 +55,7 @@ fun AsphaltButton(
     shape: Shape = AsphaltTheme.shapes.medium,
     type: ButtonType = ButtonType.Primary,
     color: Color = AsphaltTheme.colors.gojek_green_500,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable RowScope.() -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -101,7 +107,10 @@ fun AsphaltButton(
 
     Surface(
         onClick = onClick,
-        modifier = modifier.bounceClick(),
+        modifier = modifier
+            .minimumInteractiveComponentSize()
+            .semantics { role = Role.Button }
+            .bounceClick(),
         enabled = enabled,
         shape = shape,
         color = containerColor,
@@ -117,15 +126,11 @@ fun AsphaltButton(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .defaultMinSize(
                         minWidth = ButtonDefaults.MinWidth,
                         minHeight = ButtonDefaults.MinHeight
                     )
-                    .padding(
-                        horizontal = 16.dp,
-                        vertical = 14.dp,
-                    ),
+                    .padding(contentPadding),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -137,7 +142,7 @@ fun AsphaltButton(
                     CircularProgressIndicator(
                         modifier = Modifier.size(18.dp),
                         color = contentColor,
-                        strokeWidth = 1.dp
+                        strokeWidth = 2.dp
                     )
                 } else {
                     content()

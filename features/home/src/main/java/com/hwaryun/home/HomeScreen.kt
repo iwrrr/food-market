@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.molecules.AsphaltSearchBar
+import com.hwaryun.designsystem.screen.NoConnectionScreen
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.designsystem.utils.singleClick
@@ -50,9 +51,11 @@ internal fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val isOffline by viewModel.isOffline.collectAsStateWithLifecycle()
 
     HomeScreen(
         state = state,
+        isOffline = isOffline,
         onCartClick = onCartClick,
         onFoodClick = onFoodClick,
         onSearchClick = onSearchClick
@@ -62,53 +65,58 @@ internal fun HomeRoute(
 @Composable
 fun HomeScreen(
     state: HomeState,
+    isOffline: Boolean,
     onCartClick: () -> Unit,
     onFoodClick: (Int) -> Unit,
     onSearchClick: () -> Unit
 ) {
-    Scaffold(
-        modifier = Modifier.statusBarsPadding(),
-        topBar = {
-            HeaderHome(onCartClick = onCartClick)
-        },
-        containerColor = AsphaltTheme.colors.pure_white_500,
-        content = { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(top = innerPadding.calculateTopPadding())
-            ) {
-                Row(modifier = Modifier.padding(horizontal = 24.dp)) {
-                    AsphaltSearchBar(
-                        query = "",
-                        modifier = Modifier.singleClick { onSearchClick() },
-                        onQueryChange = {},
-                        onSearchFocusChange = {},
-                        onClearQuery = {},
-                        onBack = {},
-                        placeholder = "Mau makan apa nih?",
-                        enabled = false
-                    )
-                }
-                Box {
-                    LazyColumn {
-                        item {
-                            TrendingSection()
-                        }
-                        item {
-                            TrendingContent(foods = state.foods, onFoodClick = onFoodClick)
-                        }
-                        item {
-                            PromoSection()
-                        }
-                        item {
-                            PromoContent()
-                        }
+    if (isOffline) {
+        NoConnectionScreen()
+    } else {
+        Scaffold(
+            modifier = Modifier.statusBarsPadding(),
+            topBar = {
+                HeaderHome(onCartClick = onCartClick)
+            },
+            containerColor = AsphaltTheme.colors.pure_white_500,
+            content = { innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .padding(top = innerPadding.calculateTopPadding())
+                ) {
+                    Row(modifier = Modifier.padding(horizontal = 24.dp)) {
+                        AsphaltSearchBar(
+                            query = "",
+                            modifier = Modifier.singleClick { onSearchClick() },
+                            onQueryChange = {},
+                            onSearchFocusChange = {},
+                            onClearQuery = {},
+                            onBack = {},
+                            placeholder = "Mau makan apa nih?",
+                            enabled = false
+                        )
                     }
+                    Box {
+                        LazyColumn {
+                            item {
+                                TrendingSection()
+                            }
+                            item {
+                                TrendingContent(foods = state.foods, onFoodClick = onFoodClick)
+                            }
+                            item {
+                                PromoSection()
+                            }
+                            item {
+                                PromoContent()
+                            }
+                        }
 
+                    }
                 }
             }
-        }
-    )
+        )
+    }
 }
 
 @Composable
@@ -234,6 +242,7 @@ private fun DefaultPreview() {
     FoodMarketTheme {
         HomeScreen(
             state = HomeState(),
+            isOffline = true,
             onCartClick = {},
             onFoodClick = {},
             onSearchClick = {}
