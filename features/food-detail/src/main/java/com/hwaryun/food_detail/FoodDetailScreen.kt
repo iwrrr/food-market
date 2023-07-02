@@ -16,14 +16,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,7 +58,6 @@ import com.hwaryun.designsystem.screen.NoConnectionScreen
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.domain.model.Food
-import kotlinx.coroutines.launch
 
 @Composable
 internal fun FoodDetailRoute(
@@ -68,19 +69,19 @@ internal fun FoodDetailRoute(
     val foodDetailState by viewModel.foodDetailState.collectAsStateWithLifecycle()
     val wishlistState by viewModel.wishlistState.collectAsStateWithLifecycle()
     val cartState by viewModel.cartState.collectAsStateWithLifecycle()
-    val isOffline by viewModel.isOffline.collectAsStateWithLifecycle()
 
     FoodDetailScreen(
         foodDetailState = foodDetailState,
         wishlistState = wishlistState,
         cartState = cartState,
-        isOffline = isOffline,
         popBackStack = popBackStack,
         navigateToCart = navigateToCart,
         addToWishlist = viewModel::addToWishlist,
         removeWishlist = viewModel::removeWishlist,
         addToCart = viewModel::addToCart,
+        shouldDisplayWishlistSnackbar = viewModel.shouldDisplayWishlistSnackbar,
         refresh = viewModel::refresh,
+        clearSnackbarState = viewModel::clearSnackbarState,
         resetErrorState = viewModel::resetErrorState,
         onShowSnackbar = onShowSnackbar
     )
@@ -91,20 +92,17 @@ fun FoodDetailScreen(
     foodDetailState: FoodDetailState,
     wishlistState: WishlistState,
     cartState: CartState,
-    isOffline: Boolean,
     popBackStack: () -> Unit,
     navigateToCart: () -> Unit,
     addToWishlist: (Food?) -> Unit,
     removeWishlist: (Int?) -> Unit,
     addToCart: (Food) -> Unit,
+    shouldDisplayWishlistSnackbar: Boolean,
     refresh: () -> Unit,
+    clearSnackbarState: () -> Unit,
     resetErrorState: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
-    val context = LocalContext.current
-    val scrollState = rememberScrollState()
-    val scope = rememberCoroutineScope()
-
     LaunchedEffect(foodDetailState, cartState, wishlistState) {
         if (cartState.addToCart != null) {
             navigateToCart()
@@ -126,36 +124,81 @@ fun FoodDetailScreen(
         }
     }
 
-    if (isOffline) {
-        NoConnectionScreen()
+    val wishlistStatusMessage = if (wishlistState.isWishlist) {
+        stringResource(id = R.string.success_add_to_wishlist_message)
     } else {
-        Scaffold(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding(),
-            containerColor = AsphaltTheme.colors.pure_white_500,
-            topBar = {
-                AsphaltAppBar(
-                    title = stringResource(id = R.string.title_detail),
-                    showNavigateBack = true,
-                    onNavigateBack = popBackStack
-                )
-            },
-            content = {
+        stringResource(id = R.string.success_remove_wishlist_message)
+    }
+
+    LaunchedEffect(shouldDisplayWishlistSnackbar) {
+        if (shouldDisplayWishlistSnackbar) {
+            onShowSnackbar(wishlistStatusMessage, null)
+            clearSnackbarState()
+        }
+    }
+
+    if (foodDetailState.isOffline) {
+        NoConnectionScreen(onTryAgain = refresh)
+    } else {
+        DetailContent(
+            foodDetailState = foodDetailState,
+            wishlistState = wishlistState,
+            cartState = cartState,
+            popBackStack = popBackStack,
+            addToWishlist = addToWishlist,
+            removeWishlist = removeWishlist,
+            addToCart = addToCart,
+            refresh = refresh
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun DetailContent(
+    foodDetailState: FoodDetailState,
+    wishlistState: WishlistState,
+    cartState: CartState,
+    popBackStack: () -> Unit,
+    addToWishlist: (Food?) -> Unit,
+    removeWishlist: (Int?) -> Unit,
+    addToCart: (Food) -> Unit,
+    refresh: () -> Unit,
+) {
+    val scrollState = rememberScrollState()
+    val pullRefreshState = rememberPullRefreshState(refreshing = false, onRefresh = refresh)
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
+        containerColor = AsphaltTheme.colors.pure_white_500,
+        topBar = {
+            AsphaltAppBar(
+                title = stringResource(id = R.string.title_detail),
+                showNavigateBack = true,
+                onNavigateBack = popBackStack
+            )
+        },
+        content = { innerPadding ->
+            Box(
+                modifier = Modifier.pullRefresh(pullRefreshState),
+                contentAlignment = Alignment.TopCenter,
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                         .padding(
-                            top = it.calculateTopPadding() + 16.dp,
+                            top = innerPadding.calculateTopPadding() + 16.dp,
                             start = 16.dp,
                             end = 16.dp,
-                            bottom = it.calculateBottomPadding() + 12.dp,
-                        ),
+                            bottom = innerPadding.calculateBottomPadding() + 12.dp,
+                        )
                 ) {
                     Box {
                         AsyncImage(
-                            model = ImageRequest.Builder(context)
+                            model = ImageRequest.Builder(LocalContext.current)
                                 .data(foodDetailState.food?.picturePath)
                                 .crossfade(true)
                                 .build(),
@@ -174,7 +217,7 @@ fun FoodDetailScreen(
                                 .height(300.dp)
                                 .clip(AsphaltTheme.shapes.medium)
                         )
-                        if (foodDetailState.food?.types?.contains("popular") == true) {
+                        if (foodDetailState.food?.types?.contains("popular") == true && !foodDetailState.isLoading) {
                             AsphaltText(
                                 text = "Trending",
                                 modifier = Modifier
@@ -200,7 +243,7 @@ fun FoodDetailScreen(
                                     visible = foodDetailState.isLoading,
                                     highlight = PlaceholderHighlight.shimmer(),
                                     color = PlaceholderDefaults.color(),
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = AsphaltTheme.shapes.small
                                 ),
                             style = AsphaltTheme.typography.titleLarge,
                         )
@@ -210,21 +253,9 @@ fun FoodDetailScreen(
                             onClick = {
                                 if (wishlistState.isWishlist) {
                                     removeWishlist(foodDetailState.food?.id)
-                                    scope.launch {
-                                        onShowSnackbar(
-                                            "Berhasil menghapus makanan dari wishlist",
-                                            null
-                                        )
-                                    }
 
                                 } else {
                                     addToWishlist(foodDetailState.food)
-                                    scope.launch {
-                                        onShowSnackbar(
-                                            "Berhasil menambahkan makanan ke wishlist",
-                                            null
-                                        )
-                                    }
                                 }
                             }
                         )
@@ -247,7 +278,7 @@ fun FoodDetailScreen(
                                     visible = foodDetailState.isLoading,
                                     highlight = PlaceholderHighlight.shimmer(),
                                     color = PlaceholderDefaults.color(),
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = AsphaltTheme.shapes.small
                                 ),
                             style = AsphaltTheme.typography.captionModerateDemi.copy(fontWeight = FontWeight.Bold),
                         )
@@ -261,7 +292,7 @@ fun FoodDetailScreen(
                                 visible = foodDetailState.isLoading,
                                 highlight = PlaceholderHighlight.shimmer(),
                                 color = PlaceholderDefaults.color(),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = AsphaltTheme.shapes.small
                             ),
                         style = AsphaltTheme.typography.bodySmall
                     )
@@ -293,9 +324,15 @@ fun FoodDetailScreen(
                         }
                     }
                 }
+
+                PullRefreshIndicator(
+                    refreshing = false,
+                    state = pullRefreshState,
+                    contentColor = AsphaltTheme.colors.gojek_green_500
+                )
             }
-        )
-    }
+        }
+    )
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -306,13 +343,14 @@ fun FoodDetailScreenPreview() {
             foodDetailState = FoodDetailState(),
             wishlistState = WishlistState(),
             cartState = CartState(),
-            isOffline = false,
             popBackStack = {},
             navigateToCart = {},
             addToWishlist = {},
             removeWishlist = {},
             addToCart = {},
+            shouldDisplayWishlistSnackbar = false,
             refresh = {},
+            clearSnackbarState = {},
             resetErrorState = {},
             onShowSnackbar = { _, _ -> false }
         )

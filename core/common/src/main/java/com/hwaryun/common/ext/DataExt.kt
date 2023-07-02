@@ -10,7 +10,7 @@ import com.hwaryun.common.result.DataResult
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import timber.log.Timber
-import java.net.ConnectException
+import java.io.IOException
 
 suspend fun <T> execute(block: suspend () -> T): DataResult<T> {
     return try {
@@ -60,7 +60,7 @@ suspend fun <T> execute(block: suspend () -> T): DataResult<T> {
                 }
             }
 
-            is ConnectException -> {
+            is IOException -> {
                 DataResult.Failure(ConnectivityException())
             }
 

@@ -7,7 +7,11 @@
     <string name="error_field_password_length_below_min">Kata sandi minimal 8 karakter.</string>
     <string name="error_field_empty">Isian tidak boleh kosong.</string>
 
-    <string name="not_connected_message">Tidak ada koneksi</string>
+    <string name="connected_message">Koneksi internet Anda sudah dipulihkan.</string>
+    <string name="not_connected_message">Anda sedang offline.</string>
+
+    <string name="success_add_to_wishlist_message">Berhasil menambahkan makanan ke wishlist.</string>
+    <string name="success_remove_wishlist_message">Berhasil menghapus makanan dari wishlist.</string>
 
     <string name="label_full_name">Nama Lengkap</string>
     <string name="label_email">Email</string>

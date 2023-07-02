@@ -9,13 +9,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -31,29 +27,26 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.color
 import com.google.accompanist.placeholder.material.shimmer
 import com.google.accompanist.placeholder.placeholder
-import com.gowtham.ratingbar.RatingBar
-import com.gowtham.ratingbar.RatingBarConfig
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 
 @Composable
-fun PlaceholderFoodItem() {
-    val context = LocalContext.current
-
+fun PlaceholderFoodItem(
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(AsphaltTheme.colors.pure_white_500)
-            .padding(horizontal = 24.dp, vertical = 8.dp),
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = ImageRequest.Builder(context)
+                model = ImageRequest.Builder(LocalContext.current)
                     .data(null)
                     .crossfade(true)
                     .build(),
@@ -62,14 +55,15 @@ fun PlaceholderFoodItem() {
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(60.dp)
                     .placeholder(
                         visible = true,
                         highlight = PlaceholderHighlight.shimmer(),
                         color = PlaceholderDefaults.color(),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = AsphaltTheme.shapes.small
                     )
-                    .clip(RoundedCornerShape(8.dp))
+                    .width(100.dp)
+                    .height(80.dp)
+                    .clip(AsphaltTheme.shapes.small)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Column(
@@ -81,18 +75,18 @@ fun PlaceholderFoodItem() {
                 AsphaltText(
                     text = "",
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .width(140.dp)
                         .placeholder(
                             visible = true,
                             highlight = PlaceholderHighlight.shimmer(),
                             color = PlaceholderDefaults.color(),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = AsphaltTheme.shapes.small
                         ),
-                    style = AsphaltTheme.typography.bodyModerate,
+                    style = AsphaltTheme.typography.titleModerateBold,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 AsphaltText(
                     text = "",
                     modifier = Modifier
@@ -101,44 +95,28 @@ fun PlaceholderFoodItem() {
                             visible = true,
                             highlight = PlaceholderHighlight.shimmer(),
                             color = PlaceholderDefaults.color(),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = AsphaltTheme.shapes.small
                         ),
-                    style = AsphaltTheme.typography.captionSmallBook,
+                    style = AsphaltTheme.typography.captionSmallDemi,
                     overflow = TextOverflow.Ellipsis,
                     color = AsphaltTheme.colors.cool_gray_500,
                     maxLines = 1
                 )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RatingBar(
-                    value = 0f,
-                    config = RatingBarConfig()
-                        .isIndicator(true)
-                        .size(16.dp),
-                    onValueChange = {},
-                    onRatingChanged = {}
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
+                Spacer(modifier = Modifier.height(8.dp))
+                Divider(thickness = 1.dp, color = AsphaltTheme.colors.cool_gray_1cCp_100)
+                Spacer(modifier = Modifier.height(8.dp))
+                AsphaltText(
                     text = "",
                     modifier = Modifier
-                        .width(24.dp)
+                        .width(120.dp)
                         .placeholder(
                             visible = true,
                             highlight = PlaceholderHighlight.shimmer(),
                             color = PlaceholderDefaults.color(),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = AsphaltTheme.shapes.small
                         ),
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1
+                    style = AsphaltTheme.typography.captionSmallDemi,
+                    color = AsphaltTheme.colors.sub_black_500,
                 )
             }
         }

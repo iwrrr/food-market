@@ -9,5 +9,6 @@ data class Food(
     val price: Int,
     val rate: Float,
     val types: String,
+    val deliveryTime: Int,
     var isWishlist: Boolean = false,
 )

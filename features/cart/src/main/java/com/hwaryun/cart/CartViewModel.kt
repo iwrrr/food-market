@@ -68,7 +68,7 @@ class CartViewModel @Inject constructor(
                         _cartState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
+                                error = it.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     }
@@ -98,7 +98,7 @@ class CartViewModel @Inject constructor(
                         _cartState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
+                                error = it.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     }
@@ -185,7 +185,7 @@ class CartViewModel @Inject constructor(
                         _transactionState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
+                                error = it.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     }

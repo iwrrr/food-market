@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,8 +33,6 @@ fun FoodItem(
     modifier: Modifier = Modifier,
     onFoodClick: (Int) -> Unit
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = modifier
             .background(AsphaltTheme.colors.pure_white_500)
@@ -74,7 +71,10 @@ fun FoodItem(
                 Divider(thickness = 1.dp, color = AsphaltTheme.colors.cool_gray_1cCp_100)
                 Spacer(modifier = Modifier.height(8.dp))
                 AsphaltText(
-                    text = stringResource(id = R.string.delivered_time, (10..30).random()),
+                    text = stringResource(
+                        id = R.string.delivered_time,
+                        food?.deliveryTime.orZero()
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                     style = AsphaltTheme.typography.captionSmallDemi,
                     color = AsphaltTheme.colors.sub_black_500,
@@ -86,7 +86,7 @@ fun FoodItem(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun HorizontalFoodItemPreview() {
+private fun DefaultPreview() {
     FoodMarketTheme {
         FoodItem(
             food = Food(
@@ -98,6 +98,7 @@ fun HorizontalFoodItemPreview() {
                 price = 0,
                 rate = 0f,
                 types = "",
+                deliveryTime = 10
             ),
             onFoodClick = {},
         )

@@ -110,7 +110,7 @@ class RegisterViewModel @Inject constructor(
                             _registerState.update { state ->
                                 state.copy(
                                     isLoading = false,
-                                    error = result.throwable?.message ?: "Unexpected error accrued"
+                                    error = result.throwable?.message ?: "Unexpected error occurred"
                                 )
                             }
                         }

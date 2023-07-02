@@ -19,6 +19,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -52,27 +56,29 @@ internal fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val isOffline by viewModel.isOffline.collectAsStateWithLifecycle()
 
     HomeScreen(
         state = state,
-        isOffline = isOffline,
         onCartClick = onCartClick,
         onFoodClick = onFoodClick,
-        onSearchClick = onSearchClick
+        onSearchClick = onSearchClick,
+        refresh = viewModel::getTrendingFoods
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     state: HomeState,
-    isOffline: Boolean,
     onCartClick: () -> Unit,
     onFoodClick: (Int) -> Unit,
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    refresh: () -> Unit,
 ) {
-    if (isOffline) {
-        NoConnectionScreen()
+    val pullRefreshState = rememberPullRefreshState(refreshing = false, onRefresh = refresh)
+
+    if (state.isOffline) {
+        NoConnectionScreen(onTryAgain = refresh)
     } else {
         Scaffold(
             modifier = Modifier.statusBarsPadding(),
@@ -85,8 +91,7 @@ fun HomeScreen(
             containerColor = AsphaltTheme.colors.pure_white_500,
             content = { innerPadding ->
                 Column(
-                    modifier = Modifier
-                        .padding(top = innerPadding.calculateTopPadding())
+                    modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
                 ) {
                     Row(modifier = Modifier.padding(horizontal = 16.dp)) {
                         AsphaltSearchBar(
@@ -100,13 +105,20 @@ fun HomeScreen(
                             enabled = false
                         )
                     }
-                    Box {
+                    Box(
+                        modifier = Modifier.pullRefresh(pullRefreshState),
+                        contentAlignment = Alignment.TopCenter,
+                    ) {
                         LazyColumn {
                             item {
                                 TrendingSection()
                             }
                             item {
-                                TrendingContent(foods = state.foods, onFoodClick = onFoodClick)
+                                TrendingContent(
+                                    foods = state.foods,
+                                    isLoading = state.isLoading,
+                                    onFoodClick = onFoodClick
+                                )
                             }
                             item {
                                 PromoSection()
@@ -116,6 +128,11 @@ fun HomeScreen(
                             }
                         }
 
+                        PullRefreshIndicator(
+                            refreshing = false,
+                            state = pullRefreshState,
+                            contentColor = AsphaltTheme.colors.gojek_green_500
+                        )
                     }
                 }
             }
@@ -160,6 +177,7 @@ private fun TrendingSection() {
 @Composable
 private fun TrendingContent(
     foods: List<Food>,
+    isLoading: Boolean,
     onFoodClick: (Int) -> Unit
 ) {
     Spacer(modifier = Modifier.height(16.dp))
@@ -173,7 +191,7 @@ private fun TrendingContent(
         items(foods) { food ->
             FoodItem(
                 food = food,
-                isLoading = false,
+                isLoading = isLoading,
                 onFoodClick = onFoodClick
             )
         }
@@ -246,10 +264,10 @@ private fun DefaultPreview() {
     FoodMarketTheme {
         HomeScreen(
             state = HomeState(),
-            isOffline = true,
             onCartClick = {},
             onFoodClick = {},
-            onSearchClick = {}
+            onSearchClick = {},
+            refresh = {}
         )
     }
 }

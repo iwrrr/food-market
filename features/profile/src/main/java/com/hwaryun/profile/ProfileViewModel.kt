@@ -55,7 +55,7 @@ class ProfileViewModel @Inject constructor(
                         _profileState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = result.throwable?.message ?: "Unexpected error accrued"
+                                error = result.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     }

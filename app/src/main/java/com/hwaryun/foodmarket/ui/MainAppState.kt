@@ -76,8 +76,6 @@ class MainAppState(
             TopLevelDestination.PROFILE -> navHostController.navigateToProfileGraph(
                 topLevelNavOptions
             )
-
-            else -> {}
         }
     }
 }

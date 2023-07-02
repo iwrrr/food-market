@@ -36,6 +36,7 @@ fun FoodDto?.toFood(): Food {
         price = this?.price.orZero(),
         rate = (this?.rate ?: "0").toFloat(),
         types = this?.types.orDash(),
+        deliveryTime = (10..30).random()
     )
 }
 
@@ -96,6 +97,7 @@ fun WishlistEntity.toFood(): Food {
         price = price,
         rate = rate,
         types = types,
+        deliveryTime = (10..30).random()
     )
 }
 

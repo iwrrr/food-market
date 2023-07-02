@@ -14,6 +14,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -114,6 +115,7 @@ fun TransactionItem(
                 horizontalAlignment = Alignment.End
             ) {
                 AsphaltButton(
+                    modifier = Modifier.scale(0.9f),
                     type = ButtonType.Outline,
                     onClick = {}
                 ) {
@@ -148,7 +150,8 @@ private fun DefaultPreview() {
                     picturePath = "",
                     price = 0,
                     rate = 0f,
-                    types = ""
+                    types = "",
+                    deliveryTime = 10
                 ),
                 user = User(
                     address = "",

@@ -15,6 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -34,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -42,6 +47,7 @@ import com.hwaryun.datasource.paging.subscribe
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.molecules.AsphaltSearchBar
+import com.hwaryun.designsystem.screen.NoConnectionScreen
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.Yellow
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
@@ -131,6 +137,7 @@ fun SearchScreen(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun FoodContent(
     innerPadding: PaddingValues,
@@ -138,40 +145,60 @@ private fun FoodContent(
     onFoodClick: (Int) -> Unit,
 ) {
     val shouldShowEmptyScreen = foods.itemCount <= 0
+    val shouldShowErrorScreen = foods.loadState.refresh is LoadState.Error
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = false,
+        onRefresh = foods::refresh
+    )
 
-    LazyColumn(
-        modifier = Modifier
-            .background(AsphaltTheme.colors.pure_white_500)
-            .padding(innerPadding),
-        contentPadding = PaddingValues(bottom = 64.dp)
+    Box(
+        modifier = Modifier.pullRefresh(pullRefreshState),
+        contentAlignment = Alignment.TopCenter
     ) {
-        foods.loadState.refresh.subscribe(
-            doOnLoading = {
-                item {
-                    repeat(10) {
-                        PlaceholderFoodItem()
-                    }
-                }
-            },
-            doOnNotLoading = {
-                when {
-                    shouldShowEmptyScreen -> {
+        if (shouldShowErrorScreen) {
+            NoConnectionScreen(onTryAgain = foods::refresh)
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .background(AsphaltTheme.colors.pure_white_500)
+                    .padding(innerPadding),
+                contentPadding = PaddingValues(bottom = 64.dp)
+            ) {
+                foods.loadState.refresh.subscribe(
+                    doOnLoading = {
                         item {
-                            EmptyContent()
-                        }
-                    }
-
-                    else -> {
-                        items(foods, key = { it.id }) { food ->
-                            if (food != null) {
-                                FoodItem(food = food, onFoodClick = onFoodClick)
-                            } else {
+                            repeat(10) {
                                 PlaceholderFoodItem()
                             }
                         }
+                    },
+                    doOnNotLoading = {
+                        when {
+                            shouldShowEmptyScreen -> {
+                                item {
+                                    EmptyContent()
+                                }
+                            }
+
+                            else -> {
+                                items(foods, key = { it.id }) { food ->
+                                    if (food != null) {
+                                        FoodItem(food = food, onFoodClick = onFoodClick)
+                                    } else {
+                                        PlaceholderFoodItem()
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
+                )
             }
+        }
+
+        PullRefreshIndicator(
+            refreshing = false,
+            state = pullRefreshState,
+            contentColor = AsphaltTheme.colors.gojek_green_500
         )
     }
 }

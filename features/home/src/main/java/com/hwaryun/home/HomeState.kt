@@ -6,6 +6,7 @@ import com.hwaryun.domain.model.User
 data class HomeState(
     val user: User? = null,
     val foods: List<Food> = emptyList(),
+    val isOffline: Boolean = false,
     val isLoading: Boolean = false,
     val error: String = ""
 )

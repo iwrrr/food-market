@@ -1,11 +1,14 @@
 package com.hwaryun.food_detail
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hwaryun.common.ConnectivityException
 import com.hwaryun.common.ext.orFalse
 import com.hwaryun.common.ext.suspendSubscribe
-import com.hwaryun.datasource.util.NetworkMonitor
 import com.hwaryun.domain.model.Food
 import com.hwaryun.domain.usecase.cart.AddToCartUseCase
 import com.hwaryun.domain.usecase.food.GetFoodDetailUseCase
@@ -15,10 +18,7 @@ import com.hwaryun.domain.usecase.wishlist.RemoveWishlistUseCase
 import com.hwaryun.food_detail.navigation.FOOD_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,11 +30,12 @@ class FoodDetailViewModel @Inject constructor(
     private val addToWishlistUseCase: AddToWishlistUseCase,
     private val removeWishlistUseCase: RemoveWishlistUseCase,
     private val addToCartUseCase: AddToCartUseCase,
-    networkMonitor: NetworkMonitor,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val foodId = savedStateHandle.get<Int>(FOOD_ID) ?: 0
+
+    var shouldDisplayWishlistSnackbar by mutableStateOf(false)
 
     private val _foodDetailState = MutableStateFlow(FoodDetailState())
     val foodDetailState = _foodDetailState.asStateFlow()
@@ -44,14 +45,6 @@ class FoodDetailViewModel @Inject constructor(
 
     private val _cartState = MutableStateFlow(CartState())
     val cartState = _cartState.asStateFlow()
-
-    val isOffline = networkMonitor.isOnline
-        .map(Boolean::not)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false
-        )
 
     init {
         getFoodDetail(foodId)
@@ -65,6 +58,7 @@ class FoodDetailViewModel @Inject constructor(
                     doOnLoading = {
                         _foodDetailState.update { state ->
                             state.copy(
+                                isOffline = false,
                                 isLoading = true
                             )
                         }
@@ -73,16 +67,32 @@ class FoodDetailViewModel @Inject constructor(
                         _foodDetailState.update { state ->
                             state.copy(
                                 food = it.value,
+                                isOffline = false,
                                 isLoading = false,
                             )
                         }
                     },
                     doOnError = {
-                        _foodDetailState.update { state ->
-                            state.copy(
-                                isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
-                            )
+                        when (it.throwable) {
+                            is ConnectivityException -> {
+                                _foodDetailState.update { state ->
+                                    state.copy(
+                                        isOffline = true,
+                                        isLoading = false,
+                                        error = ""
+                                    )
+                                }
+                            }
+
+                            else -> {
+                                _foodDetailState.update { state ->
+                                    state.copy(
+                                        isOffline = false,
+                                        isLoading = false,
+                                        error = it.throwable?.message ?: "Unexpected error occurred"
+                                    )
+                                }
+                            }
                         }
                     }
                 )
@@ -106,7 +116,7 @@ class FoodDetailViewModel @Inject constructor(
                         _wishlistState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
+                                error = it.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     }
@@ -120,6 +130,7 @@ class FoodDetailViewModel @Inject constructor(
             addToWishlistUseCase.invoke(food).collect { result ->
                 result.suspendSubscribe(
                     doOnSuccess = {
+                        shouldDisplayWishlistSnackbar = true
                         _wishlistState.update { state ->
                             state.copy(
                                 isWishlist = true,
@@ -131,7 +142,7 @@ class FoodDetailViewModel @Inject constructor(
                         _wishlistState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
+                                error = it.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     }
@@ -145,6 +156,7 @@ class FoodDetailViewModel @Inject constructor(
             removeWishlistUseCase.invoke(foodId).collect { result ->
                 result.suspendSubscribe(
                     doOnSuccess = {
+                        shouldDisplayWishlistSnackbar = true
                         _wishlistState.update { state ->
                             state.copy(
                                 isWishlist = false,
@@ -156,7 +168,7 @@ class FoodDetailViewModel @Inject constructor(
                         _wishlistState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
+                                error = it.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     }
@@ -188,7 +200,7 @@ class FoodDetailViewModel @Inject constructor(
                         _cartState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
+                                error = it.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     }
@@ -200,6 +212,10 @@ class FoodDetailViewModel @Inject constructor(
     fun refresh() {
         getFoodDetail(foodId)
         getWishlist(foodId)
+    }
+
+    fun clearSnackbarState() {
+        shouldDisplayWishlistSnackbar = false
     }
 
     fun resetErrorState() {

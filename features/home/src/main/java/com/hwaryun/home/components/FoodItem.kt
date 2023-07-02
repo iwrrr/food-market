@@ -129,7 +129,8 @@ private fun DefaultPreview() {
                 picturePath = "",
                 price = 0,
                 rate = 5f,
-                types = ""
+                types = "",
+                deliveryTime = 10
             ),
             onFoodClick = {}
         )

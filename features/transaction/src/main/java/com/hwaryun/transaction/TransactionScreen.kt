@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
@@ -25,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -33,6 +39,7 @@ import com.hwaryun.datasource.paging.subscribe
 import com.hwaryun.designsystem.R
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.components.molecules.AsphaltAppBar
+import com.hwaryun.designsystem.screen.NoConnectionScreen
 import com.hwaryun.designsystem.ui.FoodMarketTheme
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.domain.model.Transaction
@@ -63,6 +70,7 @@ internal fun TransactionRoute(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun OrderScreen(
@@ -77,6 +85,11 @@ fun OrderScreen(
     resetErrorState: () -> Unit,
 ) {
     val shouldShowEmptyScreen = transactions.itemCount <= 0
+    val shouldShowErrorScreen = transactions.loadState.refresh is LoadState.Error
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = false,
+        onRefresh = transactions::refresh
+    )
 
     LaunchedEffect(state) {
         if (state.error.isNotEmpty()) {
@@ -110,48 +123,56 @@ fun OrderScreen(
             }
         },
         content = { innerPadding ->
-            LazyColumn(
-                modifier = Modifier.padding(innerPadding),
-                contentPadding = PaddingValues(top = 12.dp, bottom = 80.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+            Box(
+                modifier = Modifier.pullRefresh(pullRefreshState),
+                contentAlignment = Alignment.TopCenter
             ) {
-                //                val list = (0..5).toList()
-                //                items(list) { transaction ->
-                //                    TransactionItem(
-                //                        transaction = null,
-                //                        onTransactionClick = onTransactionClick
-                //                    )
-                //                }
-                transactions.loadState.refresh.subscribe(
-                    doOnLoading = {
-                        item {
-                            repeat(10) {
-                                PlaceholderTransactionItem()
-                            }
-                        }
-                    },
-                    doOnNotLoading = {
-                        when {
-                            shouldShowEmptyScreen -> {
+                if (shouldShowErrorScreen) {
+                    NoConnectionScreen(onTryAgain = transactions::refresh)
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.padding(innerPadding),
+                        contentPadding = PaddingValues(top = 12.dp, bottom = 80.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        transactions.loadState.refresh.subscribe(
+                            doOnLoading = {
                                 item {
-                                    EmptyContent()
-                                }
-                            }
-
-                            else -> {
-                                items(transactions, key = { it.id }) { transaction ->
-                                    if (transaction != null) {
-                                        TransactionItem(
-                                            transaction = transaction,
-                                            onTransactionClick = onTransactionClick
-                                        )
-                                    } else {
+                                    repeat(10) {
                                         PlaceholderTransactionItem()
                                     }
                                 }
+                            },
+                            doOnNotLoading = {
+                                when {
+                                    shouldShowEmptyScreen -> {
+                                        item {
+                                            EmptyContent()
+                                        }
+                                    }
+
+                                    else -> {
+                                        items(transactions, key = { it.id }) { transaction ->
+                                            if (transaction != null) {
+                                                TransactionItem(
+                                                    transaction = transaction,
+                                                    onTransactionClick = onTransactionClick
+                                                )
+                                            } else {
+                                                PlaceholderTransactionItem()
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        }
+                        )
                     }
+                }
+
+                PullRefreshIndicator(
+                    refreshing = false,
+                    state = pullRefreshState,
+                    contentColor = AsphaltTheme.colors.gojek_green_500
                 )
             }
         }

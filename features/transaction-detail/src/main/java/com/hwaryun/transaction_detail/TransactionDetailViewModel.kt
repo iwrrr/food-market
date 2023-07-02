@@ -53,7 +53,7 @@ class TransactionDetailViewModel @Inject constructor(
                         _transactionState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
+                                error = it.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     },
@@ -83,7 +83,7 @@ class TransactionDetailViewModel @Inject constructor(
                         _cancelOrderState.update { state ->
                             state.copy(
                                 isLoading = false,
-                                error = it.throwable?.message ?: "Unexpected error accrued"
+                                error = it.throwable?.message ?: "Unexpected error occurred"
                             )
                         }
                     }
