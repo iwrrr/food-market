@@ -20,9 +20,9 @@ fun <T : Any> createPager(
 )
 
 fun LoadState.subscribe(
-    doOnNotLoading: ((resource: LoadState) -> Unit)? = null,
     doOnError: ((resource: LoadState) -> Unit)? = null,
     doOnLoading: ((resource: LoadState) -> Unit)? = null,
+    doOnNotLoading: ((resource: LoadState) -> Unit)? = null,
 ) {
     when (this) {
         is LoadState.Error -> doOnError?.invoke(this)

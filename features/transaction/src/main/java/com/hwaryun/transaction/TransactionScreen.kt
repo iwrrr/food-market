@@ -84,12 +84,17 @@ fun OrderScreen(
     filterCancelled: () -> Unit,
     resetErrorState: () -> Unit,
 ) {
-    val shouldShowEmptyScreen = transactions.itemCount <= 0
-    val shouldShowErrorScreen = transactions.loadState.refresh is LoadState.Error
     val pullRefreshState = rememberPullRefreshState(
         refreshing = false,
         onRefresh = transactions::refresh
     )
+
+    val shouldShowEmptyScreen = transactions.itemSnapshotList.isEmpty()
+    val shouldShowErrorScreen = transactions.loadState.refresh is LoadState.Error
+    val finishedLoading =
+        transactions.loadState.refresh !is LoadState.Loading &&
+                transactions.loadState.prepend !is LoadState.Loading &&
+                transactions.loadState.append !is LoadState.Loading
 
     LaunchedEffect(state) {
         if (state.error.isNotEmpty()) {
@@ -127,45 +132,43 @@ fun OrderScreen(
                 modifier = Modifier.pullRefresh(pullRefreshState),
                 contentAlignment = Alignment.TopCenter
             ) {
-                if (shouldShowErrorScreen) {
-                    NoConnectionScreen(onTryAgain = transactions::refresh)
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.padding(innerPadding),
-                        contentPadding = PaddingValues(top = 12.dp, bottom = 80.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        transactions.loadState.refresh.subscribe(
-                            doOnLoading = {
-                                item {
-                                    repeat(10) {
-                                        PlaceholderTransactionItem()
-                                    }
-                                }
-                            },
-                            doOnNotLoading = {
-                                when {
-                                    shouldShowEmptyScreen -> {
-                                        item {
-                                            EmptyContent()
-                                        }
-                                    }
+                when {
+                    shouldShowErrorScreen -> {
+                        NoConnectionScreen(onTryAgain = transactions::refresh)
+                    }
 
-                                    else -> {
-                                        items(transactions, key = { it.id }) { transaction ->
-                                            if (transaction != null) {
-                                                TransactionItem(
-                                                    transaction = transaction,
-                                                    onTransactionClick = onTransactionClick
-                                                )
-                                            } else {
-                                                PlaceholderTransactionItem()
-                                            }
+                    shouldShowEmptyScreen && finishedLoading -> {
+                        EmptyContent()
+                    }
+
+                    else -> {
+                        LazyColumn(
+                            modifier = Modifier.padding(innerPadding),
+                            contentPadding = PaddingValues(top = 12.dp, bottom = 80.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            transactions.loadState.refresh.subscribe(
+                                doOnLoading = {
+                                    item {
+                                        repeat(10) {
+                                            PlaceholderTransactionItem()
+                                        }
+                                    }
+                                },
+                                doOnNotLoading = {
+                                    items(transactions, key = { it.id }) { transaction ->
+                                        if (transaction != null) {
+                                            TransactionItem(
+                                                transaction = transaction,
+                                                onTransactionClick = onTransactionClick
+                                            )
+                                        } else {
+                                            PlaceholderTransactionItem()
                                         }
                                     }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
 
@@ -182,11 +185,12 @@ fun OrderScreen(
 @Composable
 private fun EmptyContent() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.height(150.dp))
         Image(
             painter = painterResource(id = R.drawable.ic_order_empty),
             contentDescription = null,
@@ -197,7 +201,7 @@ private fun EmptyContent() {
         Spacer(modifier = Modifier.height(28.dp))
         AsphaltText(
             text = "Oops, nggak ada transaksi yang sesuai filter",
-            style = AsphaltTheme.typography.titleExtraLarge,
+            style = AsphaltTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(8.dp))

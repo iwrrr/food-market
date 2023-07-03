@@ -25,8 +25,6 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import timber.log.Timber
-import java.text.NumberFormat
 
 fun Modifier.shadow(
     color: Color = Color.Black,
@@ -95,7 +93,7 @@ fun Modifier.singleClick(
     )
 }
 
-enum class ButtonState { Pressed, Released }
+private enum class ButtonState { Pressed, Released }
 
 fun Modifier.bounceClick() = composed {
     var state by remember { mutableStateOf(ButtonState.Released) }
@@ -154,18 +152,4 @@ fun Modifier.springClick() = composed {
                 }
             }
         }
-}
-
-fun Int?.toNumberFormat(): String {
-    return try {
-        this?.let {
-            val format = NumberFormat.getInstance().apply {
-                maximumFractionDigits = 0
-            }
-            format.format(this)
-        } ?: "0"
-    } catch (e: Exception) {
-        Timber.e(e, "ERROR ====> ${e.localizedMessage}")
-        "0"
-    }
 }

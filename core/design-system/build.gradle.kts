@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:common"))
     api(libs.androidx.ktx)
     api(libs.lifecycle.runtime.ktx)
     api(libs.lifecycle.runtime.compose)
@@ -25,6 +26,7 @@ dependencies {
 
     api(libs.placeholder.material)
     api(libs.systemuicontroller)
+    api(libs.navigation.animation)
     api(libs.material.icons)
     api(libs.coil)
     api(libs.ratingbar)

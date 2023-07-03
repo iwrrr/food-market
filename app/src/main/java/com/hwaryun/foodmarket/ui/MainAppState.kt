@@ -1,5 +1,6 @@
 package com.hwaryun.foodmarket.ui
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -8,8 +9,8 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.hwaryun.datasource.util.NetworkMonitor
 import com.hwaryun.foodmarket.navigation.TopLevelDestination
 import com.hwaryun.home.navigation.navigateToHomeGraph
@@ -21,9 +22,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
+@ExperimentalAnimationApi
 @Composable
 fun rememberMainAppState(
-    navHostController: NavHostController = rememberNavController(),
+    navHostController: NavHostController = rememberAnimatedNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     networkMonitor: NetworkMonitor,
 ): MainAppState {

@@ -17,9 +17,9 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.color
 import com.google.accompanist.placeholder.material.shimmer
 import com.google.accompanist.placeholder.placeholder
+import com.hwaryun.common.ext.toNumberFormat
 import com.hwaryun.designsystem.components.atoms.AsphaltText
 import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
-import com.hwaryun.designsystem.utils.toNumberFormat
 
 @Composable
 fun PaymentSummary(

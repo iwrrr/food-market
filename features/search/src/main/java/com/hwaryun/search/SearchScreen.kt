@@ -144,54 +144,57 @@ private fun FoodContent(
     foods: LazyPagingItems<Food>,
     onFoodClick: (Int) -> Unit,
 ) {
-    val shouldShowEmptyScreen = foods.itemCount <= 0
-    val shouldShowErrorScreen = foods.loadState.refresh is LoadState.Error
     val pullRefreshState = rememberPullRefreshState(
         refreshing = false,
         onRefresh = foods::refresh
     )
 
+    val shouldShowEmptyScreen = foods.itemSnapshotList.isEmpty()
+    val shouldShowErrorScreen = foods.loadState.refresh is LoadState.Error
+    val finishedLoading =
+        foods.loadState.refresh !is LoadState.Loading &&
+                foods.loadState.prepend !is LoadState.Loading &&
+                foods.loadState.append !is LoadState.Loading
+
     Box(
         modifier = Modifier.pullRefresh(pullRefreshState),
         contentAlignment = Alignment.TopCenter
     ) {
-        if (shouldShowErrorScreen) {
-            NoConnectionScreen(onTryAgain = foods::refresh)
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .background(AsphaltTheme.colors.pure_white_500)
-                    .padding(innerPadding),
-                contentPadding = PaddingValues(bottom = 64.dp)
-            ) {
-                foods.loadState.refresh.subscribe(
-                    doOnLoading = {
-                        item {
-                            repeat(10) {
-                                PlaceholderFoodItem()
-                            }
-                        }
-                    },
-                    doOnNotLoading = {
-                        when {
-                            shouldShowEmptyScreen -> {
-                                item {
-                                    EmptyContent()
-                                }
-                            }
+        when {
+            shouldShowErrorScreen -> {
+                NoConnectionScreen(onTryAgain = foods::refresh)
+            }
 
-                            else -> {
-                                items(foods, key = { it.id }) { food ->
-                                    if (food != null) {
-                                        FoodItem(food = food, onFoodClick = onFoodClick)
-                                    } else {
-                                        PlaceholderFoodItem()
-                                    }
+            shouldShowEmptyScreen && finishedLoading -> {
+                EmptyContent()
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .background(AsphaltTheme.colors.pure_white_500)
+                        .padding(innerPadding),
+                    contentPadding = PaddingValues(bottom = 64.dp)
+                ) {
+                    foods.loadState.refresh.subscribe(
+                        doOnLoading = {
+                            item {
+                                repeat(10) {
+                                    PlaceholderFoodItem()
+                                }
+                            }
+                        },
+                        doOnNotLoading = {
+                            items(foods, key = { it.id }) { food ->
+                                if (food != null) {
+                                    FoodItem(food = food, onFoodClick = onFoodClick)
+                                } else {
+                                    PlaceholderFoodItem()
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
 
@@ -210,7 +213,6 @@ private fun EmptyContent() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.height(150.dp))
         Image(
             painter = painterResource(id = R.drawable.ic_order_empty),
             contentDescription = null,

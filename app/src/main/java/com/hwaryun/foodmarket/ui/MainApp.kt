@@ -2,6 +2,7 @@ package com.hwaryun.foodmarket.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,7 @@ import com.hwaryun.designsystem.ui.asphalt.LocalContentColor
 import com.hwaryun.foodmarket.navigation.MainAppNavHost
 import com.hwaryun.foodmarket.navigation.TopLevelDestination
 
+@ExperimentalAnimationApi
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainApp(

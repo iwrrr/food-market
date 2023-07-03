@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,12 +41,11 @@ fun AsphaltAppBar(
     Row(
         modifier = modifier
             .background(AsphaltTheme.colors.pure_white_500)
-            .padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 8.dp),
+            .padding(start = 10.dp, top = 12.dp, end = 16.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (showNavigateBack) {
             IconButton(
-                modifier = Modifier.size(24.dp),
                 onClick = {
                     if (SystemClock.elapsedRealtime() - lastClickTime < clickDisablePeriod) {
                         return@IconButton
@@ -62,7 +60,7 @@ fun AsphaltAppBar(
                     contentDescription = "Localized description"
                 )
             }
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(4.dp))
         }
         Column(
             verticalArrangement = Arrangement.Center

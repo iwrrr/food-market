@@ -22,16 +22,5 @@ dependencies {
     implementation(project(":features:food-detail"))
     implementation(project(":features:transaction-detail"))
 
-    implementation(libs.androidx.ktx)
-    implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.lifecycle.runtime.compose)
-    implementation(libs.activity.compose)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
-    implementation(libs.navigation.animation)
     implementation(libs.splash.screen)
 }

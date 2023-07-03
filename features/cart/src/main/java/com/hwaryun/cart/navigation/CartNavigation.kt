@@ -1,12 +1,17 @@
 package com.hwaryun.cart.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.navigation
 import com.hwaryun.cart.CartRoute
 import com.hwaryun.cart.SuccessOrderRoute
 import com.hwaryun.common.ext.orDash
@@ -33,18 +38,27 @@ fun NavController.navigateToSuccessOrder(
     this.navigate("success_order_route?$FOOD_NAME=$foodName&$TOTAL_PRICE=$totalPrice", navOptions)
 }
 
+@ExperimentalAnimationApi
 fun NavGraphBuilder.cartGraph(
     popBackStack: () -> Unit,
     navigateToOrder: () -> Unit,
     navigateToSuccessOrder: (foodName: String, totalPrice: Int) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
+    enterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
+    exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
+    popEnterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
+    popExitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
 ) {
     navigation(
         route = cartGraphRoute,
         startDestination = cartRoute,
     ) {
         composable(
-            route = cartRoute
+            route = cartRoute,
+            enterTransition = enterTransition,
+            exitTransition = exitTransition,
+            popEnterTransition = popEnterTransition,
+            popExitTransition = popExitTransition,
         ) {
             CartRoute(
                 popBackStack = popBackStack,
@@ -56,8 +70,13 @@ fun NavGraphBuilder.cartGraph(
     }
 }
 
+@ExperimentalAnimationApi
 fun NavGraphBuilder.successOrderScreen(
     navigateToHome: () -> Unit,
+    enterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
+    exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
+    popEnterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
+    popExitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
 ) {
     composable(
         route = successOrderRoute,
@@ -70,7 +89,11 @@ fun NavGraphBuilder.successOrderScreen(
                 type = NavType.IntType
                 defaultValue = 0
             },
-        )
+        ),
+        enterTransition = enterTransition,
+        exitTransition = exitTransition,
+        popEnterTransition = popEnterTransition,
+        popExitTransition = popExitTransition,
     ) { backStackEntry ->
         val foodName = backStackEntry.arguments?.getString(FOOD_NAME).orDash()
         val totalPrice = backStackEntry.arguments?.getInt(TOTAL_PRICE).orZero()
