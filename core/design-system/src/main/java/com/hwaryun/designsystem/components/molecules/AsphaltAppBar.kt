@@ -35,50 +35,66 @@ fun AsphaltAppBar(
     clickDisablePeriod: Long = 1000L,
     showNavigateBack: Boolean = false,
     onNavigateBack: () -> Unit = {},
+    content: @Composable (() -> Unit)? = null
 ) {
     var lastClickTime by remember { mutableLongStateOf(0L) }
 
-    Row(
-        modifier = modifier
-            .background(AsphaltTheme.colors.pure_white_500)
-            .padding(start = 10.dp, top = 12.dp, end = 16.dp, bottom = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (showNavigateBack) {
-            IconButton(
-                onClick = {
-                    if (SystemClock.elapsedRealtime() - lastClickTime < clickDisablePeriod) {
-                        return@IconButton
-                    } else {
-                        lastClickTime = SystemClock.elapsedRealtime()
-                        onNavigateBack()
-                    }
-                }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_left),
-                    contentDescription = "Localized description"
-                )
-            }
-            Spacer(modifier = Modifier.width(4.dp))
-        }
-        Column(
-            verticalArrangement = Arrangement.Center
+    Column {
+        Row(
+            modifier = modifier
+                .background(AsphaltTheme.colors.pure_white_500)
+                .padding(
+                    start = if (showNavigateBack) 2.dp else 10.dp,
+                    end = 16.dp,
+                ),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            AsphaltText(
-                text = title,
-                modifier = Modifier.fillMaxWidth(),
-                style = AsphaltTheme.typography.titleModerateBold,
-            )
-            subtitle?.let {
-                AsphaltText(
-                    text = subtitle,
-                    modifier = Modifier.fillMaxWidth(),
-                    style = AsphaltTheme.typography.captionSmallBook,
-                    color = AsphaltTheme.colors.cool_gray_500,
+            if (showNavigateBack) {
+                IconButton(
+                    onClick = {
+                        if (SystemClock.elapsedRealtime() - lastClickTime < clickDisablePeriod) {
+                            return@IconButton
+                        } else {
+                            lastClickTime = SystemClock.elapsedRealtime()
+                            onNavigateBack()
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_left),
+                        contentDescription = "Localized description"
+                    )
+                }
+            }
+            Spacer(
+                modifier = Modifier.then(
+                    if (showNavigateBack) {
+                        Modifier.width(0.dp)
+                    } else {
+                        Modifier.width(6.dp)
+                    }
                 )
+            )
+            Column(
+                modifier = Modifier.padding(vertical = 16.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                AsphaltText(
+                    text = title,
+                    modifier = Modifier.fillMaxWidth(),
+                    style = AsphaltTheme.typography.titleModerateBold,
+                )
+                subtitle?.let {
+                    AsphaltText(
+                        text = subtitle,
+                        modifier = Modifier.fillMaxWidth(),
+                        style = AsphaltTheme.typography.captionSmallBook,
+                        color = AsphaltTheme.colors.cool_gray_500,
+                    )
+                }
             }
         }
+        content?.invoke()
     }
 }
 
@@ -88,7 +104,6 @@ private fun DefaultPreview() {
     FoodMarketTheme {
         AsphaltAppBar(
             title = "Title",
-            subtitle = "Sub Title",
             showNavigateBack = true
         )
     }

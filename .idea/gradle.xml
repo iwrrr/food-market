@@ -34,6 +34,7 @@
             <option value="$PROJECT_DIR$/core/frameworks/http" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/cart" />
+            <option value="$PROJECT_DIR$/features/edit-profile" />
             <option value="$PROJECT_DIR$/features/food-detail" />
             <option value="$PROJECT_DIR$/features/home" />
             <option value="$PROJECT_DIR$/features/login" />

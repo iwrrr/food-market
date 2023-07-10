@@ -28,6 +28,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
             dependencies {
+                add("implementation", libs.findLibrary("permissions").get())
                 add("implementation", libs.findLibrary("timber").get())
                 add("testImplementation", libs.findLibrary("junit").get())
                 add("testImplementation", libs.findLibrary("ext.junit").get())

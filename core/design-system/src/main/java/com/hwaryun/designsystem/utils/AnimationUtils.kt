@@ -9,29 +9,29 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 
 val enterTransition: EnterTransition by lazy {
-    slideInHorizontally(
+    fadeIn(animationSpec = tween(200)) + slideInHorizontally(
         initialOffsetX = { 300 },
         animationSpec = tween(200)
-    ) + fadeIn(animationSpec = tween(200))
+    )
 }
 
 val exitTransition: ExitTransition by lazy {
-    slideOutHorizontally(
+    fadeOut(animationSpec = tween(200)) + slideOutHorizontally(
         targetOffsetX = { -300 },
         animationSpec = tween(200)
-    ) + fadeOut(animationSpec = tween(200))
+    )
 }
 
 val popEnterTransition: EnterTransition by lazy {
-    slideInHorizontally(
+    fadeIn(animationSpec = tween(200)) + slideInHorizontally(
         initialOffsetX = { -300 },
         animationSpec = tween(200)
-    ) + fadeIn(animationSpec = tween(200))
+    )
 }
 
 val popExitTransition: ExitTransition by lazy {
-    slideOutHorizontally(
+    fadeOut(animationSpec = tween(200)) + slideOutHorizontally(
         targetOffsetX = { 300 },
         animationSpec = tween(200)
-    ) + fadeOut(animationSpec = tween(200))
+    )
 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
@@ -62,9 +61,6 @@ fun AsphaltSearchBar(
         AnimatedVisibility(visible = focused) {
             // Back button
             IconButton(
-                modifier = Modifier
-                    .padding(end = 12.dp)
-                    .size(24.dp),
                 onClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
@@ -111,7 +107,7 @@ fun SearchTextField(
     Surface(
         modifier = Modifier.height(48.dp),
         color = AsphaltTheme.colors.cool_gray_1cCp_100,
-        shape = RoundedCornerShape(12.dp),
+        shape = AsphaltTheme.shapes.small
     ) {
 
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {

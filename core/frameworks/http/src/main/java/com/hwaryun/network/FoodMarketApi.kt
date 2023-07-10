@@ -4,15 +4,19 @@ import com.hwaryun.common.http.infrastructure.BaseResponse
 import com.hwaryun.network.model.request.CheckoutRequest
 import com.hwaryun.network.model.request.LoginRequest
 import com.hwaryun.network.model.request.RegisterRequest
+import com.hwaryun.network.model.request.UpdateProfileRequest
 import com.hwaryun.network.model.response.AuthDto
 import com.hwaryun.network.model.response.FoodDto
 import com.hwaryun.network.model.response.PagingDto
 import com.hwaryun.network.model.response.TransactionDto
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -67,4 +71,18 @@ interface FoodMarketApi {
         @Path("id") id: Int,
         @Field("status") status: String
     ): BaseResponse<TransactionDto>
+
+    @GET("user")
+    suspend fun fetchUser(): BaseResponse<AuthDto.UserDto>
+
+    @Multipart
+    @POST("user/photo")
+    suspend fun updatePhoto(
+        @Part file: MultipartBody.Part
+    ): BaseResponse<List<Unit>>
+
+    @POST("user")
+    suspend fun updateProfile(
+        @Body updateProfileRequest: UpdateProfileRequest
+    ): BaseResponse<Unit>
 }

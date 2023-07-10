@@ -19,6 +19,8 @@ import com.hwaryun.designsystem.utils.enterTransition
 import com.hwaryun.designsystem.utils.exitTransition
 import com.hwaryun.designsystem.utils.popEnterTransition
 import com.hwaryun.designsystem.utils.popExitTransition
+import com.hwaryun.edit_profile.navigation.editProfileScreen
+import com.hwaryun.edit_profile.navigation.navigateToEditProfile
 import com.hwaryun.food_detail.navigation.foodDetailsScreen
 import com.hwaryun.food_detail.navigation.navigateToFoodDetails
 import com.hwaryun.foodmarket.ui.MainAppState
@@ -203,12 +205,20 @@ fun MainAppNavHost(
             )
         }
         profileGraph(
+            navigateToTransaction = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.TRANSACTION) },
+            navigateToEditProfile = navController::navigateToEditProfile,
             onShowSnackbar = onShowSnackbar,
             enterTransition = { fadeIn(tween(300)) },
             exitTransition = { fadeOut(tween(300)) },
             popEnterTransition = { fadeIn(tween(300)) },
-            popExitTransition = { fadeOut(tween(300)) },
-            nestedGraphs = {}
-        )
+            popExitTransition = { fadeOut(tween(300)) }
+        ) {
+            editProfileScreen(
+                popBackStack = navController::popBackStack,
+                onShowSnackbar = onShowSnackbar,
+                enterTransition = { enterTransition },
+                popExitTransition = { popExitTransition }
+            )
+        }
     }
 }

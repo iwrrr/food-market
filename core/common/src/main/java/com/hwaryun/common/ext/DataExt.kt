@@ -16,6 +16,7 @@ suspend fun <T> execute(block: suspend () -> T): DataResult<T> {
     return try {
         DataResult.Success(block.invoke())
     } catch (throwable: Throwable) {
+        Timber.e(throwable, "ERROR ====> $throwable")
 
         when (throwable) {
             /**

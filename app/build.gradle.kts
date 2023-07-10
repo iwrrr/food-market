@@ -21,6 +21,7 @@ dependencies {
     implementation(project(":features:cart"))
     implementation(project(":features:food-detail"))
     implementation(project(":features:transaction-detail"))
+    implementation(project(":features:edit-profile"))
 
     implementation(libs.splash.screen)
 }

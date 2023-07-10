@@ -6,6 +6,7 @@ import com.hwaryun.common.ext.subscribe
 import com.hwaryun.datasource.datastore.UserPreferenceManager
 import com.hwaryun.domain.mapper.toUser
 import com.hwaryun.domain.usecase.auth.LogoutUseCase
+import com.hwaryun.domain.usecase.profile.GetUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val logoutUseCase: LogoutUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val userPreferenceManager: UserPreferenceManager
 ) : ViewModel() {
 
@@ -23,6 +25,10 @@ class ProfileViewModel @Inject constructor(
     val profileState = _profileState.asStateFlow()
 
     init {
+        getUser()
+    }
+
+    private fun getUser() {
         viewModelScope.launch {
             userPreferenceManager.user.collect { result ->
                 if (result != null) {
@@ -30,6 +36,36 @@ class ProfileViewModel @Inject constructor(
                         state.copy(user = result.toUser())
                     }
                 }
+            }
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            getUserUseCase.invoke().collect { result ->
+                result.subscribe(
+                    doOnLoading = {
+                        _profileState.update { state ->
+                            state.copy(isLoading = true)
+                        }
+                    },
+                    doOnSuccess = {
+                        _profileState.update { state ->
+                            state.copy(
+                                user = it.value,
+                                isLoading = false
+                            )
+                        }
+                    },
+                    doOnError = {
+                        _profileState.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                error = result.throwable?.message ?: "Unexpected error occurred"
+                            )
+                        }
+                    }
+                )
             }
         }
     }

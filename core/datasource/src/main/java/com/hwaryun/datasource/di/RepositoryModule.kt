@@ -6,6 +6,8 @@ import com.hwaryun.datasource.repository.cart.CartRepository
 import com.hwaryun.datasource.repository.cart.CartRepositoryImpl
 import com.hwaryun.datasource.repository.food.FoodRepository
 import com.hwaryun.datasource.repository.food.FoodRepositoryImpl
+import com.hwaryun.datasource.repository.profile.ProfileRepository
+import com.hwaryun.datasource.repository.profile.ProfileRepositoryImpl
 import com.hwaryun.datasource.repository.transaction.TransactionRepository
 import com.hwaryun.datasource.repository.transaction.TransactionRepositoryImpl
 import com.hwaryun.datasource.repository.wishlist.WishlistRepository
@@ -41,6 +43,10 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindWishlistRepository(wishlistRepositoryImpl: WishlistRepositoryImpl): WishlistRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
 
     @Singleton
     @Binds

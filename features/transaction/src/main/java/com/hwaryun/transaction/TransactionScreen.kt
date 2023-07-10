@@ -109,11 +109,10 @@ fun OrderScreen(
             .statusBarsPadding(),
         containerColor = AsphaltTheme.colors.cool_gray_1cCp_100,
         topBar = {
-            Column {
-                AsphaltAppBar(
-                    title = stringResource(id = R.string.title_history),
-                    subtitle = stringResource(id = R.string.subtitle_history)
-                )
+            AsphaltAppBar(
+                title = stringResource(id = R.string.title_history),
+                subtitle = stringResource(id = R.string.subtitle_history)
+            ) {
                 FilterStatus(
                     filterAllSelected = state.filterAllSelected,
                     filterOnDeliverySelected = state.filterOnDeliverySelected,

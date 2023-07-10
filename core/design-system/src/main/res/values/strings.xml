@@ -13,20 +13,20 @@
     <string name="success_add_to_wishlist_message">Berhasil menambahkan makanan ke wishlist.</string>
     <string name="success_remove_wishlist_message">Berhasil menghapus makanan dari wishlist.</string>
 
-    <string name="label_full_name">Nama Lengkap</string>
+    <string name="label_full_name">Nama</string>
     <string name="label_email">Email</string>
     <string name="label_password">Kata Sandi</string>
-    <string name="label_phone_number">No. Telepon</string>
+    <string name="label_phone_number">Nomor HP</string>
     <string name="label_address">Alamat</string>
-    <string name="label_house_number">No. Rumah</string>
+    <string name="label_house_number">Nomor Rumah</string>
     <string name="label_city">Kota</string>
 
-    <string name="placeholder_full_name">Masukkan nama lengkap</string>
-    <string name="placeholder_email">Masukkan email</string>
-    <string name="placeholder_password">Masukkan kata sandi</string>
-    <string name="placeholder_phone_number">Masukkan nomor telepon</string>
-    <string name="placeholder_address">Masukkan alamat</string>
-    <string name="placeholder_house_number">Masukkan nomor rumah</string>
+    <string name="placeholder_full_name">Huruf alfabet, tanpa emoji/simbol</string>
+    <string name="placeholder_email">Cth: nama@email.com</string>
+    <string name="placeholder_password">Berupa huruf/angka</string>
+    <string name="placeholder_phone_number">08xxxxxxxxx</string>
+    <string name="placeholder_address">Alamat kamu</string>
+    <string name="placeholder_house_number">Nomor rumah kamu</string>
     <string name="placeholder_city">Pilih kota</string>
 
     <string name="title_login">Login</string>
@@ -34,6 +34,8 @@
     <string name="title_address">Alamat</string>
     <string name="title_detail">Detail</string>
     <string name="title_history">Riwayat</string>
+    <string name="title_profile">Profil</string>
+    <string name="title_edit_profile">Ubah Profil</string>
 
     <string name="subtitle_login">Kalo udah punya akun langsung masuk aja gan.</string>
     <string name="subtitle_register">Buat akun dulu baru cekot makanan.</string>
@@ -48,9 +50,14 @@
     <string name="btn_add_to_cart">Tambah ke keranjang</string>
     <string name="btn_cancel">Batalkan pesanan</string>
     <string name="btn_cancelled">Pesanan dibatalkan</string>
+    <string name="btn_save">Simpan</string>
 
     <string name="your_location">Lokasi Kamu</string>
     <string name="currency">Rp %s</string>
     <string name="delivered_time">Diantar dalam %s min</string>
     <string name="shipping_address">Alamat pengiriman</string>
+
+    <string name="title_profile_photo">Foto profil</string>
+    <string name="desc_profile_photo">"Pasang foto yang oke! Semua orang bakal bisa lihat."</string>
+    <string name="change">Ganti</string>
 </resources>

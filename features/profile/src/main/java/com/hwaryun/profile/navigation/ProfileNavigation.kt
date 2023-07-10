@@ -21,12 +21,14 @@ fun NavController.navigateToProfileGraph(navOptions: NavOptions? = null) {
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.profileGraph(
-    nestedGraphs: NavGraphBuilder.() -> Unit,
+    navigateToTransaction: () -> Unit,
+    navigateToEditProfile: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     enterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
     exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
     popEnterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
     popExitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
+    nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
     navigation(
         route = profileGraphRoute,
@@ -39,7 +41,11 @@ fun NavGraphBuilder.profileGraph(
             popEnterTransition = popEnterTransition,
             popExitTransition = popExitTransition,
         ) {
-            ProfileRoute(onShowSnackbar = onShowSnackbar)
+            ProfileRoute(
+                navigateToTransaction = navigateToTransaction,
+                navigateToEditProfile = navigateToEditProfile,
+                onShowSnackbar = onShowSnackbar
+            )
         }
         nestedGraphs()
     }
