@@ -17,7 +17,9 @@ dependencyResolutionManagement {
 rootProject.name = "FoodMarket"
 include(":app")
 include(":core:common")
+include(":core:datasource")
 include(":core:design-system")
+include(":core:domain")
 include(":core:frameworks:database")
 include(":core:frameworks:http")
 
@@ -27,8 +29,6 @@ include(":features:profile")
 include(":features:cart")
 include(":features:login")
 include(":features:register")
-include(":core:datasource")
-include(":core:domain")
 include(":features:food-detail")
 include(":features:search")
 include(":features:transaction-detail")

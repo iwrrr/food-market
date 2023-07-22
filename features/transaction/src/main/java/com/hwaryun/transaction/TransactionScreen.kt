@@ -57,7 +57,7 @@ internal fun TransactionRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val transactions = viewModel.transactions.collectAsLazyPagingItems()
 
-    OrderScreen(
+    TransactionScreen(
         state = state,
         transactions = transactions,
         onTransactionClick = onTransactionClick,
@@ -73,7 +73,7 @@ internal fun TransactionRoute(
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun OrderScreen(
+fun TransactionScreen(
     state: TransactionState,
     transactions: LazyPagingItems<Transaction>,
     onTransactionClick: (Int) -> Unit,
@@ -143,7 +143,7 @@ fun OrderScreen(
                     else -> {
                         LazyColumn(
                             modifier = Modifier.padding(innerPadding),
-                            contentPadding = PaddingValues(top = 12.dp, bottom = 80.dp),
+                            contentPadding = PaddingValues(top = 12.dp, bottom = 20.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             transactions.loadState.refresh.subscribe(
@@ -219,7 +219,7 @@ private fun DefaultPreview() {
     val data = emptyList<Transaction>()
     val flow = MutableStateFlow(PagingData.from(data))
     FoodMarketTheme {
-        OrderScreen(
+        TransactionScreen(
             state = TransactionState(),
             transactions = flow.collectAsLazyPagingItems(),
             onShowSnackbar = { _, _ -> false },

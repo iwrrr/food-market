@@ -3,8 +3,7 @@ package com.hwaryun.edit_profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hwaryun.common.ext.subscribe
-import com.hwaryun.datasource.datastore.UserPreferenceManager
-import com.hwaryun.domain.mapper.toUser
+import com.hwaryun.domain.usecase.profile.GetUserUseCase
 import com.hwaryun.domain.usecase.profile.UpdatePhotoUseCase
 import com.hwaryun.domain.usecase.profile.UpdateProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,25 +18,43 @@ import javax.inject.Inject
 class EditProfileViewModel @Inject constructor(
     private val updateProfileUseCase: UpdateProfileUseCase,
     private val updatePhotoUseCase: UpdatePhotoUseCase,
-    private val userPreferenceManager: UserPreferenceManager
+    private val getUserUseCase: GetUserUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(EditProfileState())
     val state = _state.asStateFlow()
 
-    init {
+    fun getUser() {
         viewModelScope.launch {
-            userPreferenceManager.user.collect { result ->
-                if (result != null) {
-                    _state.update { state ->
-                        state.copy(
-                            user = result.toUser(),
-                            name = result.name.orEmpty(),
-                            phoneNumber = result.phoneNumber.orEmpty(),
-                            email = result.email.orEmpty(),
-                        )
+            getUserUseCase.invoke().collect { result ->
+                result.subscribe(
+                    doOnLoading = {
+                        _state.update { state ->
+                            state.copy(isLoading = true)
+                        }
+                    },
+                    doOnSuccess = {
+                        result.value?.let { user ->
+                            _state.update { state ->
+                                state.copy(
+                                    isLoading = false,
+                                    user = user,
+                                    name = user.name,
+                                    phoneNumber = user.phoneNumber,
+                                    email = user.email,
+                                )
+                            }
+                        }
+                    },
+                    doOnError = {
+                        _state.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                error = result.throwable?.message ?: "Unexpected error occurred"
+                            )
+                        }
                     }
-                }
+                )
             }
         }
     }
@@ -52,6 +69,7 @@ class EditProfileViewModel @Inject constructor(
                         }
                     },
                     doOnSuccess = {
+                        getUser()
                         _state.update { state ->
                             state.copy(
                                 updatePhoto = it.value,

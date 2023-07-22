@@ -19,7 +19,9 @@ import com.hwaryun.designsystem.utils.enterTransition
 import com.hwaryun.designsystem.utils.exitTransition
 import com.hwaryun.designsystem.utils.popEnterTransition
 import com.hwaryun.designsystem.utils.popExitTransition
-import com.hwaryun.edit_profile.navigation.editProfileScreen
+import com.hwaryun.edit_profile.navigation.cameraScreen
+import com.hwaryun.edit_profile.navigation.editProfileGraph
+import com.hwaryun.edit_profile.navigation.navigateToCameraScreen
 import com.hwaryun.edit_profile.navigation.navigateToEditProfile
 import com.hwaryun.food_detail.navigation.foodDetailsScreen
 import com.hwaryun.food_detail.navigation.navigateToFoodDetails
@@ -145,7 +147,7 @@ fun MainAppNavHost(
                 popExitTransition = { popExitTransition }
             )
             successOrderScreen(
-                navigateToHome = { mainAppState.navigateToTopLevelDestination(TopLevelDestination.HOME) },
+                navigateToHome = navController::popBackStack,
             )
         }
         searchGraph(
@@ -213,11 +215,22 @@ fun MainAppNavHost(
             popEnterTransition = { fadeIn(tween(300)) },
             popExitTransition = { fadeOut(tween(300)) }
         ) {
-            editProfileScreen(
+            editProfileGraph(
+                navController = navController,
                 popBackStack = navController::popBackStack,
+                navigateToCameraScreen = navController::navigateToCameraScreen,
                 onShowSnackbar = onShowSnackbar,
                 enterTransition = { enterTransition },
-                popExitTransition = { popExitTransition }
+                popExitTransition = { popExitTransition },
+                nestedGraphs = {
+                    cameraScreen(
+                        navController = navController,
+                        popBackStack = navController::popBackStack,
+                        onShowSnackbar = onShowSnackbar,
+                        enterTransition = { enterTransition },
+                        popExitTransition = { popExitTransition },
+                    )
+                }
             )
         }
     }

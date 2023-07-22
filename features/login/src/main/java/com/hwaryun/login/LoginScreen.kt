@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -67,6 +67,7 @@ internal fun LoginRoute(
         updatePasswordState = viewModel::updatePasswordState,
         updateIsPasswordVisible = viewModel::updateIsPasswordVisible,
         doSignIn = viewModel::signIn,
+        resetErrorState = viewModel::resetErrorState,
         onShowSnackbar = onShowSnackbar
     )
 }
@@ -80,6 +81,7 @@ fun LoginScreen(
     updatePasswordState: (String) -> Unit,
     updateIsPasswordVisible: (Boolean) -> Unit,
     doSignIn: (String, String) -> Unit,
+    resetErrorState: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     var shouldShowTrailingIcon by remember { mutableStateOf(false) }
@@ -88,6 +90,7 @@ fun LoginScreen(
     LaunchedEffect(state) {
         if (state.error.isNotEmpty()) {
             onShowSnackbar(state.error, null)
+            resetErrorState()
         }
     }
 
@@ -106,7 +109,7 @@ fun LoginScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding(),
+            .systemBarsPadding(),
         containerColor = AsphaltTheme.colors.cool_gray_1cCp_50,
         topBar = {
             AsphaltAppBar(
@@ -125,7 +128,7 @@ fun LoginScreen(
                         .fillMaxSize()
                         .background(AsphaltTheme.colors.pure_white_500)
                         .verticalScroll(rememberScrollState())
-                        .padding(24.dp),
+                        .padding(horizontal = 16.dp, vertical = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AsphaltInputGroup(
@@ -235,6 +238,7 @@ private fun DefaultPreview() {
             updatePasswordState = {},
             updateIsPasswordVisible = {},
             doSignIn = { _, _ -> },
+            resetErrorState = {},
             onShowSnackbar = { _, _ -> true }
         )
     }

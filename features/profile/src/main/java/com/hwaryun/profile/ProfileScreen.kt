@@ -188,7 +188,6 @@ fun ProfileScreen(
                         .padding(
                             start = 16.dp,
                             end = 16.dp,
-                            bottom = innerPadding.calculateBottomPadding() + 42.dp,
                         )
                 ) {
                     AsphaltButton(

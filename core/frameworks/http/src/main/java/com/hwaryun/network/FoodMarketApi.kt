@@ -1,6 +1,6 @@
 package com.hwaryun.network
 
-import com.hwaryun.common.http.infrastructure.BaseResponse
+import com.hwaryun.common.http.BaseResponse
 import com.hwaryun.network.model.request.CheckoutRequest
 import com.hwaryun.network.model.request.LoginRequest
 import com.hwaryun.network.model.request.RegisterRequest
@@ -79,7 +79,7 @@ interface FoodMarketApi {
     @POST("user/photo")
     suspend fun updatePhoto(
         @Part file: MultipartBody.Part
-    ): BaseResponse<List<Unit>>
+    ): BaseResponse<List<String>>
 
     @POST("user")
     suspend fun updateProfile(

@@ -16,6 +16,9 @@ androidxLifecycle = "2.5.1"
 runtimeTracing = "1.0.0-alpha01"
 navigation = "2.5.3"
 
+# CameraX
+cameraX = "1.2.3"
+
 # Coil
 coil = "2.4.0"
 
@@ -89,6 +92,12 @@ material3WindowSizeClass = { module = "androidx.compose.material3:material3-wind
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 navigation-runtime-ktx = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "navigation" }
 
+# Camera
+camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "cameraX" }
+camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraX" }
+camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraX" }
+camera-extensions = { group = "androidx.camera", name = "camera-extensions", version.ref = "cameraX" }
+
 # Coil
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
@@ -135,6 +144,7 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 
 [bundles]
 datastore = ["androidx.datastore.core", "androidx.datastore.preferences"]
+cameraX = ["camera2", "camera.lifecycle", "camera.view", "camera.extensions"]
 
 #features
 # feed network module/api

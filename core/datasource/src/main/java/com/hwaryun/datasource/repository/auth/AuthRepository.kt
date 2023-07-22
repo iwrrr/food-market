@@ -1,6 +1,6 @@
 package com.hwaryun.datasource.repository.auth
 
-import com.hwaryun.common.http.infrastructure.BaseResponse
+import com.hwaryun.common.http.BaseResponse
 import com.hwaryun.common.result.DataResult
 import com.hwaryun.network.model.response.AuthDto
 import kotlinx.coroutines.flow.Flow

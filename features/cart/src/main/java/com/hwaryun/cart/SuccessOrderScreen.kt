@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -87,15 +88,16 @@ fun SuccessOrderScreen(
                 modifier = Modifier
                     .background(AsphaltTheme.colors.gojek_green_500)
                     .fillMaxWidth()
-                    .statusBarsPadding()
-                    .weight(3f),
+                    .weight(1f)
+                    .aspectRatio(1f)
+                    .statusBarsPadding(),
                 contentAlignment = Alignment.TopStart,
             ) {
                 Column(
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Spacer(modifier = Modifier.height(120.dp))
                     Image(
                         painter = painterResource(id = R.drawable.ic_check_mark),
                         contentDescription = null,
@@ -126,25 +128,27 @@ fun SuccessOrderScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(32.dp))
-            AsphaltText(
-                text = "Total Bayar",
-                modifier = Modifier.fillMaxWidth(),
-                style = AsphaltTheme.typography.titleSmallDemi,
-                color = AsphaltTheme.colors.cool_gray_500,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            AsphaltText(
-                text = "Rp ${totalPrice.toNumberFormat()}",
-                modifier = Modifier.fillMaxWidth(),
-                style = AsphaltTheme.typography.titleExtraLarge,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.weight(1f))
             Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
             ) {
+                Spacer(modifier = Modifier.height(32.dp))
+                AsphaltText(
+                    text = "Total Bayar",
+                    modifier = Modifier.fillMaxWidth(),
+                    style = AsphaltTheme.typography.titleSmallDemi,
+                    color = AsphaltTheme.colors.cool_gray_500,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                AsphaltText(
+                    text = "Rp ${totalPrice.toNumberFormat()}",
+                    modifier = Modifier.fillMaxWidth(),
+                    style = AsphaltTheme.typography.titleExtraLarge,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.weight(1f))
                 AsphaltButton(
                     modifier = Modifier.fillMaxWidth(),
                     type = ButtonType.Primary,
@@ -176,7 +180,7 @@ fun SuccessOrderScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, device = "id:pixel_3a")
 @Composable
 private fun DefaultPreview() {
     FoodMarketTheme {

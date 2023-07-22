@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -80,7 +81,7 @@ internal fun CartRoute(
 }
 
 @Composable
-fun CartScreen(
+internal fun CartScreen(
     cartState: CartState,
     transactionState: TransactionState,
     popBackStack: () -> Unit,
@@ -120,7 +121,7 @@ fun CartScreen(
         modifier = Modifier.statusBarsPadding(),
         topBar = {
             AsphaltAppBar(
-                title = "Keranjang",
+                title = stringResource(id = R.string.title_cart),
                 showNavigateBack = true,
                 onNavigateBack = { popBackStack() }
             )
@@ -128,7 +129,7 @@ fun CartScreen(
         bottomBar = {
             cartState.cart?.let {
                 Column(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 28.dp)
+                    modifier = Modifier.padding(16.dp)
                 ) {
                     AsphaltButton(
                         modifier = Modifier.fillMaxWidth(),

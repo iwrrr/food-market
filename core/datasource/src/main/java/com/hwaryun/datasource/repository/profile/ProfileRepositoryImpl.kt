@@ -1,7 +1,7 @@
 package com.hwaryun.datasource.repository.profile
 
 import com.hwaryun.common.ext.execute
-import com.hwaryun.common.http.infrastructure.BaseResponse
+import com.hwaryun.common.http.BaseResponse
 import com.hwaryun.common.result.DataResult
 import com.hwaryun.network.FoodMarketApi
 import com.hwaryun.network.model.request.UpdateProfileRequest
@@ -22,7 +22,7 @@ class ProfileRepositoryImpl @Inject constructor(
         emit(execute { foodMarketApi.fetchUser() })
     }
 
-    override suspend fun updatePhoto(file: File): Flow<DataResult<BaseResponse<List<Unit>>>> =
+    override suspend fun updatePhoto(file: File): Flow<DataResult<BaseResponse<List<String>>>> =
         flow {
             val image = MultipartBody.Part.createFormData(
                 name = "file",

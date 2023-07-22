@@ -5,7 +5,7 @@ import com.google.gson.JsonParseException
 import com.hwaryun.common.ConnectivityException
 import com.hwaryun.common.NetworkClientException
 import com.hwaryun.common.UnexpectedValuesRepresentation
-import com.hwaryun.common.http.infrastructure.BaseResponse
+import com.hwaryun.common.http.BaseResponse
 import com.hwaryun.common.result.DataResult
 import okhttp3.ResponseBody
 import retrofit2.HttpException

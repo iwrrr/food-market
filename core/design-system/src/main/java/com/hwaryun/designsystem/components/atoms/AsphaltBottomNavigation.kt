@@ -28,6 +28,7 @@ import com.hwaryun.designsystem.ui.asphalt.AsphaltTheme
 import com.hwaryun.designsystem.ui.asphalt.LocalContentColor
 import com.hwaryun.designsystem.ui.asphalt.contentColorFor
 import com.hwaryun.designsystem.utils.springClick
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 @Composable
@@ -188,20 +189,23 @@ private fun MeasureScope.placeLabelAndIcon(
 ): MeasureResult {
     val height = constraints.maxHeight
 
-    val labelY = height - labelPlaceable.height - NavigationBarItemVerticalPadding.roundToPx()
+    val firstBaseline = labelPlaceable[FirstBaseline]
+    val baselineOffset = 12.dp.roundToPx()
+    val netBaselineAdjustment = baselineOffset - firstBaseline
 
-    val selectedIconY = NavigationBarItemVerticalPadding.roundToPx()
-    val unselectedIconY =
-        if (alwaysShowLabel) selectedIconY else (height - iconPlaceable.height) / 2
+    val unselectedIconY = (height - iconPlaceable.height) / 2
+    val selectedIconY = 10.dp.roundToPx()
+
+    val labelY = selectedIconY + iconPlaceable.height + netBaselineAdjustment
+
+    val containerWidth = max(labelPlaceable.width, iconPlaceable.width)
+
+    val labelX = (containerWidth - labelPlaceable.width) / 2
+    val iconX = (containerWidth - iconPlaceable.width) / 2
 
     val iconDistance = unselectedIconY - selectedIconY
 
     val offset = (iconDistance * (1 - animationProgress)).roundToInt()
-
-    val containerWidth = constraints.maxWidth
-
-    val labelX = (containerWidth - labelPlaceable.width) / 2
-    val iconX = (containerWidth - iconPlaceable.width) / 2
 
     return layout(containerWidth, height) {
         if (alwaysShowLabel || animationProgress != 0f) {
@@ -307,4 +311,4 @@ object NavigationBarItemDefaults {
 }
 
 private val NavigationBarItemVerticalPadding: Dp = 12.dp
-private val BottomNavigationHeight = 84.dp
+private val BottomNavigationHeight = 56.dp

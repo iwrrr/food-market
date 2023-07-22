@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,12 +18,17 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,10 +49,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.placeholder.PlaceholderDefaults
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.color
@@ -66,14 +74,20 @@ import java.io.File
 @Composable
 internal fun EditProfileRoute(
     popBackStack: () -> Unit,
+    navigateToCameraScreen: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
-    viewModel: EditProfileViewModel = hiltViewModel()
+    viewModel: EditProfileViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(true) {
+        viewModel.getUser()
+    }
 
     EditProfileScreen(
         state = state,
         popBackStack = popBackStack,
+        navigateToCameraScreen = navigateToCameraScreen,
         onShowSnackbar = onShowSnackbar,
         updateNameState = viewModel::updateNameState,
         updateEmailState = viewModel::updateEmailState,
@@ -84,10 +98,12 @@ internal fun EditProfileRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun EditProfileScreen(
     state: EditProfileState,
     popBackStack: () -> Unit,
+    navigateToCameraScreen: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     onChangePhoto: (photo: File?) -> Unit,
     updateNameState: (String) -> Unit,
@@ -96,11 +112,22 @@ fun EditProfileScreen(
     onSaveClick: (name: String?, phoneNumber: String?, email: String?) -> Unit,
     resetErrorState: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+
+    val sheetState = rememberModalBottomSheetState()
+
+    var showBottomSheet by remember { mutableStateOf(false) }
     var shouldShowTrailingIcon by remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-    val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
+    val cameraPermissionState = rememberPermissionState(
+        android.Manifest.permission.CAMERA,
+        onPermissionResult = {
+            navigateToCameraScreen()
+            showBottomSheet = false
+        }
+    )
 
     val galleryLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
@@ -141,6 +168,68 @@ fun EditProfileScreen(
             )
         }
     ) { innerPadding ->
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = sheetState,
+                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+                dragHandle = null,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                ) {
+                    AsphaltText(
+                        text = "Ganti foto profil",
+                        style = AsphaltTheme.typography.titleSmallDemi
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            OutlinedIconButton(
+                                onClick = {
+                                    if (cameraPermissionState.status.isGranted) {
+                                        navigateToCameraScreen()
+                                    } else {
+                                        cameraPermissionState.launchPermissionRequest()
+                                    }
+                                },
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_camera),
+                                    contentDescription = null
+                                )
+                            }
+                            AsphaltText(
+                                text = "Kamera",
+                            )
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            OutlinedIconButton(onClick = { galleryLauncher.launch("image/*") }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_gallery),
+                                    contentDescription = null
+                                )
+                            }
+                            AsphaltText(
+                                text = "Galeri",
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -149,7 +238,7 @@ fun EditProfileScreen(
                     top = innerPadding.calculateTopPadding() + 16.dp,
                     start = 16.dp,
                     end = 16.dp,
-                    bottom = innerPadding.calculateBottomPadding() + 16.dp
+                    bottom = 16.dp
                 ),
         ) {
             AsphaltText(
@@ -162,7 +251,7 @@ fun EditProfileScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    modifier = Modifier.singleClick { galleryLauncher.launch("image/*") },
+                    modifier = Modifier.singleClick { showBottomSheet = true },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AsyncImage(
@@ -328,6 +417,7 @@ private fun DefaultPreview() {
         EditProfileScreen(
             state = EditProfileState(),
             popBackStack = {},
+            navigateToCameraScreen = {},
             onShowSnackbar = { _, _ -> false },
             onChangePhoto = {},
             updateNameState = {},

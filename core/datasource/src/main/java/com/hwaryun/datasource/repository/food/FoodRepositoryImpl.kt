@@ -2,7 +2,7 @@ package com.hwaryun.datasource.repository.food
 
 import androidx.paging.PagingData
 import com.hwaryun.common.ext.execute
-import com.hwaryun.common.http.infrastructure.BaseResponse
+import com.hwaryun.common.http.BaseResponse
 import com.hwaryun.common.result.DataResult
 import com.hwaryun.datasource.paging.createPager
 import com.hwaryun.network.FoodMarketApi

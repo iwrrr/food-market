@@ -1,7 +1,7 @@
 package com.hwaryun.datasource.repository.transaction
 
 import androidx.paging.PagingData
-import com.hwaryun.common.http.infrastructure.BaseResponse
+import com.hwaryun.common.http.BaseResponse
 import com.hwaryun.common.result.DataResult
 import com.hwaryun.network.model.response.TransactionDto
 import kotlinx.coroutines.flow.Flow
